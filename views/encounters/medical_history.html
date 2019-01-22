@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+        <title>Encounters New</title>
+        <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+        <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+        <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+        <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
+        <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+        <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+        <script type="text/javascript" src="/assets/js/moment.js"></script>
+
+        <script type="text/javascript">
+            tstUsername = "admin";
+            var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+            <!--
+  tt_cancel_show = "/patients/show/<%= @patient.id %>";
+  tt_cancel_destination = "/patients/show/<%= @patient.id %>";
+  var selectAll = false;
+  //-->
+  /**
+  function selectNone(){
+    
+    if (__$("chkSelectAll") && __$("lblSelectAll")){
+
+      __$("lblSelectAll").innerHTML = "None";
+
+      __$("chkSelectAll").onclick = function(){
+        if ( __$("chkSelectAll").src.match(/unticked/))
+        __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
+        checkAll();
+        __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true")
+        setTimeout("gotoNextPage()", 200);
+      }
+      __$("lblSelectAll").onclick = function(){
+
+        if ( __$("chkSelectAll").src.match(/unticked/))
+          __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
+        checkAll();
+        __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true");
+        setTimeout("gotoNextPage()", 200);
+      }
+    }
+
+    setTimeout("selectNone()", 50);
+  }
+ 
+  function checkFields(){
+
+    var nodes = __$("values").children;
+
+    for (var i = 0; i < nodes.length; i ++){
+
+      if (nodes[i].value != "none" && nodes[i] && nodes[i].innerHTML != ""){
+      
+        var id = nodes[i].value;
+        
+        if (id && !__$('img' + (i-1)).src.match("unticked")){
+
+          __$(id).value = "Yes";
+        }else if(id && __$('img' + (i-1)).src.match("unticked")){
+
+          __$(id).value = "No";
+        }
+      }
+    }
+  }
+
+  setTimeout("selectNone()", 50);
+  */
+
+        </script>
+        <style type="text/css">
+            #tab {
+                height:312px;
+            }
+            #barcode {
+                background:transparent none repeat scroll 0 0;
+                border-color:-moz-use-text-color -moz-use-text-color silver;
+                border-style:none none solid;
+                border-width:medium medium 1px;
+                font-family:"Nimbus Sans L","Arial Narrow",sans-serif;
+                font-size:2.2em;
+                padding-left:5px;
+                width:400px;
+            }
+
+            #header div {
+                font-weight:normal;
+                float:none;
+                clear:both;
+            }
+
+            .summary{
+                position:relative;
+                float:center;
+                width:100%;
+                padding-left:10px;
+                padding-right:10px;
+            }
+
+            .summary td , th{
+                border-style:solid;
+                border-width:thin;
+                padding:5px;
+            }
+
+            .summary tbody{
+                position:relative;
+                height:500px;
+                overflow:auto;
+                overflow-x: hidden;
+            }
+
+            .summary>tbody tr {
+                position:relative;
+                height:12px;
+            }
+            .summary>thead tr {
+                position:relative;
+                height:12px;
+            }
+
+            .tt_controls_date_of_confirmatory_hiv_test #num { display:none; }
+
+            .tt_controls_date_last_taken #num { display:none; }
+
+            .tt_controls_date_of_confirmatory_hiv_test table {  position: absolute; top: -360px; }
+
+            .tt_controls_date_art_last_taken table {  position: absolute; top: -360px; }
+
+            .tt_controls_last_arv_drugs_taken .keyboard { display:none; }
+
+            .tt_controls_cd4_count #qwerty , .tt_controls_cd4_percent #qwerty {
+                display: none;
+            }
+
+            .tt_controls_cd4_count #equals, .tt_controls_cd4_percent #equals {
+                display: inline;
+            }
+
+            .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan {
+                position: absolute;
+                right: 65%;
+            }
+
+            .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan {
+                position: absolute;
+                right: 65%;
+            }
+
+            .tt_controls_cd4_count #greaterthan , .tt_controls_cd4_percent #greaterthan{
+                position: absolute;
+                right: 65%;
+                top: 5px;
+            }
+
+            .tt_controls_cd4_count #lessthan , .tt_controls_cd4_percent #lessthan {
+                top: 145px;
+            }
+
+            .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan { display:block; float:right }
+            .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan { display:block; float:right }
+
+            .tt_controls_weight_kg #qwerty , .tt_controls_height_cm #qwerty {
+                display: none;
+            }
+
+            .tt_controls_confirmatory_hiv_test_year #Unknown { display: inline; }
+
+            .tt_controls_confirmatory_hiv_test_month .keyboard { display:none; }
+
+            #tt_page_month_of_cd4_count .inputFrameClass {  height: 86%; }
+
+            #tt_page_month_of_cd4_count #viewport {  height: 85%; }
+
+            #tt_page_confirmatory_hiv_test_month .options {  height: 90%; }
+
+            #tt_page_confirmatory_hiv_test_month .inputFrameClass {  height: 86%; }
+
+            .tt_controls_month_started_art .keyboard { display:none; }
+
+            #tt_page_month_started_art .options {  height: 90%; }
+
+            #tt_page_month_started_art .inputFrameClass {  height: 86%; }
+
+            .tt_controls_year_last_taken_arvs #Unknown { display: inline; }
+
+            .tt_controls_month_art_last_taken .keyboard { display:none; }
+
+            #tt_page_month_last_taken_arvs .options {  height: 90%; }
+
+            #tt_page_month_art_last_taken .inputFrameClass {  height: 86%; }
+
+            .tt_controls_year_started_art #Unknown { display: inline; }
+
+            .tt_controls_month_of_cd4_count .keyboard{ display: none !important; }
+
+            .NoKeyboard .options {
+                height: 591px !important;
+            }
+        </style>
+    </head>
+
+    <body id="mateme">
+      <div id="container">
+        <div id="content">
+            <form  onsubmit="submitParameters();">
+    <!--%= hidden_field_tag "encounter[encounter_type_name]", "MEDICAL HISTORY" %>
+    <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
+    <%= hidden_field_tag "encounter[encounter_datetime]", DateTime.now() %>
+    <%= hidden_field_tag "encounter[provider_id]", session[:user_id] %>
+    <%session_date = session[:datetime] || Time.now() %-->
+
+    <select allowFreeText="false" class="medical_complications" 
+        helpText="Past Medical Complications" id="medical_complications" 
+        multiple="multiple" name="observations[][value_coded_or_text_multiple][]" 
+        optional="true" tt_onLoad="" tt_onUnLoad="" tt_pageStyleClass="NoKeyboard NoInput small">
+      <option value=''></option>
+      <option value="882">Asthma</option>
+      <option value="5340">Hypertension</option>
+      <option value="1547">Diabetes</option>
+      <option value="507">Spine/Leg Deformity</option>
+      <option value="1362">Blood transfusion</option>
+      <option value="7548">Epilepsy</option>
+      <option value="2585">Renal disease</option>
+      <option value="7549">Fistula repair</option>
+      <option value="7956">Sexually transmitted infection</option>
+    </select>
+    <!--
+                    ["", ""],
+    ["Asthma", "ever_had_asthma?"],
+    ["Hypertension", "ever_had_hypertension?"],
+    ["Spine/Leg Deformity", "do_you_have_a_spine_or_leg_deform?"],
+    ["Blood transfusion", "blood_transfusion"],
+    ["Diabetes", "ever_had_diabetes?"],
+    ["Epilepsy", "ever_had_epilepsy?"],
+    ["Renal disease", "ever_had_renal_disease?"],
+    ["Fistula repair", "ever_had_a_fistula_repair?"],
+    ["Sexually transmitted infection", "sti"]
+    -->
+</form>
+        </div>
+      </div>
+    </body>
