@@ -1,0 +1,275 @@
+
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<!--script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script-->
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+<link rel="stylesheet" href="/assets/css/datatables/uikit.min.css" type="text/css">
+<link rel="stylesheet" href="/assets/css/datatables/dataTables.uikit.min.css" type="text/css">
+
+<link rel="stylesheet" href="/assets/css/datatables/fixedHeader.dataTables.min.css" type="text/css">
+<link rel="stylesheet" href="/assets/css/datatables/scroller.dataTables.min.css" type="text/css">
+
+<script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+<link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+
+<link rel="stylesheet" href="/apps/ART/assets/css/prescription.css" type="text/css">
+<script type="text/javascript" src="/apps/ART/assets/js/prescription.js"></script>
+
+<script type="text/javascript">
+var patient_id = sessionStorage.patientID;
+var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patient_id;
+
+getMedicationOrders();
+function showWeight() {
+  var clientInfo = document.getElementById('helpText' + tstCurrentPage);
+  var table = document.createElement('table');
+  var cssText = 'float: right; font-size: 14px;';
+  table.setAttribute('style', cssText);
+  clientInfo.appendChild(table);
+
+
+  var tr = document.createElement('tr');
+  table.appendChild(tr);
+  var th = document.createElement('th');
+  th.innerHTML = "Client's age:";
+  tr.appendChild(th);
+
+  var td = document.createElement('td');
+  td.innerHTML = sessionStorage.patientAge + ' year(s)';
+  tr.appendChild(td);
+
+  var th = document.createElement('th');
+  th.innerHTML = "Client's gender:";
+  tr.appendChild(th);
+
+  var td = document.createElement('td');
+  td.innerHTML = sessionStorage.patientGender;
+  tr.appendChild(td);
+
+
+  var tr = document.createElement('tr');
+  table.appendChild(tr);
+  var th = document.createElement('th');
+  th.innerHTML = "Current weight:";
+  tr.appendChild(th);
+
+  var td = document.createElement('td');
+  td.innerHTML = sessionStorage.currentWeight + ' KG';
+  tr.appendChild(td);
+
+
+
+
+  var th = document.createElement('th');
+  th.innerHTML = "Current regimen:";
+  tr.appendChild(th);
+
+  var td = document.createElement('td');
+  td.innerHTML = '<span id="current-regimen"></span>';
+  tr.appendChild(td);
+
+
+
+  getCurrentRegimen();
+  //document.getElementById('helpText2').setAttribute("helptext", "Current patient weight: "+ sessionStorage.currentWeight + "KG") ;
+}
+
+function resetFinishButton() {
+  var btn = document.getElementById('nextButton');
+  btn.setAttribute("onmousedown","gotoNextButton();");
+}
+
+function initializeVariables(){
+    jQuery(".loader").show();
+    jQuery('#keyboard').hide();
+    jQuery("#buttons").hide(); //inputFrame0
+    jQuery("#inputFrame" + tstCurrentPage).hide();
+
+    //var todays_date = new Date(sessionStorage.sessionDate).formt();
+    //todays_date = todays_date.getFullYear() + "-" + (todays_date.getMonth() + 1) + "-" + todays_date.getDate()
+    
+    var medication_order_concept_id = 1282;
+    var antiretroviral_drugs_value_coded  = 1085;
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+    url +=  "/api/v1/observations?person_id=" + sessionStorage.patientID;
+    url +=  "&concept_id=" + medication_order_concept_id;
+    url +=  "&value_coded=" + antiretroviral_drugs_value_coded;
+    url +=  "&obs_datetime=" + sessionStorage.sessionDate;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+            var art_prescription_obs = JSON.parse(this.responseText);
+            if (art_prescription_obs.length > 0){
+                prescribe_arv = true;
+            }
+
+            /******/
+            var medication_order_date = new Date(sessionStorage.sessionDate);
+            medication_order_date = medication_order_date.getFullYear() + "-" + (medication_order_date.getMonth() + 1) + "-" + medication_order_date.getDate()
+
+            var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/programs/1/patients/" + sessionStorage.patientID + "/dosages?date=" + medication_order_date;
+            var medication_order_concept_id = 1282;
+            var xhttp2 = new XMLHttpRequest();
+            xhttp2.onreadystatechange = function() {
+                if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+                    medication_orders = JSON.parse(this.responseText);
+                    gotoNextPage();
+                }
+            };
+
+            xhttp2.open("GET", url, true);
+            xhttp2.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+            xhttp2.setRequestHeader('Content-type', "application/json");
+            xhttp2.send();
+            /*******/
+
+        }
+    };
+
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+}
+
+function resetPage(){
+    jQuery('#keyboard').show();
+    jQuery("#buttons").show();
+    jQuery("#innerPop").show()
+    jQuery("#inputFrame" + tstCurrentPage).show();
+    jQuery(".loader").hide();
+}
+
+
+</script>
+
+<body id="mateme">
+    <div id="container">
+        <div id="content">
+
+
+            <form action="post">
+
+                <input type="text" name="regimens"
+                       tt_onLoad="initializeVariables();"
+                       tt_onUnLoad = "resetPage();"
+                       tt_pageStyleClass= "NoControls" optional = "true"/>
+
+                <input type="text" name="regimens"
+                       tt_onLoad="__$('keyboard').style.display = 'none';getRegimens();showWeight();"
+                       condition = "prescribe_arv == true;"
+                       tt_onUnLoad = "removeCustomBtn();"
+                       tt_pageStyleClass= "NoControls" helpText="ARV Regimen(s)" optional = "true"/>
+
+                <input type="text" name="regimens"
+                       condition = "showCustomPrescriptionPage() == true"
+                       tt_onUnLoad = "document.getElementById('nextButton').style='display: inline;'"
+                       tt_onLoad="__$('keyboard').style.display = 'none';buildCustomPrescriptionPage();"
+                       tt_pageStyleClass= "NoControls" helpText="Custom prescription" optional = "true"/>
+
+
+                <input type="text" name="selected-medications"
+                       tt_onLoad="__$('keyboard').style.display = 'none'; showSelectedMeds(); initDataTable(); showWeight();"
+                       tt_pageStyleClass= "NoControls" helpText="Selected medication" optional = "true"/>
+
+                <input type="text" name="duration"
+                       tt_onLoad="__$('keyboard').style.display = 'none';buildNextIntervalPage();preSelectInterval();"
+                       tt_pageStyleClass= "NoControls" helpText="Interval to next visit" optional = "true"/>
+
+                <!-- select name="follow_up_agreement" allowFreeText="false"
+                        helpText="Assess for fast track visit (next appointment)"
+                        tt_onLoad = "adjustFrameHeight();"
+                        tt_onUnLoad = "resetFinishButton();"
+                        id="assess_for_ft" tt_pageStyleClass="NoKeyboard">
+                    <option value=""></option>
+                    <option value="YES">Yes</option>
+                    <option value="NO">No</option>
+                </select-->
+
+
+            </form>
+
+            <div class="loader"></div>
+        </div>
+    </div>
+</body>
+
+<!-- ####################################################################### -->
+<script type="text/javascript" src="/apps/ART/assets/js/regimenSideEfectsPopup.js"></script>
+<style>
+
+    .loader {
+        position: absolute;
+        display: none;
+        top: 30%;
+        left: 40%;
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        z-index: 9999999999999;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+ #confirmatory-test-popup-div {
+    display: none;
+    background-color: #F4F4F4;
+    border: 2px solid #E0E0E0;
+    border-radius: 15px;
+    height: 200px;
+    padding: 5px;
+    position: absolute;
+    margin-top: 100px;
+    width: 530px;
+    /*margin-left: 430px;*/
+    left: 20%;
+    z-index: 991;
+  }
+
+  #confirmatory-test-popup-header{
+    border-bottom: 2px solid #7D9EC0;
+    margin-left: -5px;
+    width: 101.5%;
+    background-color: #FFFFFF;
+    margin-top: -5px;
+    padding-top: 5px;
+    border-radius: 15px 15px 0 0;
+    font-size: 14pt;
+    font-weight: bolder;
+  }
+
+  #confirmatory-test-cover{
+    display: inline;
+    position: absolute;
+    background-color: black;
+    width: 100%;
+    height: 102%;
+    left: 0%;
+    top: 0%;
+    z-index: 990;
+    opacity: 0.65;
+  }
+
+</style>
+
+
+
+<div id="confirmatory-test-popup-div"></div>
+<div id="confirmatory-test-cover"></div>
+
+
+
