@@ -216,20 +216,59 @@
     <%session_date = session[:datetime] || Time.now() %-->
 
     <select allowFreeText="false" class="medical_complications" 
-        helpText="Past Medical Complications" id="medical_complications" selectAll="selectAll" 
+        helpText="Previous Surgical Procedure(s) Done " id="medical_complications" selectAll="selectAll" 
         multiple="multiple" name="observations[][value_coded_or_text_multiple][]" 
         optional="true" tt_onLoad="__$('nextButton').style.display='block';__$('backButton').style.display = 'none';" 
         tt_onUnLoad="" tt_pageStyleClass="longSelectList" tt_BeforeUnLoad="checkFields()">
       <option value=''></option>
-      <option value="882">Asthma</option>
-      <option value="5340">Hypertension</option>
-      <option value="1547">Diabetes</option>
-      <option value="507">Spine/Leg Deformity</option>
-      <option value="1362">Blood transfusion</option>
-      <option value="7548">Epilepsy</option>
-      <option value="2585">Renal disease</option>
-      <option value="7549">Fistula repair</option>
-      <option value="7956">Sexually transmitted infection</option>
+      <option value="9306">Abdominal Washout</option>
+      <option value="8767">Bilateral tubal ligation</option>
+      <option value="3593">Biopsy</option>
+      <option value="1171">Caesarean section</option>
+      <option value="7471">Cauterization of vulva or perineal warts</option>
+      <option value="8766">Ceclage</option>
+      <option value="9303">Colposcopy</option>
+      <option value="7453">Conservative management</option>
+      <option value="9313">Coterization</option>
+      <option value="8765">Cystectomy</option>
+      <option value="7481">Cystoscopy</option>
+      <option value="9305">Decapitation</option>
+      <option value="7479">Diagnostic laparascopy</option>
+      <option value="7475">Dilation and curettage</option>
+      <option value="7476">Drainage of abscess</option>
+      <option value="8448">Dressing</option>
+      <option value="8449">Dressing with vaseline gause</option>
+      <option value="9058">Evacuation/Manual Vacuum Aspiration</option>
+      <option value="7441">Exam under anaesthesia</option>
+      <option value="8773">Excision</option>
+      <option value="7470">Exploratory laparatomy +/- adnexectomy</option>
+      <option value="7477">Fistula repair</option>
+      <option value="8451">Foreign body aspiration</option>
+      <option value="9308">Gaped episiotomy repair</option>
+      <option value="5276">Hysterectomy</option>
+      <option value="7480">Hysterescopy</option>
+      <option value="9065">Incision and drainage </option>
+      <option value="7473">Lung maturation</option>
+      <option value="9309">Macdonald suture</option>
+      <option value="7472">Marsupilisation</option>
+      <option value="9315">Musculisation</option>
+      <option value="7478">Myomectomy</option>
+      <option value="9314">Ofrectomy</option>
+      <option value="9304">Polypectomy</option>
+      <option value="9318">Reopening</option>
+      <option value="8381">Repair of uterus</option>
+      <option value="7474">Salpingectomy</option>
+      <option value="8450">Slinging</option>
+      <option value="7444">Subtotal abdominal hysterectomy +/- adnexectomy</option>
+      <option value="8447">Suturing and dressing</option>
+      <option value="7462">Suturing of cervical or vaginal injury under anaesthesia</option>
+      <option value="8380">Suturing of perineum</option>
+      <option value="7443">Total abdominal hysterectomy +/- adnexectomy</option>
+      <option value="1719">Tubal ligation</option>
+      <option value="7440">Uterine evacuation</option>
+      <option value="7469">Vaginal Reconstruction</option>
+      <option value="9307">Vaginal hysterectomy</option>
+      <option value="7482">Vulvectomy</option>
     </select>
     <!--
     :id => "values",
