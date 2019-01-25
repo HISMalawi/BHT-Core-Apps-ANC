@@ -34,6 +34,7 @@
       var selected_stage_conditions_copy = {}
           
       var firstPositiveHivTestType = "UNKNOWN";
+      var previous_hiv_test = false;
 
       /**
        * * For ANC
@@ -67,8 +68,16 @@
       function removeHIVOption(){
         var lab_test_list = $('available_test_results');
         var hiv_option = $('hiv');
+        var prev_hiv_test_res = ""
+        
+        if ($('prev_hiv_test_result')){
+          prev_hiv_test_res = $('prev_hiv_test_result').value
+        }
+
         try{
-          if ($('9655_yes').attributes.class.nodeValue.match(/\ clicked/)){
+          if ($('9655_yes').attributes.class.nodeValue.match(/\ clicked/) || 
+            prev_hiv_test_res === 'Positive'){
+
             lab_test_list.options[hiv_option.index] = null;
           }
         }catch(e){
@@ -87,6 +96,17 @@
         }catch(e){
           console.log(e);
         }
+      }
+
+      function updatePreviousHIVTestDoneResponse(){
+        if ($('9655_yes').attributes.class.nodeValue.match(/\ clicked/)){
+          previous_hiv_test = true;
+        }else{
+          previous_hiv_test = false;
+        }
+      }
+      function checkPreviousHIVTest(){
+        return previous_hiv_test;
       }
 
     </script>
@@ -646,971 +666,214 @@
 
                 </script>
 
-                <form  onsubmit="submitParameters();">
+        <form  onsubmit="submitParameters();">
+  
+          <input type="text" name="lab-results"
+            tt_onLoad="__$('keyboard').style.display = 'none'; addYesNoToLabTests(); addHIVOption();"
+            optional="true" tt_onUnload="removeHIVOption();updatePreviousHIVTestDoneResponse();"
+            tt_pageStyleClass= "NoControls" helpText="Lab Results" />
 
-                    <input type="text" name="lab-results"
-                      tt_onLoad="__$('keyboard').style.display = 'none'; addYesNoToLabTests(); addHIVOption();"
-                      optional="true" tt_onUnload="removeHIVOption();"
-                      tt_pageStyleClass= "NoControls"
-                      helpText="Lab Results" />
+          <select tt_onLoad="" condition="checkPreviousHIVTest();" 
+            allowFreeText="false" id="prev_hiv_test_result" name="prev_hiv_test_result" 
+            helpText="Previous HIV test results" tt_onUnLoad=""
+            tt_pageStyleClass="NoKeyboard">
+              
+              <option value=''></option>
+              <option value="Negative">Negative</option>
+              <option value="Positive">Positive</option>
+              <option value="Inconclusive">Inconclusive</option>
+              <option value="Unknown">Unknown</option>
+              
+          </select>
 
-                    <select tt_onLoad="" 
-                      allowFreeText="false" id="prev_hiv_test_result" name="prev_hiv_test_result" 
-                      helpText="Previous HIV test results" tt_onUnLoad=""
-                      name="observations[][value_coded_or_text]" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="Negative">Negative</option>
-                        <option value="Positive">Positive</option>
-                        <option value="Inconclusive">Inconclusive</option>
-                        <option value="Unknown">Unknown</option>
-                    </select>
+          <input tt_onLoad="" condition="$('prev_hiv_test_result').value !== '';" 
+            field_type="date" helpText="Previous HIV test date"
+            id="prev_hiv_test_date" name="previous_hiv_test"
+            tt_pageStyleClass="" type="text"/>
 
-                    <select condition="" multiple="multiple" 
-                      helpText="Available Lab Tests" optional="true" 
-                      id="available_test_results" name="available_test_results" 
-                      tt_onLoad="" tt_pageStyleClass="NoKeyboard">
-
-                        <option value=""></option>
-                        <option value="hiv" id="hiv">HIV</option>
-                        <option value="hb" id="hb">HB</option>
-                        <option value="syphilis" id="syphilis">Syphilis</option>
-                        <option value="malaria">Malaria</option>
-                        <option value="blood group">Blood Group</option>
-                        <option value="urine">Urine</option>
-                    </select>
-
-                    <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-                      allowFreeText="false" condition="getSelectedLabTests().match(/HIV/)" 
-                      helpText="HIV Test Result" id="taken_art_in_last_two_months" 
-                      name="observations[][value_coded_or_text]" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="">Negative</option>
-                        <option value="">Positive</option>
-                        <option value="">Inconclusive</option>
-                        <option value="">Unknown</option>
-                    </select>
-
-                    <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-                      allowFreeText="false" condition="" 
-                      helpText="Patient on ART" id="taken_art_in_last_two_weeks" 
-                      name="observations[][value_coded_or_text]" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="YES">Yes</option>
-                        <option value="NO">No</option>
-                    </select>
+          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
+            allowFreeText="false" condition="$('prev_hiv_test_result').value === 'Positive'" 
+            helpText="Patient on ART" id="on_art" name="on_art" 
+            tt_pageStyleClass="NoKeyboard">
+            
+              <option value=''></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+          
+          </select>
                     
-                    <input tt_onLoad ="showCategory2('Available Lab Test Results');__$('Unknown').style.display='inline';"
-                      condition="" field_type="text" helpText="ARV Number" 
-                      id="year_art_last_taken" name="year_art_last_taken" 
-                      tt_pageStyleClass="Numeric NumbersOnly" type="text" />
+          <input tt_onLoad ="showCategory2('Available Lab Test Results');__$('Unknown').style.display='inline';"
+            condition="$('on_art').value === 'Yes';" field_type="text" helpText="ARV Number" 
+            id="arv_number" name="arv_number" tt_pageStyleClass="" 
+            type="text" />
 
-                    <input condition="getSelectedLabTests().match(/HB/);" field_type="number" 
-                      helpText="HB Test Result (g/dl)" id="day_started_art" name="day_started_art" 
-                      tt_onLoad="showCategory2('Available Lab Test Results');" 
-                      tt_onUnLoad="" type="text" max="16" min="2"
-                      validationCode="" tt_pageStyleClass="Numeric NumbersOnlyWithDecimal" 
-                      validationMessage="" />
+          <select condition="" multiple="multiple" 
+            helpText="Available Lab Tests" optional="true" 
+            id="available_test_results" name="available_test_results" 
+            tt_onLoad="" tt_pageStyleClass="NoKeyboard">
 
-                    <select tt_onLoad="showCategory2('Available Lab Test Results');" allowFreeText="false" 
-                      condition="getSelectedLabTests().match(/Syphilis/)" 
-                      helpText="Syphilis Test Result" 
-                      id="ever_registered_at_ART_clinic" 
-                      name="observations[][value_coded_or_text]" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="">Negative</option>
-                        <option value="">Positive</option>
-                    </select>
+              <option value=""></option>
+              <option value="hiv" id="hiv">HIV</option>
+              <option value="hb" id="hb">HB</option>
+              <option value="syphilis" id="syphilis">Syphilis</option>
+              <option value="malaria">Malaria</option>
+              <option value="blood group">Blood Group</option>
+              <option value="urine">Urine</option>
+          
+          </select>
 
-                    <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-                      allowFreeText="false" condition="getSelectedLabTests().match(/Malaria/)" 
-                      helpText="Malaria Test Result" 
-                      id="ever_registered_at_ART_clinic" 
-                      name="observations[][value_coded_or_text]" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="">Negative</option>
-                        <option value="">Positive</option>
-                    </select>
+          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
+            allowFreeText="false" condition="getSelectedLabTests().match(/HIV/)" 
+            helpText="HIV Test Result" id="hiv_status" 
+            name="hiv_status" tt_pageStyleClass="NoKeyboard">
+            
+              <option value=''></option>
+              <option value="Negative">Negative</option>
+              <option value="Positive">Positive</option>
+              <option value="Inconclusive">Inconclusive</option>
+              <!-- option value="Unknown">Unknown< /option-->
+          
+          </select>
 
-                    <select tt_onLoad="showCategory2('Available Lab Test Results');" allowFreeText="false" 
-                      condition="getSelectedLabTests().match(/Blood Group/);" 
-                      helpText="Blood Group Test Result" 
-                      id="ever_registered_at_ART_clinic" 
-                      name="observations[][value_coded_or_text]" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="">A+</option>
-                        <option value="">A-</option>
-                        <option value="">B+</option>
-                        <option value="">B-</option>
-                        <option value="">AB+</option>
-                        <option value="">AB-</option>
-                        <option value="">O+</option>
-                        <option value="">O-</option>
-                    </select>
-
-                    <select condition="getSelectedLabTests().match(/Urine/);" multiple="multiple" 
-                      helpText="Available Urine Tests Results" optional="true" 
-                      id="available_urine_tests" name="available_urine_tests" 
-                      tt_onLoad="showCategory2(Available Lab Test Results)" 
-                      tt_pageStyleClass="NoKeyboard">
-
-                        <option value=""></option>
-                        <option value="urine protein">Urine protein</option>
-                        <option value="glucose">Glucose</option>
-                        <option value="wbc">WBC</option>
-                        <option value="rbc">RBC</option>
-                        <option value="nitrate">Nitrate</option>
-                    </select>
-
-                    <select allowFreeText="false" condition="getSelectedUrineTests().match(/Urine protein/)" 
-                      helpText="Urine Protein Test Result" 
-                      id="art_start_date_estimation" 
-                      name="art_start_date_estimation" 
-                      ttMatchFromBeginning="true" 
-                      tt_onLoad="showCategory2('Available Urine Test Results');" 
-                      tt_onUnLoad="">
-
-                        <option value=""></option>
-                        <option value="negative">Negative</option>
-                        <option value="(+)">(+)</option>
-                        <option value="+">+</option>
-                        <option value="++">++</option>
-                        <option value="+++">+++</option>
-                        <option value="++++">++++</option>
-                    </select>
+          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
+            allowFreeText="false" condition="$('hiv_status').value === 'Positive'" 
+            helpText="Patient on ART" id="on_art" name="on_art" 
+            tt_pageStyleClass="NoKeyboard">
+            
+              <option value=''></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+          
+          </select>
                     
-                    <select condition="getSelectedUrineTests().match(/Glucose/)" 
-                      helpText="Glucose Test Result (mg/dl)" 
-                      id="month_started_art" name="month_started_art" 
-                      tt_onLoad="showCategory2('Available Urine Test Results');" 
-                      tt_onUnLoad="" 
-                      validationMessage="">
-
-                        <option value=""></option>
-                        <option value="normal">Normal</option>
-                        <option value="+">+</option>
-                        <option value="++">++</option>
-                        <option value="+++">+++</option>
-                    </select>
-
-                    <input condition="getSelectedUrineTests().match(/WBC/);" field_type="number" min="0" max="1000000"
-                      helpText="White Blood Cells Test Result (cmm)" 
-                      id="day_started_art" name="day_started_art" 
-                      tt_onLoad="showCategory2('Available Urine Test Results');" 
-                      tt_onUnload="" type="text" 
-                      validationCode="" validationMessage=""
-                      tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
-
-                    <input condition="getSelectedUrineTests().match(/RBC/)" field_type="number" min="0" max="1000000" 
-                      helpText="Red Blood Cells Test Result (cmm)" 
-                      id="day_started_art" name="day_started_art" 
-                      tt_onLoad="showCategory2('Available Urine Test Results');" 
-                      tt_onUnload="" type="text" 
-                      validationCode="" validationMessage=""
-                      tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
-
-                    <select tt_onLoad="showCategory2('Available Urine Test Results');"  
-                      allowFreeText="false" condition="getSelectedUrineTests().match(/Nitrate/);" 
-                      helpText="Nitrate Test Result" 
-                      id="has_transfer_letter" 
-                      name="observations[][value_coded_or_text]" 
-                      tt_onUnload="" tt_pageStyleClass="NoKeyboard">
-                        <option value=''></option>
-                        <option value="negative">Negative</option>
-                        <option value="trace">Trace</option>
-                        <option value="positive">Positive</option>
-                    </select>
-
-                    <input name="commit" type="submit" value="Finish" />
-
-                </form>
-                <script type="text/javascript">
-                    function hideConfirmatoryTestPopup() {
-                        document.getElementById("confirmatory-test-popup-div").style.display = 'none';
-                        document.getElementById("confirmatory-test-cover").style.display = 'none';
-                    }
-
-                    function showConfirmatoryTestPopup() {
-                        document.getElementById("confirmatory-test-popup-div").style.display = 'inline';
-                        document.getElementById("confirmatory-test-cover").style.display = 'inline';
-
-                        jQuery('#confirmatory-test-popup-div').center();
-                    }
-
-                    function setUnknownConfirmatoryTestForPopup() {
-                        unknown_confirmatory_option_input = jQuery("li[tstvalue='NOT DONE']")[0];
-                        if (unknown_confirmatory_option_input) {
-                            unknown_confirmatory_option_input.onmouseup = function () {
-                                if (!unknown_confirmatory_option_input.style.backgroundColor.match(/lightBlue/i)) {
-                                    showConfirmatoryTestPopup();
-                                }
-                            }
-                        }
-                    }
-
-                    function setSelectedStageConditions(stage) {
-                        selected_stage_conditions[stage] = $("touchscreenInput" + tstCurrentPage).value;
-                        selected_stage_conditions_copy[stage] = $("touchscreenInput" + tstCurrentPage).value;
-                    }
-
-                    function resetStageDefiningConditions() {
-                        selected_stage_conditions = JSON.parse(JSON.stringify(selected_stage_conditions_copy))
-                        stage_defining_conditions = __$('touchscreenInput' + tstCurrentPage).value;
-
-                        if (stage_defining_conditions.length > 0) {
-                            if (stage_defining_conditions.match(/Asymptomatic HIV infection/i)) {
-                                if (selected_stage_conditions[4])
-                                    delete selected_stage_conditions[4]; //Delete Stage 4 conditions
-                                if (selected_stage_conditions[3])
-                                    delete selected_stage_conditions[3]; //Delete Stage 3 conditions
-                                if (selected_stage_conditions[2])
-                                    delete selected_stage_conditions[2]; //Delete Stage 2 conditions
-                            }
-                        }
-                    }
-
-                    function showContraindicatingConditionsConfirmationPopup() {
-                        document.getElementById("popup-div").style.display = 'inline';
-                        document.getElementById("cover").style.display = 'inline';
-                    }
-
-                    function setOptionsForContraindicationsPopup() {
-                        if (age >= 15) {
-                            stageFourConditions = __$('stage_4_conditions').value;
-                            stageThreeConditions = __$('stage_3_conditions').value;
-                            stageTwoConditions = __$('stage_2_conditions').value;
-                        } else {
-                            stageFourConditions = jQuery('.stage_4_conditions')[0].value;
-                            stageThreeConditions = jQuery('.stage_3_conditions')[0].value;
-                            stageTwoConditions = jQuery('.stage_2_conditions')[0].value;
-                        }
-
-                        asymptomatic_option_input = jQuery("li[tstvalue='Asymptomatic HIV infection']")[0];
-
-                        if (stageFourConditions.length > 0 || stageThreeConditions.length > 0 || stageTwoConditions.length > 0) {
-                            asymptomatic_option_input.onmouseup = function () {
-                                showContraindicatingConditionsConfirmationPopup();
-                            }
-                        }
-                    }
-
-                    function showContraindicatingConditionsConfirmationPopup() {
-                        stageFourConditions = __$('stage_4_conditions').value;
-                        stageThreeConditions = __$('stage_3_conditions').value;
-                        stageTwoConditions = __$('stage_2_conditions').value;
-
-                        asymptomatic_option_input = jQuery("li[tstvalue='Asymptomatic HIV infection']")[0];
-                        if (stageFourConditions.length > 0 || stageThreeConditions.length > 0 || stageTwoConditions.length > 0) {
-                            if (!asymptomatic_option_input.style.backgroundColor.match(/lightBlue/i)) {
-                                document.getElementById("popup-div").style.display = 'inline';
-                                document.getElementById("cover").style.display = 'inline';
-                            }
-                        }
-
-                    }
-
-                    function hidePopup() {
-                        clearInput();
-                        document.getElementById("popup-div").style.display = 'none';
-                        document.getElementById("cover").style.display = 'none';
-                    }
-
-                    function continueProcess() {
-                        $('stage_4_conditions').value = '';
-                        $('stage_3_conditions').value = '';
-                        $('stage_2_conditions').value = '';
-                        jQuery("#popup-div").hide();
-                        jQuery("#cover").hide();
-                        forceStageOneAvailabe();
-                    }
-
-                    function changeNextButtonForConfirmatoryYear() {
-
-                    }
-
-                    function changeAbsoluteMinForConfirmatoryYear() {
-                        year_started_art = jQuery('#year_started_art')[0].value;
-                        if (parseInt(year_started_art)) {
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("absoluteMin", year_started_art);
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("min", year_started_art);
-                        } else {
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("absoluteMin", '1840');
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("min", '1940');
-                        }
-                    }
-
-                    function validateConfirmatoryMonth() {
-                        confirmatoryYear = parseInt(jQuery('#confirmatory_hiv_test_year')[0].value);
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                        month_started_art = parseInt(jQuery('#month_started_art')[0].value);
-
-                        if (confirmatoryYear == currYear) {
-                            currentMonth = [];
-                            numOfloops = (date.getMonth() + 1);
-
-                            for (var i = 0; i < numOfloops; i++) {
-                                currentMonth.push(availableMonths[i]);
-                            }
-                            rule = currentMonth.join("|");
-                            rule = rule + "|Unknown";
-                            return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                        }
-
-                        if (confirmatoryYear != currYear) {
-                            rule = availableMonths.join("|");
-                            rule = rule + "|Unknown";
-                            return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                        }
-
-                    }
-
-                    /*function validateMonthStartedART(){
-                     date = new Date;
-                     currYear = date.getFullYear();
-                     currDay = date.getDate();
-                     availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                     
-                     year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                     if (year_started_art == currYear){
-                     currentMonth = [];
-                     numOfloops = ((new Date).getMonth() + 1);
-                     
-                     for(var i = 0; i < numOfloops; i++){
-                     currentMonth.push(availableMonths[i]);
-                     }
-                     
-                     rule = currentMonth.join("|");
-                     rule = rule + "|Unknown";
-                     return $('touchscreenInput'+tstCurrentPage).setAttribute('validationRule',rule);
-                     }
-                     
-                     }*/
-
-                    function validateMonthStartedART() {
-                        year_art_last_taken = parseInt(jQuery('#year_art_last_taken')[0].value);
-                        month_art_last_taken = parseInt(jQuery('#month_art_last_taken')[0].value);
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-
-                        if (year_started_art < year_art_last_taken) {
-                            rule = availableMonths.join("|");
-                            rule = rule + "|Unknown";
-                            return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                        } else {
-                            if (year_started_art == currYear) {
-                                currentMonth = [];
-                                numOfloops = (sessionDate.getMonth() + 1);
-
-                                for (var i = 0; i < numOfloops; i++) {
-                                    currentMonth.push(availableMonths[i]);
-                                }
-                                rule = currentMonth.join("|");
-                                rule = rule + "|Unknown";
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                            } else {
-                                rule = availableMonths.join("|");
-                                rule = rule + "|Unknown";
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                            }
-                        }
-
-                    }
-
-                    function setAbsoluteMaxYearStartedART() {
-                        year_taken_art = parseInt(jQuery('#year_art_last_taken')[0].value);
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-
-                        if (parseInt(year_taken_art)) {
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("absoluteMax", year_taken_art);
-                        } else {
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("absoluteMax", currYear);
-                        }
-                    }
-
-                    function validateMonthARTTaken() {
-                        date = sessionDate;
-                        currYear = sessionDate.getFullYear();
-                        currDay = date.getDate();
-                        availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                        year_taken_art = parseInt(jQuery('#year_art_last_taken')[0].value);
-                        if (year_taken_art == currYear) {
-                            currentMonth = [];
-                            numOfloops = (sessionDate.getMonth() + 1);
-
-                            for (var i = 0; i < numOfloops; i++) {
-                                currentMonth.push(availableMonths[i]);
-                            }
-
-                            rule = currentMonth.join("|");
-                            rule = rule + "|Unknown";
-                            return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                        }
-                        if (year_taken_art == birthYear) {
-                            currentMonth = [];
-
-                            for (var i = birthMonth - 1; i < availableMonths.length; i++) {
-                                currentMonth.push(availableMonths[i]);
-                            }
-
-                            rule = currentMonth.join("|");
-                            rule = rule + "|Unknown";
-                            return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                        }
-                    }
-
-                    function validateDayARTTaken() {
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        currMonth = date.getMonth() + 1;
-                        availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                        year_taken_art = parseInt(jQuery('#year_art_last_taken')[0].value);
-                        month_taken_art = parseInt(jQuery('#month_art_last_taken')[0].value);
-
-                        if (year_taken_art == currYear) {
-                            if (month_taken_art == currMonth) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', currDay);
-                            }
-                        }
-
-                        if (year_taken_art == birthYear) {
-                            if (month_taken_art == birthMonth) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMin', birthDay);
-                            }
-                        }
-                    }
-
-                    function validateDayStartedART() {
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        currMonth = date.getMonth() + 1;
-                        availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                        month_started_art = parseInt(jQuery('#month_started_art')[0].value);
-
-                        year_taken_art = parseInt(jQuery('#year_art_last_taken')[0].value);
-                        month_taken_art = parseInt(jQuery('#month_art_last_taken')[0].value);
-                        day_taken_art = parseInt(jQuery('#day_art_last_taken')[0].value);
-
-                        if ((year_taken_art != currYear) && (year_started_art == year_taken_art)) {
-                            if (month_taken_art == month_started_art) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', day_taken_art);
-                            }
-                        }
-
-                        if (year_started_art == currYear) {
-                            if (month_started_art == currMonth) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', currDay);
-                            }
-                        }
-                    }
-
-                    function validateConfirmatoryDay() {
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        currMonth = date.getMonth() + 1;
-
-                        confirmatoryMonth = parseInt(jQuery('#confirmatory_hiv_test_month')[0].value);
-                        confirmatoryYear = parseInt(jQuery('#confirmatory_hiv_test_year')[0].value);
-
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                        month_started_art = parseInt(jQuery('#month_started_art')[0].value);
-                        day_started_art = parseInt(jQuery('#day_started_art')[0].value);
-
-                        if (confirmatoryYear == currYear) {
-                            if (confirmatoryMonth == currMonth) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', currDay);
-                            }
-                        }
-
-                    }
-
-                    function setAbsoluteMaxCD4Year() {
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-
-                        if (parseInt(year_started_art)) {
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("absoluteMax", year_started_art);
-                        } else {
-                            jQuery('#touchscreenInput' + tstCurrentPage).attr("absoluteMax", currYear);
-                        }
-                    }
-
-                    function validateCD4Month() {
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        availableMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                        year_of_cd4 = parseInt(jQuery('#year_of_cd4')[0].value);
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                        month_started_art = parseInt(jQuery('#month_started_art')[0].value);
-
-                        if (year_of_cd4 < year_started_art) {
-                            rule = availableMonths.join("|");
-                            rule = rule + "|Unknown";
-                            return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                        }
-                        else {
-                            if (year_of_cd4 == year_started_art) {
-                                if (year_of_cd4 < currYear) {
-                                    rule = availableMonths.join("|");
-                                    rule = rule + "|Unknown";
-                                    return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                                } else {
-                                    currentMonth = [];
-                                    numOfloops = (date.getMonth() + 1);
-
-                                    for (var i = 0; i < numOfloops; i++) {
-                                        currentMonth.push(availableMonths[i]);
-                                    }
-                                    rule = currentMonth.join("|");
-                                    rule = rule + "|Unknown";
-                                    return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                                }
-                            } else {
-                                rule = availableMonths.join("|");
-                                rule = rule + "|Unknown";
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('validationRule', rule);
-                            }
-                        }
-
-                    }
-
-                    function validateCD4Day() {
-                        date = sessionDate;
-                        currYear = date.getFullYear();
-                        currDay = date.getDate();
-                        currMonth = date.getMonth() + 1;
-
-                        cd4Month = parseInt(jQuery('#month_of_cd4')[0].value);
-                        cd4Year = parseInt(jQuery('#year_of_cd4')[0].value);
-
-                        year_started_art = parseInt(jQuery('#year_started_art')[0].value);
-                        month_started_art = parseInt(jQuery('#month_started_art')[0].value);
-                        day_started_art = parseInt(jQuery('#day_started_art')[0].value);
-
-                        if (cd4Year == currYear) {
-                            if (cd4Month == currMonth) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', currDay);
-                            }
-                        }
-
-                        if ((year_of_cd4 == year_started_art) && (year_of_cd4 != currYear)) {
-                            if (cd4Month == month_started_art) {
-                                return $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', day_started_art);
-                            }
-                        }
-
-                    }
-
-                    function preselectSevereWeightLoss() {
-                        if (parseFloat(currentBmi) < 16) {
-                            console.log("It's a bit funny now")
-                            severe_weight_loss_text = 'Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained';
-                            severe_weight_loss_option_input = jQuery("li[tstvalue='Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained']")[0];
-                            severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-                            weight_loss_input = document.getElementById('optionValue' + severe_weight_loss_option_id);
-                            current_input_values = $('touchscreenInput' + tstCurrentPage).value.split(';');
-                            if (current_input_values.indexOf(severe_weight_loss_text) == -1) {
-                                updateTouchscreenInputForSelect(weight_loss_input); //Run this only when the option is not selected;
-                            }
-
-                        }
-                    }
-
-                    function preselectSevereWeightLossPaeds() {
-                        currentWeight = parseFloat($("weight").value);
-                        current_weight_percentile = (currentWeight / (median_weight_height[0]) * 100)
-                        severe_weight_loss_text = "Severe unexplained wasting or malnutrition not responding to treatment (weight-for-height/ -age <70% or MUAC less than 11cm or oedema)"
-                        if (current_weight_percentile < 70) {
-                            console.log("It's a bit funny now")
-                            severe_weight_loss_option_input = jQuery("li[tstvalue='Severe unexplained wasting or malnutrition not responding to treatment (weight-for-height/ -age <70% or MUAC less than 11cm or oedema)']")[0];
-                            severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-                            weight_loss_input = document.getElementById('optionValue' + severe_weight_loss_option_id);
-                            current_input_values = $('touchscreenInput' + tstCurrentPage).value.split(';');
-                            if (current_input_values.indexOf(severe_weight_loss_text) == -1) {
-                                updateTouchscreenInputForSelect(weight_loss_input); //Run this only when the option is not selected;
-                            }
-                        }
-                    }
-
-                    function preselectModerateWeightLoss() {
-                        if (parseFloat(currentBmi) >= 16.0 && parseFloat(currentBmi) <= 18.5) {
-                            moderate_weight_loss_option_input = jQuery("[tstvalue='Moderate weight loss less than or equal to 10 percent, unexplained']")[0];
-                            moderate_weight_loss_option_id = moderate_weight_loss_option_input.id;
-                            weight_loss_input = document.getElementById('optionValue' + moderate_weight_loss_option_id);
-                            moderate_weight_loss_text = 'Moderate weight loss less than or equal to 10 percent, unexplained'
-
-                            severe_weight_loss_text = "Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained";
-                            current_input_values = $('touchscreenInput' + tstCurrentPage).value.split(';');
-                            if (selected_stage_conditions[3]) {
-                                selected_stage_three_conditions = selected_stage_conditions[3].split(';');
-                                if (selected_stage_three_conditions.indexOf(severe_weight_loss) == -1) {
-                                    if (current_input_values.indexOf(moderate_weight_loss_text) == -1) {
-                                        updateTouchscreenInputForSelect(weight_loss_input); //Preselect moderate if severe weight loss not selected
-                                    }
-                                }
-                            }
-                        }
-
-                        disableModerateWeightLossOption();
-                    }
-
-                    function preselectModerateWeightLossPaeds() {
-                        currentWeight = parseFloat($("weight").value);
-                        current_weight_percentile = (currentWeight / (median_weight_height[0]) * 100)
-
-                        if (current_weight_percentile >= 70 && current_weight_percentile <= 79) {
-                            moderate_weight_loss_option_input = jQuery("[tstvalue='Moderate unexplained wasting/malnutrition not responding to treatment (weight-for-height/ -age 70-79% or muac 11-12 cm)'")[0];
-                            moderate_weight_loss_option_id = moderate_weight_loss_option_input.id;
-                            weight_loss_input = document.getElementById('optionValue' + moderate_weight_loss_option_id);
-                            moderate_weight_loss_text = 'Moderate unexplained wasting/malnutrition not responding to treatment (weight-for-height/ -age 70-79% or muac 11-12 cm'
-                            severe_weight_loss_text = "Severe unexplained wasting or malnutrition not responding to treatment (weight-for-height/ -age <70% or MUAC less than 11cm or oedema)";
-                            current_input_values = $('touchscreenInput' + tstCurrentPage).value.split(';');
-                            if (selected_stage_conditions[4]) {
-                                selected_stage_four_conditions = selected_stage_conditions[4].split(';');
-                                if (selected_stage_four_conditions.indexOf(severe_weight_loss) == -1) {
-                                    if (current_input_values.indexOf(moderate_weight_loss_text) == -1) {
-                                        updateTouchscreenInputForSelect(weight_loss_input); //Preselect moderate if severe weight loss not selected
-                                    }
-                                }
-                            }
-                        }
-
-                        disableModerateWeightLossOptionPaeds();
-                    }
-
-                    function disableModerateWeightLossOption() {
-                        moderate_weight_loss_option_input = jQuery("[tstvalue='Moderate weight loss less than or equal to 10 percent, unexplained']")[0];
-                        moderate_weight_loss_option_id = moderate_weight_loss_option_input.id;
-
-                        weight_loss_input = document.getElementById('optionValue' + moderate_weight_loss_option_id);
-                        severe_weight_loss = "Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained";
-
-                        if (selected_stage_conditions[3]) {
-                            selected_stage_three_conditions = selected_stage_conditions[3].split(';');
-                            if (selected_stage_three_conditions.indexOf(severe_weight_loss) != -1) {
-                                //weight_loss_input.style.backgroundColor = '#CDBA96';
-                                //moderate_wight_loss_option_input.style.backgroundColor = '#CDBA96';
-                                moderate_weight_loss_text = weight_loss_input.innerHTML;
-                                weight_loss_input.innerHTML = "<span class='disabled_check'>" + moderate_weight_loss_text + " ( Severe weight loss already selected )</span>"
-                                moderate_weight_loss_option_input.onclick = null;
-                                moderate_weight_loss_option_input.onmousedown = null;
-                                moderate_weight_loss_option_input.onmouseup = null;
-
-                                img_input = moderate_weight_loss_option_input.getElementsByTagName("img")[0];
-                                img_input.src = '';
-                                img_input.alt = '';
-
-
-                                if (weight_loss_input.getAttribute('style').match(/lightblue/i)) {
-                                    updateTouchscreenInputForSelect(__$('optionValue' + "0"), weight_loss_input);
-                                    displayCountOfSelectedConditions();
-                                } else {
-                                    displayCountOfSelectedConditions();
-                                }
-
-                            } else {
-                                disableModerateWeightLossOptionForNormalBMI();
-                            }
-
-                        }
-
-                    }
-
-                    function disableModerateWeightLossOptionPaeds() {
-                        moderate_wight_loss_option_input = jQuery("[tstvalue='Moderate unexplained wasting/malnutrition not responding to treatment (weight-for-height/ -age 70-79% or muac 11-12 cm)']")[0];
-                        moderate_wight_loss_option_id = moderate_wight_loss_option_input.id;
-
-                        weight_loss_input = document.getElementById('optionValue' + moderate_wight_loss_option_id);
-                        severe_weight_loss = "Severe unexplained wasting or malnutrition not responding to treatment (weight-for-height/ -age <70% or MUAC less than 11cm or oedema)";
-
-                        if (selected_stage_conditions[4]) {
-                            selected_stage_four_conditions = selected_stage_conditions[4].split(';');
-                            if (selected_stage_four_conditions.indexOf(severe_weight_loss) != -1) {
-                                moderate_weight_loss_text = weight_loss_input.innerHTML;
-                                weight_loss_input.innerHTML = "<span class='disabled_check'>" + moderate_weight_loss_text + " ( Severe weight loss already selected )</span>"
-                                moderate_wight_loss_option_input.onclick = null;
-                                moderate_wight_loss_option_input.onmousedown = null;
-                                moderate_wight_loss_option_input.onmouseup = null;
-
-                                img_input = moderate_wight_loss_option_input.getElementsByTagName("img")[0];
-                                img_input.src = '';
-                                img_input.alt = '';
-
-
-                                if (weight_loss_input.getAttribute('style').match(/lightblue/i)) {
-                                    updateTouchscreenInputForSelect(__$('optionValue' + "0"), weight_loss_input);
-                                    displayCountOfSelectedConditions();
-                                } else {
-                                    displayCountOfSelectedConditions();
-                                }
-
-                            } else {
-                                disableModerateWeightLossOptionForNormalBMI();
-                            }
-                        }
-
-                    }
-
-                    function disableSevereWeightLossInputForNormalBMI() {
-                        severe_weight_loss_option_input = jQuery("[tstvalue='Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained']")[0];
-                        severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-
-
-                        weight_loss_input = document.getElementById('optionValue' + severe_weight_loss_option_id);
-                        severe_weight_loss = "Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained";
-
-                        if (parseFloat(currentBmi) > 18.5) {
-                            //weight_loss_input.style.backgroundColor = '#CDBA96';
-                            //severe_weight_loss_option_input.style.backgroundColor = '#CDBA96';
-                            //moderate_weight_loss_text = weight_loss_input.innerHTML;
-                            //weight_loss_input.innerHTML = moderate_weight_loss_text + " <i>( BMI is " + currentBmi + "  )</i>"
-                            //severe_weight_loss_option_input.onclick = null;
-                            //severe_weight_loss_option_input.onmousedown = null;
-                            //severe_weight_loss_option_input.onmouseup = null;
-
-                            //img_input = severe_weight_loss_option_input.getElementsByTagName("img")[0];
-                            //img_input.src = '';
-                            //img_input.alt = '';
-                            document.getElementById('currentBMI').innerHTML = currentBmi;
-                            weight_loss_input.setAttribute('onmousedown', 'alertOnNormalBMI()');
-                        }
-                    }
-
-                    function disableModerateWeightLossOptionForNormalBMI() {
-                        moderate_weight_loss_option_input = jQuery("[tstvalue='Moderate weight loss less than or equal to 10 percent, unexplained']")[0];
-                        moderate_wight_loss_option_id = moderate_weight_loss_option_input.id;
-
-                        weight_loss_input = document.getElementById('optionValue' + moderate_weight_loss_option_input.id);
-
-                        if (parseFloat(currentBmi) > 18.5) {
-                            //moderate_weight_loss_option_input.style.backgroundColor = '#CDBA96';
-                            moderate_weight_loss_text = weight_loss_input.innerHTML;
-                            //weight_loss_input.innerHTML = moderate_weight_loss_text + " <i>( BMI is " + currentBmi + "  )</i>";
-                            //moderate_weight_loss_option_input.onclick = null;
-                            //moderate_weight_loss_option_input.onmousedown = null;
-                            //moderate_weight_loss_option_input.onmouseup = null;
-
-                            img_input = moderate_weight_loss_option_input.getElementsByTagName("img")[0];
-                            //img_input.src = '';
-                            //img_input.alt = '';
-                        }
-
-                    }
-
-                    function hideTextInput() {
-                        jQuery('#touchscreenInput' + tstCurrentPage).hide();
-                    }
-
-                    function displayCountOfSelectedConditions() {
-                        jQuery('#helpText' + tstCurrentPage + ' > #count-selected').remove();
-                        jQuery('#helpText' + tstCurrentPage).append("<span id='count-selected'>&nbsp;</span>")
-
-                        if ($("touchscreenInput" + tstCurrentPage).value.length > 0) {
-                            selectedValuesCount = $("touchscreenInput" + tstCurrentPage).value.split(";").length;
-                        } else {
-                            selectedValuesCount = 0;
-                        }
-
-                        jQuery('#helpText' + tstCurrentPage + ' > #count-selected').html('&nbsp;(' + selectedValuesCount + ' selected)');
-                        liOptions = document.getElementsByTagName("li");
-                        for (var i = 0; i <= liOptions.length - 1; i++) {
-                            addEvent(liOptions[i], "click", function () {
-                                if ($("touchscreenInput" + tstCurrentPage).value.length > 0) {
-                                    selectedValuesCount = $("touchscreenInput" + tstCurrentPage).value.split(";").length;
-                                } else {
-                                    selectedValuesCount = 0
-                                }
-                                jQuery('#helpText' + tstCurrentPage + ' > #count-selected').html('&nbsp;(' + selectedValuesCount + ' selected)');
-
-                            });
-
-                        }
-                    }
-
-                    function addEvent(obj, evType, fn) {
-                        if (obj.addEventListener) {
-                            obj.addEventListener(evType, fn, false);
-                            return true;
-                        } else if (obj.attachEvent) {
-                            var r = obj.attachEvent("on" + evType, fn);
-                            return r;
-                        } else {
-                            alert("Handler could not be attached");
-                        }
-                    }
-
-
-                    function alertOnNormalBMI() {
-                        try {
-                            severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-                        } catch (e) {
-                            severe_weight_loss_option_input = jQuery("[tstvalue='Moderate weight loss less than or equal to 10 percent, unexplained']")[0];
-                            severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-                        }
-
-                        weight_loss_input = document.getElementById('optionValue' + severe_weight_loss_option_id);
-
-                        if (weight_loss_input.getAttribute('style').match(/lightblue/i)) {
-                            //selectCondition();
-                            displayCountOfSelectedConditions();
-                            return;
-                        }
-
-                        document.getElementById("regimen-change-popup-div").style.display = 'inline';
-                        document.getElementById("regimen-change-cover").style.display = 'inline';
-                    }
-
-                    function closeAlertOnNormalBMI() {
-                        document.getElementById("regimen-change-popup-div").style.display = 'none';
-                        document.getElementById("regimen-change-cover").style.display = 'none';
-                    }
-
-                    function selectCondition() {
-                        severe_weight_loss_option_input = jQuery("[tstvalue='Severe weight loss >10% and/or BMI <18.5kg/m^2, unexplained']")[0];
-
-                        try {
-                            severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-                        } catch (e) {
-                            severe_weight_loss_option_input = jQuery("[tstvalue='Moderate weight loss less than or equal to 10 percent, unexplained']")[0];
-                            severe_weight_loss_option_id = severe_weight_loss_option_input.id;
-                        }
-
-                        weight_loss_input = document.getElementById('optionValue' + severe_weight_loss_option_id);
-                        updateTouchscreenInputForSelect(__$('optionValue' + "0"), weight_loss_input);
-                        displayCountOfSelectedConditions();
-                        closeAlertOnNormalBMI();
-                    }
-
-                    jQuery.fn.center = function () {
-                        parent = this.parent();
-                        this.css({
-                            "position": "absolute",
-                            "top": (((jQuery(parent).height() - this.outerHeight()) / 2) + jQuery(parent).scrollTop() - 100 + "px"),
-                            "left": (((jQuery(parent).width() - this.outerWidth()) / 2) + jQuery(parent).scrollLeft() + "px")
-                        });
-                        return this;
-                    }
-                </script>
-                <!--
-                <script language="javascript" type="text/javascript" src="/javascripts/show_category_hack.js" defer="true"></script>
-                -->
-                <style>
-                    #regimen-change-popup-div {
-                        display: none;
-                        background-color: #F4F4F4;
-                        border: 2px solid #E0E0E0;
-                        border-radius: 15px;
-                        height: 270px;
-                        padding: 5px;
-                        position: absolute;
-                        margin-top: 100px;
-                        width: 600px;
-                        margin-left: 430px;
-                        z-index: 991;
-                    }
-
-                    #regimen-change-cover{
-                        display: none;
-                        position: absolute;
-                        background-color: black;
-                        width: 100%;
-                        height: 102%;
-                        left: 0%;
-                        top: 0%;
-                        z-index: 990;
-                        opacity: 0.65;
-                    }
-
-                    #btnContainer {
-                        width: 99.9%;
-                    }
-                    .btns {
-                        -moz-user-select: none;
-                        background-image: none;
-                        border: 1px solid transparent;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        display: inline-block;
-                        font-size: 16px;
-                        font-weight: bolder;
-                        line-height: 2.29;
-                        margin-bottom: 0;
-                        padding: 6px 56px;
-                        text-align: center;
-                        vertical-align: middle;
-                        white-space: nowrap;
-                        background-color: #337ab7;
-                        border-color: #2e6da4;
-                        color: #fff;
-                        float: right;
-                        margin-top: -5px;
-                    }
-
-                    #yesBtn{
-                        -webkit-box-sizing: border-box;
-                        -moz-box-sizing: border-box;
-                        box-sizing: border-box;
-                        bottom: 0px;
-                    }
-
-                    #noBtn{
-                        -webkit-box-sizing: border-box;
-                        -moz-box-sizing: border-box;
-                        box-sizing: border-box;
-                        bottom: 0px;
-                        margin-right: 27px;
-                    }
-
-                    .disabled_check {
-                        padding-left: 52px;
-                    }
-
-                </style>
-
-                <div id="regimen-change-cover"></div>
-                <div id="regimen-change-popup-div">
-
-                    <table style="width: 99.9%; margin-bottom: 95px;">
-                        <tr>
-                            <td style="text-align: center; font-weight: bold; color: green;
-                                border-style: solid; border-width: 0px 0px 2px 0px;">
-                                Notice
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center; font-weight: bold; color: black;">
-                                Patient has a BMI of:&nbsp;<span id="currentBMI"></span><p>
-                                    Are you sure with your selection?</p>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div id="btnContainer">
-                        <input type="button" class="btns" id="yesBtn" onmousedown="selectCondition();" value="Yes, select condition" />
-                        <input type="button" class="btns" id="noBtn" onmousedown="closeAlertOnNormalBMI();" value="No" />
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </body>
-
+          <input tt_onLoad ="showCategory2('Available Lab Test Results');__$('Unknown').style.display='inline';"
+            condition="$('on_art').value === 'Yes';" field_type="text" helpText="ARV Number" 
+            id="arv_number" name="arv_number" tt_pageStyleClass="" 
+            type="text" />
+
+          <input condition="getSelectedLabTests().match(/HB/);" field_type="number" 
+            helpText="HB Test Result (g/dl)" id="hb" name="hb" 
+            tt_onLoad="showCategory2('Available Lab Test Results');" 
+            tt_onUnLoad="" type="text" max="16" min="2"
+            validationCode="" tt_pageStyleClass="Numeric NumbersOnlyWithDecimal" 
+            validationMessage="" />
+
+          <select tt_onLoad="showCategory2('Available Lab Test Results');" allowFreeText="false" 
+            condition="getSelectedLabTests().match(/Syphilis/)" 
+            helpText="Syphilis Test Result" 
+            id="syphilis" name="syphilis" tt_pageStyleClass="NoKeyboard">
+             
+              <option value=''></option>
+              <option value="Negative">Negative</option>
+              <option value="Positive">Positive</option>
+              
+          </select>
+          
+          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
+            allowFreeText="false" condition="getSelectedLabTests().match(/Malaria/)" 
+            helpText="Malaria Test Result" 
+            id="malaria" name="malaria" tt_pageStyleClass="NoKeyboard">
+              
+              <option value=''></option>
+              <option value="Negative">Negative</option>
+              <option value="Positive">Positive</option>
+              
+          </select>
+
+          <select tt_onLoad="showCategory2('Available Lab Test Results');" allowFreeText="false" 
+            condition="getSelectedLabTests().match(/Blood Group/);" 
+            helpText="Blood Group Test Result" id="blood_group" 
+            name="blood_group" tt_pageStyleClass="NoKeyboard">
+            
+              <option value=''></option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              
+          </select>
+          
+          <select condition="getSelectedLabTests().match(/Urine/);" multiple="multiple" 
+            helpText="Available Urine Tests Results" optional="true" 
+            id="available_urine_tests" name="available_urine_tests" 
+            tt_onLoad="showCategory2(Available Lab Test Results)" 
+            tt_pageStyleClass="NoKeyboard">
+
+              <option value=""></option>
+              <option value="urine protein">Urine protein</option>
+              <option value="glucose">Glucose</option>
+              <option value="wbc">WBC</option>
+              <option value="rbc">RBC</option>
+              <option value="nitrate">Nitrate</option>
+                    
+          </select>
+          
+          <select allowFreeText="false" condition="getSelectedUrineTests().match(/Urine protein/)" 
+            helpText="Urine Protein Test Result" 
+            id="urine_protein_test" name="urine_protein_test" 
+            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            tt_onUnLoad="">
+
+              <option value=""></option>
+              <option value="negative">Negative</option>
+              <option value="(+)">(+)</option>
+              <option value="+">+</option>
+              <option value="++">++</option>
+              <option value="+++">+++</option>
+              <option value="++++">++++</option>
+          
+          </select>
+                    
+          <select condition="getSelectedUrineTests().match(/Glucose/)" 
+            helpText="Glucose Test Result (mg/dl)" 
+            id="glucose_test" name="glucose_test" 
+            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            tt_onUnLoad="" validationMessage="">
+
+              <option value=""></option>
+              <option value="normal">Normal</option>
+              <option value="+">+</option>
+              <option value="++">++</option>
+              <option value="+++">+++</option>
+                    
+          </select>
+          
+          <input condition="getSelectedUrineTests().match(/WBC/);" 
+            field_type="number" min="0" max="1000000"
+            helpText="White Blood Cells Test Result (cmm)" 
+            id="wbc" name="wbc" 
+            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            tt_onUnload="" type="text" 
+            tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
+
+          <input condition="getSelectedUrineTests().match(/RBC/)" 
+            field_type="number" min="0" max="1000000" 
+            helpText="Red Blood Cells Test Result (cmm)" 
+            id="rbc" name="rbc" 
+            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            tt_onUnload="" type="text" 
+            tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
+
+          <select tt_onLoad="showCategory2('Available Urine Test Results');"  
+            allowFreeText="false" condition="getSelectedUrineTests().match(/Nitrate/);" 
+            helpText="Nitrate Test Result" id="nitrate" 
+            name="nitrate" tt_onUnload="" tt_pageStyleClass="NoKeyboard">
+            
+              <option value=''></option>
+              <option value="negative">Negative</option>
+              <option value="trace">Trace</option>
+              <option value="positive">Positive</option>
+               
+          </select>
+
+          <input name="commit" type="submit" value="Finish" />
+
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
