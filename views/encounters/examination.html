@@ -338,6 +338,24 @@
                 condition="$('fetal_movemement_felt').value !== '' ||
                   $('fetal_movemement_felt').value !== 'Unknown'"
                 field_type="number"/>
+
+              <select id="" name=""
+                helpText="Diagnosis" allowFreeText='true'
+                textCase="upper" multiple='true'
+                selectAll="selectAll"
+                tt_onLoad="changeUnknownToNone(); showCategory2('Examination');">
+                
+                <option value=""></option>
+                <option value="malaria">Malaria</option>
+                <option value="anaemia">Anaemia</option>
+                <option value="pre-eclampsia">Pre-eclampsia</option>
+                <option value="vaginal bleedin">Vaginal bleeding</option>
+                <option value="early rupture of membranes">Early rupture of membranes</option>
+                <option value="premature labour">Premature labour</option>
+                <option value="pneumonia">Pneumonia</option>
+                <option value="extensive warts">Extensive Warts</option>
+
+              </select>
           </form>
         </div>
       </div>
