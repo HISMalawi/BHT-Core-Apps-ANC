@@ -18,6 +18,116 @@
     <script type="text/javascript">
       tstUsername = "admin";
       var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+      var $$ = {};
+      var data = {};
+      var counts = {};
+
+      function increment(pos){
+
+var i = parseInt( __$("input_" + pos).value);
+if (i <= 3){
+
+    __$("input_" + pos).value = parseInt( __$("input_" + pos).value) + 1;
+    updateInput(pos);
+}else{
+
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
+}
+
+if (i + 1 == 13){
+
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
+}
+
+if (i + 1 > 1){
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow.png')";
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
+}
+}
+
+function decrement(pos){
+
+var i = parseInt( __$("input_" + pos).value);
+if (parseInt( __$("input_" + pos).value) > 1){
+
+    __$("input_" + pos).value = parseInt( __$("input_" + pos).value) - 1;
+    updateInput(pos);
+}else{
+
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
+}
+
+if (i - 1 == 1){
+
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
+}
+
+if (i - 1 < 13){
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow.png')";
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
+}
+}
+
+function checkSelection(pos){
+
+if (__$("img_" + pos).src.match(/unticked/)){
+
+    __$("img_" + pos).src = "/apps/ANC/assets/images/ticked.jpg";
+    updateInput(pos, true);
+}else{
+
+    __$("img_" + pos).src = "/apps/ANC/assets/images/unticked.jpg";
+    updateInput(pos, false);
+}
+}
+
+function updateInput(pos, bool){
+
+if (data[pos] == undefined){
+
+    data[pos] = {};
+}
+
+data[pos]["count"] = parseInt( __$("input_" + pos).value);
+
+if (bool != undefined)
+    data[pos]["condition"] = bool;
+
+__$("data").value = stringfy(data);
+}
+
+function stringfy(hash){
+
+var keys = Object.keys(hash);
+var vals = "{";
+var cons = "{";
+
+for (var i = 0; i < keys.length; i ++){
+
+    vals += keys[i] + " => ";
+    cons += keys[i] + " => ";
+
+    if (i != keys.length - 1){
+
+        vals += data[keys[i]]["count"] + ", ";
+        cons += data[keys[i]]["condition"] + ", ";
+    }
+    else {
+
+        vals += data[keys[i]]["count"] + "}";
+        cons += data[keys[i]]["condition"] + "}";
+    }
+}
+
+var string = "{'values' => " + vals + ", 'conditions' => " + cons + "}";
+
+return string;
+}
+
 
       function loadSelections(){
         $("keyboard").style.display = "none";
@@ -29,6 +139,7 @@
         var delivered_pregnancies = $("para").value;
 
         if (delivered_pregnancies > 0){
+          console.log(delivered_pregnancies);
           var headerHolder = document.createElement("div");
           headerHolder.style.height = "63px";
           headerHolder.style.width = "100%";
@@ -93,18 +204,18 @@
             row.appendChild(cell2);
 
             if (counts[p] != undefined && parseInt(counts[p]) > 1){
-              $("inc" + p).style.background = "url('/images/down_arrow.png')";
+              $("inc" + p).style.background = "url('/apps/ANC/assets/images/down_arrow.png')";
               $("inc" + p).style.backgroundRepeat = "no-repeat";
             }else{
-              $("inc" + p).style.background = "url('/images/down_arrow_gray.png')";
+              $("inc" + p).style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
               $("inc" + p).style.backgroundRepeat = "no-repeat";
             }
 
             if (counts[p] != undefined && parseInt(counts[p]) == 13){
-              $("dec" + p).style.background = "url('/images/up_arrow_gray.png')";
+              $("dec" + p).style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
               $("dec" + p).style.backgroundRepeat = "no-repeat";
             }else{
-              $("dec" + p).style.background = "url('/images/up_arrow.png')";
+              $("dec" + p).style.background = "url('/apps/ANC/assets/images/up_arrow.png')";
               $("dec" + p).style.backgroundRepeat = "no-repeat";
             }
             
@@ -112,7 +223,7 @@
             cell3.id = "cell_" + p + "_3";
             cell3.setAttribute("class", "data-cell-img");
             cell3.setAttribute("p", p);
-            cell3.innerHTML = '<img class = "dcimg" id = "img_' + p +'" onclick = "checkSelection(' + p + ')" src="/images/unticked.jpg" height="45" width="45"> ';
+            cell3.innerHTML = '<img class = "dcimg" id = "img_' + p +'" onclick = "checkSelection(' + p + ')" src="/apps/ANC/assets/images/unticked.jpg" height="45" width="45"> ';
             row.appendChild(cell3);
             
             if (data[p] == undefined)
