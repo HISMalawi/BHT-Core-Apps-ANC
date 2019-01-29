@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Encounters New</title>
+
+    <style type="text/css">
+      #tab {
+        height:312px;
+      }
+      #barcode {
+        background:transparent none repeat scroll 0 0;
+        border-color:-moz-use-text-color -moz-use-text-color silver;
+        border-style:none none solid;
+        border-width:medium medium 1px;
+        font-family:"Nimbus Sans L","Arial Narrow",sans-serif;
+        font-size:2.2em;
+        padding-left:5px;
+        width:400px;
+      }
+      #header div {
+        font-weight:normal;
+        float:none;
+        clear:both;
+      }
+      .summary{
+        position:relative;
+        float:center;
+        width:100%;
+        padding-left:10px;
+        padding-right:10px;
+      }
+      .summary td , th{
+        border-style:solid;
+        border-width:thin;
+        padding:5px;
+      }
+      .summary tbody{
+        position:relative;
+        height:500px;
+        overflow:auto;
+        overflow-x: hidden;
+      }
+      .summary>tbody tr {
+        position:relative;
+        height:12px;
+      }
+      .summary>thead tr {
+        position:relative;
+        height:12px;
+      }
+      .tt_controls_date_of_confirmatory_hiv_test #num { display:none; }
+      .tt_controls_date_last_taken #num { display:none; }
+      .tt_controls_date_of_confirmatory_hiv_test table {  position: absolute; top: -360px; }
+      .tt_controls_date_art_last_taken table {  position: absolute; top: -360px; }
+      .tt_controls_last_arv_drugs_taken .keyboard { display:none; }
+      .tt_controls_cd4_count #qwerty , .tt_controls_cd4_percent #qwerty {
+        display: none;
+      }
+      .tt_controls_cd4_count #equals, .tt_controls_cd4_percent #equals {
+        display: inline;
+      }
+
+        .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan {
+            position: absolute;
+            right: 65%;
+        }
+
+        .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan {
+            position: absolute;
+            right: 65%;
+        }
+
+        .tt_controls_cd4_count #greaterthan , .tt_controls_cd4_percent #greaterthan{
+            position: absolute;
+            right: 65%;
+            top: 5px;
+        }
+
+        .tt_controls_cd4_count #lessthan , .tt_controls_cd4_percent #lessthan {
+            top: 145px;
+        }
+
+        .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan { display:block; float:right }
+        .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan { display:block; float:right }
+
+        .tt_controls_weight_kg #qwerty , .tt_controls_height_cm #qwerty {
+            display: none;
+        }
+
+        .tt_controls_confirmatory_hiv_test_year #Unknown { display: inline; }
+
+        .tt_controls_confirmatory_hiv_test_month .keyboard { display:none; }
+
+        #tt_page_month_of_cd4_count .inputFrameClass {  height: 86%; }
+
+        #tt_page_month_of_cd4_count #viewport {  height: 85%; }
+
+        #tt_page_confirmatory_hiv_test_month .options {  height: 90%; }
+
+        #tt_page_confirmatory_hiv_test_month .inputFrameClass {  height: 86%; }
+
+        .tt_controls_month_started_art .keyboard { display:none; }
+
+        #tt_page_month_started_art .options {  height: 90%; }
+
+        #tt_page_month_started_art .inputFrameClass {  height: 86%; }
+
+        .tt_controls_year_last_taken_arvs #Unknown { display: inline; }
+
+        .tt_controls_month_art_last_taken .keyboard { display:none; }
+
+        #tt_page_month_last_taken_arvs .options {  height: 90%; }
+
+        #tt_page_month_art_last_taken .inputFrameClass {  height: 86%; }
+
+        .tt_controls_year_started_art #Unknown { display: inline; }
+
+        .tt_controls_month_of_cd4_count .keyboard{ display: none !important; }
+
+        .NoKeyboard .options {
+            height: 591px !important;
+        }
+    </style>
+    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
+    <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+    <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
+
+    <script type="text/javascript">
+      tstUsername = "admin";
+      var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+      
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var patientID = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
+
+      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+
+      function submitVisitTypeEncounter(){
+        if ($('touchscreenInput'+tstCurrentPage).value === ""){
+          showMessage("Please enter value");
+          return;
+        }
+        var currentTime = moment().format(' HH:mm:ss');
+        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+        encounter_datetime += currentTime;
+                        	
+        var encounter = {
+          encounter_type_name: 'ANC VISIT TYPE',
+          encounter_type_id:  102,
+          patient_id: patientID,
+          encounter_datetime: encounter_datetime
+        }
+          submitParameters(encounter, "/encounters", "postVisitTypeObs");
+        }
+
+        function postVisitTypeObs(encounter){
+          var anc_visit_number = $('touchscreenInput'+tstCurrentPage).value
+          var obs = {
+            encounter_id: encounter.encounter_id,
+            observations: [
+              { concept_id: 6189, value_numeric: anc_visit_number }
+            ]
+          };
+          submitParameters(obs, "/observations", "nextPage")
+        }
+
+      function submitFunction() {
+        var nextButton = document.getElementById('nextButton');
+        nextButton.innerHTML = '<span>Finish</span>';
+        nextButton.setAttribute('onmousedown', 'submitVisitTypeEncounter()');
+      }
+
+  </script>
+        
+    </head>
+
+    <body id="mateme">
+      <div id="container">
+        <div id="content">
+          <form>
+            <input field_type="number" helpText="ANC Visit Number" 
+              id="anc visit number" name="anc_visit_number" 
+              tt_onLoad="__$('zero').style.display = 'none'; submitFunction();" 
+              tt_pageStyleClass="NumbersOnly" optional=false 
+              type="text" />
+          </form>
+        </div>
+      </div>
+    </body>
+</html>
