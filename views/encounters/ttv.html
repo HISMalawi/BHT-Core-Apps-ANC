@@ -1,101 +1,83 @@
-<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
-<!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TTV</title>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+    <!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
-<script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
-<link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
-<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
-<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
-<script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
-<script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
+    <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+    <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+    <script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
 
-<script>
-var guardianAvailable = false;
-var apiProtocol = sessionStorage.apiProtocol;
-var apiURL = sessionStorage.apiURL;
-var apiPort = sessionStorage.apiPort;
-var patientID = sessionStorage.patientID;
-function getGuardian(){
-  var url = 'http://'+apiURL+':'+apiPort+'/api/v1/people/'+patientID+'/relationships' ;
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function(){
-  
-  if (this.readyState == 4) {
-  if (this.status == 200) {
-  var results = JSON.parse(this.responseText);
-    if(results.length > 0) {
-      guardianAvailable = true;
-    }
-  }
-  }
-  };
-  try {
-  req.open('GET', url, true);
-  req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-  req.send(null);
-  } catch (e) {
-  }
-}
+    <script>
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var patientID = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
 
-getGuardian();
+      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
-var patientID = sessionStorage.getItem("patientID");
-var programID = sessionStorage.getItem("programID");
-var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+      YesNoConcepts = {};
+      YesNoConcepts["Yes"] = 1065;
+      YesNoConcepts["No"] = 1066;
 
-YesNoConcepts = {};
-YesNoConcepts["Yes"] = 1065;
-YesNoConcepts["No"] = 1066;
-
-function submitHIVreception() {
-  var currentTime = moment().format(' HH:mm:ss');
-  var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
-  encounter_datetime += currentTime;
+      function submitDispensationEncounter() {
+        var currentTime = moment().format(' HH:mm:ss');
+        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+        encounter_datetime += currentTime;
                         	
-  var encounter = {
-    encounter_type_name: 'DISPENSING',
-    encounter_type_id:  54,
-    patient_id: patientID,
-    encounter_datetime: encounter_datetime
-  }
+        var encounter = {
+          encounter_type_name: 'DISPENSING',
+          encounter_type_id:  54,
+          patient_id: patientID,
+          encounter_datetime: encounter_datetime
+        }
+        submitParameters(encounter, "/encounters", "postTTVObs");
+      }
 
-  submitParameters(encounter, "/encounters", "postVitalsObs");
-}
+      function postTTVObs(){
+        var obs = {
+          encounter_id: 54,
+          observations: [
+            { concept_id: 1805, value_coded: YesNoConcepts[yesNo_Hash['DISPENSING']['TTV given?']] }
+          ]
+        }; 
 
-function postVitalsObs(encounter) {
+        submitParameters(obs, "/observations", "nextPage")
+      }
 
-  var obs = {
-    encounter_id: encounter["encounter_id"],
-    observations: [
-      { concept_id: 1805, value_coded: YesNoConcepts[yesNo_Hash['DISPENSING']['TTV given?']] }
-    ]
-  }; 
+      function nextPage(obs){
+        nextEncounter(sessionStorage.patientID, 1);
+      }
 
-  submitParameters(obs, "/observations", "nextPage")  
-}
+      function addYesNo() {
+        var tar = document.getElementById("inputFrame" + tstCurrentPage);
+        var attr = 'TTV has been given today'
+        buildYesNoUI('DISPENSING', attr, tar);
+      }
 
-function nextPage(obs){
-  nextEncounter(sessionStorage.patientID, 1);
-}
+      function submitFunction() {
+        var nextButton = document.getElementById('nextButton');
+        nextButton.innerHTML = '<span>Finish</span>';
+        nextButton.setAttribute('onmousedown', 'submitDispensationEncounter()');
+      }
 
-function addYesNo() {
-  var tar = document.getElementById("inputFrame" + tstCurrentPage);
-  var attr = 'Has TTV been given today?'
-  buildYesNoUI('DISPENSING', attr, tar);
-}
-
-</script>
-
-<body id="mateme">
+    </script>
+  </head>
+  <body id="mateme">
   <div id="container">
     <div id="content">
-
       <form>
-        <input type="text" name="summary"
-          tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();"
+        <input type="text" name="prescription"
+          tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();submitFunction();"
           tt_pageStyleClass= "NoControls" helpText="Prescription" optional = "true"/>
       </form>
-
    </div>
  </div>
 </body>
