@@ -135,13 +135,36 @@
     <script type="text/javascript">
       tstUsername = "admin";
       var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var patientID = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
+
+      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+
     
-      tt_cancel_show = "/patients/show/<%= @patient.id %>";
-      tt_cancel_destination = "/patients/show/<%= @patient.id %>";
       var selectAll = false;
+      var medical_complications_obs = []
+
+      function submitMedicalHistoryEncounter() {
+        var currentTime = moment().format(' HH:mm:ss');
+        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+        encounter_datetime += currentTime;
+                        	
+        var encounter = {
+          encounter_type_name: 'MEDICAL HISTORY',
+          encounter_type_id:  30,
+          patient_id: patientID,
+          encounter_datetime: encounter_datetime
+        }
+        submitParameters(encounter, "/encounters", "postMedicalCompObs");
+      }
   
       function selectNone(){
-    
+        $('chkSelectAll').src = "";
+        $('chkSelectAll').src = "/public/touchscreentoolkit/lib/images/unticked.jpg";
+
         if (__$("chkSelectAll") && __$("lblSelectAll")){
 
           __$("lblSelectAll").innerHTML = "None";
@@ -167,25 +190,44 @@
       }
  
       function checkFields(){
-
         var nodes = __$("medical_complications").children;
-        console.log(nodes);
 
         for (var i = 0; i < nodes.length; i ++){
 
           if (nodes[i].value != "none" && nodes[i] && nodes[i].innerHTML != ""){
       
             var id = nodes[i].value;
+            var hash = {"concept_id": "", value_coded: ""}
         
             if (id && !__$('img' + (i-1)).src.match("unticked")){
-
-              __$(id).value = "Yes";
-            }else if(id && __$('img' + (i-1)).src.match("unticked")){
-
-              __$(id).value = "";
+              hash["concept_id"] = parseInt(id)
+              hash["value_coded"] = 1065
+              medical_complications_obs.push(hash);
+              //__$(id).value = "Yes";
             }
+            //else if(id && __$('img' + (i-1)).src.match("unticked")){
+            //  console.log("here")
+            //}
           }
         }
+      }
+
+      function postMedicalCompObs(encounter){
+        checkFields();
+
+        var obs = {
+          encounter_id: encounter.encounter_id,
+          observations: medical_complications_obs
+        }; 
+        console.log(obs);
+
+        submitParameters(obs, "/observations", "nextPage")
+      }
+
+      function submitFunction() {
+        var nextButton = document.getElementById('nextButton');
+        nextButton.innerHTML = '<span>Finish</span>';
+        nextButton.setAttribute('onmousedown', 'submitMedicalHistoryEncounter()');
       }
 
       setTimeout("selectNone()", 50);
@@ -198,17 +240,18 @@
     <body id="mateme">
       <div id="container">
         <div id="content">
-          <form  onsubmit="submitParameters();">
+          <form>
             <select allowFreeText="false" class="medical_complications" 
               helpText="Past Medical Complications" id="medical_complications" 
               selectAll="selectAll" multiple="multiple" optional="true"  
               name="observations[][value_coded_or_text_multiple][]" 
-              tt_onLoad="__$('nextButton').style.display='block';__$('backButton').style.display = 'none';" 
+              tt_onLoad="__$('nextButton').style.display='block';
+                __$('backButton').style.display = 'none'; submitFunction();" 
               tt_onUnLoad="" tt_pageStyleClass="longSelectList" 
-              tt_BeforeUnLoad="checkFields()">
+              tt_BeforeUnLoad="">
               
               <option value=''></option>
-              <option value="137">Asthma</option>
+              <option value="5">Asthma</option>
               <option value="8809">Hypertension</option>
               <option value="3720">Diabetes</option>
               <option value="7978">Spine/Leg Deformity</option>
