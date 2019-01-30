@@ -3,121 +3,105 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <title>Encounters New</title>
+    <title>Social History</title>
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
-<!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
-<script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
-<link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
-<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
-<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
-<script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
-<script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
+    <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+    <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+    <script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
 
-<script>
-var guardianAvailable = false;
-var apiProtocol = sessionStorage.apiProtocol;
-var apiURL = sessionStorage.apiURL;
-var apiPort = sessionStorage.apiPort;
-var patientID = sessionStorage.patientID;
-function getGuardian(){
-  var url = 'http://'+apiURL+':'+apiPort+'/api/v1/people/'+patientID+'/relationships' ;
-  var req = new XMLHttpRequest();
-  req.onreadystatechange = function(){
-  
-  if (this.readyState == 4) {
-  if (this.status == 200) {
-  var results = JSON.parse(this.responseText);
-    if(results.length > 0) {
-      guardianAvailable = true;
-    }
-  }
-  }
-  };
-  try {
-  req.open('GET', url, true);
-  req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-  req.send(null);
-  } catch (e) {
-  }
-}
+    <script>
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var patientID = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
 
-getGuardian();
+      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
-var patientID = sessionStorage.getItem("patientID");
-var programID = sessionStorage.getItem("programID");
-var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+      YesNoConcepts = {};
+      YesNoConcepts["Yes"] = 1065;
+      YesNoConcepts["No"] = 1066;
 
-YesNoConcepts = {};
-YesNoConcepts["Yes"] = 1065;
-YesNoConcepts["No"] = 1066;
-
-function submitSocialHistory() {
-  var currentTime = moment().format(' HH:mm:ss');
-  var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
-  encounter_datetime += currentTime;
+      function submitSocialHistoryEncounter() {
+        var currentTime = moment().format(' HH:mm:ss');
+        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+        encounter_datetime += currentTime;
                         	
-  var encounter = {
-    encounter_type_name: 'SOCIAL HISTORY',
-    encounter_type_id:  51,
-    patient_id: patientID,
-    encounter_datetime: encounter_datetime
-  }
+        var encounter = {
+          encounter_type_name: 'SOCIAL HISTORY',
+          encounter_type_id:  84,
+          patient_id: patientID,
+          encounter_datetime: encounter_datetime
+        }
 
-  submitParameters(encounter, "/encounters", "postVitalsObs");
+        submitParameters(encounter, "/encounters", "postSocialHistoryObs");
+      }
 
-}
+      function postSocialHistoryObs(encounter) {
 
-function postSocialHistoryObs(encounter) {
+        marital_status = $('marital_status').value
+        var obs = {
+          encounter_id: encounter.encounter_id,
+          observations: [
+            { concept_id: 3339, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently smokes?']] },
+            { concept_id: 3340, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently takes alcohol?']] },
+            { concept_id: 1054, value_coded: marital_status }
+          ]
+        }; 
 
-  var obs = {
-    encounter_id: encounter["encounter_id"],
-    observations: [
-      { concept_id: 3339, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently smokes?']] },
-      { concept_id: 3340, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently takes alcohol?']] }
-    ]
-  }; 
+        submitParameters(obs, "/observations", "nextPage")  
+      }
 
-  submitParameters(obs, "/observations", "nextPage")  
-}
+      function nextPage(obs){
+        nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+      }
 
-function nextPage(obs){
-  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-}
+      function addYesNo() {
+        var tar = document.getElementById("inputFrame" + tstCurrentPage);
+        var attr = 'Patient currently smokes?,3339#Patient currently takes alcohol?,3340'
+        buildYesNoUI('Social History', attr, tar);
+      }
 
-function addYesNo() {
-  var tar = document.getElementById("inputFrame" + tstCurrentPage);
-  var attr = 'Patient currently smokes?,3339#Patient currently takes alcohol?,3340'
-  buildYesNoUI('Social History', attr, tar);
-}
+      function submitFunction() {
+        var nextButton = document.getElementById('nextButton');
+        nextButton.innerHTML = '<span>Finish</span>';
+        nextButton.setAttribute('onmousedown', 'submitSocialHistoryEncounter()');
+      }
 
-</script>
+    </script>
+  </head>
+  
+  <body id="mateme">
+    <div id="container">
+      <div id="content">
+        <form>
 
-<body id="mateme">
-  <div id="container">
-    <div id="content">
+          <input type="text" name="summary"
+            tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();"
+            tt_pageStyleClass= "NoControls" helpText="Social History" optional = "true"/>
 
-      <form onmousedown="submitSocialHistory()">
-        <input type="text" name="summary"
-          tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();"
-          tt_pageStyleClass= "NoControls" helpText="Social History" optional = "true"/>
-
-          <select allowFreeText="false" class="medical_complications" 
-              helpText="Marital status" id="medical_complications"
-              name="observations[][value_coded_or_text_multiple][]" 
-              tt_onLoad="__$('nextButton').style.display='block';__$('backButton').style.display = 'none';" 
-              tt_onUnLoad="" tt_BeforeUnLoad="checkFields()">
+          <select allowFreeText="false" name="marital status"
+            helpText="Marital status" id="marital_status"
+            tt_onLoad="__$('nextButton').style.display='block';
+              submitFunction();" 
+            tt_onUnLoad="">
               
-              <option value=''></option>
-              <option value="1057">Never Married</option>
-              <option value="5555">Married</option>
-              <option value="1056">Separated</option>
-              <option value="1058">Divorced</option>
-            </select>
-      </form>
-
-   </div>
- </div>
-</body>
+            <option value=''></option>
+            <option value="1057">Never Married</option>
+            <option value="5555">Married</option>
+            <option value="1056">Separated</option>
+            <option value="1058">Divorced</option>
+          
+          </select>
+        
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
