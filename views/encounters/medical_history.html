@@ -224,6 +224,10 @@
         submitParameters(obs, "/observations", "nextPage")
       }
 
+      function nextPage(obs){
+        nextEncounter(patientID, programID);
+      }
+
       function submitFunction() {
         var nextButton = document.getElementById('nextButton');
         nextButton.innerHTML = '<span>Finish</span>';
