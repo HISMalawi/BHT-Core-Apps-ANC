@@ -13,6 +13,9 @@
     <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+    <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
+
     <style>
       .header {
         -moz-user-select: none;
@@ -37,9 +40,23 @@
       tstUsername = "admin";
       var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
       var patient_id = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
+      var apiURL = sessionStorage.getItem("apiURL");
+      var apiPort = sessionStorage.getItem("apiPort");
+      var apiProtocol = sessionStorage.getItem("apiProtocol");
+
       var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patient_id;
+
       var todayDate = new Date(tstCurrentDate);
       var originaltestDate = ""
+
+      YesNoConcepts = {
+        "yes" : 1065,
+        "no" : 1066
+      }
+      
+      var edod = "";
+      var gestation = "";
           
       var alert_date = new Date(todayDate);
       alert_date.setDate(alert_date.getDate()- 90);
@@ -55,16 +72,40 @@
           
       var firstPositiveHivTestType = "UNKNOWN";
       var previous_hiv_test = false;
-      
       var keyboard;
       var search;
       var timedEvent;
 
       var d = new Date(tstCurrentDate);
-      console.log(d);
       d.setDate(d.getDate() - 7);
 
       var tstEstimatedLMPDate = d.getFullYear() + "-" + padZeros((d.getMonth() + 1),2) + "-" + padZeros(d.getDate(),2);
+
+      function getLocations(){
+        var options = []
+        select = $('planned_delivery_place')
+
+        var locationsFile = new XMLHttpRequest();
+        locationsFile.open("GET", "/apps/ANC/assets/data/locations.txt", false);
+        locationsFile.onreadystatechange = function () {
+          if(locationsFile.readyState === 4){
+            if(locationsFile.status === 200 || locationsFile.status == 0){
+              var allFacilities = locationsFile.responseText.split("\n");
+              for(var i = 0; i < allFacilities.length; i++){
+                option = document.createElement('option');
+                option.setAttribute('value', allFacilities[i]);
+                option.text = allFacilities[i];
+                options.push("<option value='"+allFacilities[i]+"'>"+allFacilities[i]+"</option>");
+                select.add(option);
+              }
+            }
+          }
+        }
+        locationsFile.send(null);
+
+        console.log(select);
+
+      }
 
   function padZeros(number, positions){
     var zeros = parseInt(positions) - String(number).length;
@@ -81,8 +122,6 @@
 
   function calculateEDOD(){
     try{
-      var edod = "";
-      var gestation = "";
       var month = ["Jan", "Feb", "Mar", 
         "Apr", "May", "Jun", 
         "Jul", "Aug", "Sep", 
@@ -92,6 +131,7 @@
         var div = document.createElement("div");
         div.id = "expected_date_of_delivery";
         div.className = "statusLabel";
+        console.log("Am here");
 
         $("inputFrame" + tstCurrentPage).appendChild(div);
       }
@@ -99,10 +139,8 @@
       if($("touchscreenInput" + tstCurrentPage).value.trim().length > 0 &&
         $("touchscreenInput" + tstCurrentPage).value.trim() != "Unknown"){
 
-        //var theDate = new Date($("touchscreenInput" + tstCurrentPage).value.trim());
-        var theDate = new Date('2018-10-25');
-
-        console.log($("touchscreenInput" + tstCurrentPage).value.trim());
+        var theDate = new Date($("touchscreenInput" + tstCurrentPage).value.split("-").reverse().join("-"));
+        //var theDate = new Date('2018-10-25');
 
         theDate.setDate(theDate.getDate() + 7);
 
@@ -305,36 +343,149 @@
      
   }
 
-                    function showCategory2(category) {
-                        if (category.length < 1)
-                            return;
+  function getProgramWorkflowStates() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-                        var pos = checkCtrl(__$("content"));
+  var apiPath = apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1/programs/' + options.programId + '/workflows';
+  GET({
+    url: apiPath,
+    async: true,
+    headers: {
+      'Authorization': options.authToken
+    }
+  }, {}, function (data) {
+    options.success(data);
+  }, function (error) {
+    options.error(error);
+  });
+}
 
-                        if (__$("category")) {
-                            document.body.removeChild(__$("category"));
-                        }
+function getStateIdByName() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  console.log(options);
 
-                        var cat = document.createElement("div");
-                        cat.id = "category";
-                        cat.style.position = "absolute";
-                        cat.style.right = "10px";
-                        cat.style.top = (pos[2] + 2) + "px";
-                        cat.style.fontSize = "26px";
-                        cat.style.padding = "10px";
-                        cat.style.backgroundColor = "#9e9";
-                        cat.style.borderColor = "#7c7";
-                        cat.style.color = "#000";
-                        cat.style.opacity = "0.95";
-                        cat.style.zIndex = 100;
-                        cat.style.textAlign = "center";
-                        cat.style.borderRadius = "30px";
-                        cat.innerHTML = category;
+  getProgramWorkflowStates({
+    programId: sessionStorage.programID,
+    authToken: sessionStorage.authorization,
+    success: function success(data) {
+      var stateId = data[0].states.filter(function (state) {
+        return state.concept.concept_names.every(function (concept_name) {
+          return concept_name.name === options.stateName;
+        });
+      })[0].program_workflow_state_id;
+      if (!stateId) {
+        console.log(new Error('getStateIdByName: The passed state with name (' + options.stateName + '), does not exist.'));
+      } else {
+        options.success(stateId);
+      }
+    },
+    error: function error(_error) {
+      console.log(_error);
+    }
+  });
+}
 
-                        document.body.appendChild(cat);
-                    }
+function createPatientState() {
+
+  var apiPath = apiProtocol + '://' + apiURL + ':' + apiPort;
+  apiPath += '/api/v1/programs/' + programID; 
+  apiPath += '/patients/' + patient_id + '/states';
+
+  getStateIdByName({
+    stateName: "Currently in treatment",
+    success: function success(stateId) {
+      POST({
+        url: apiPath,
+        async: true,
+        headers: {
+          'Authorization': sessionStorage.authorization,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }, {
+        state: stateId
+      }, function (data) {
+        submitCurrentPregnancyEncounter();
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    error: function error(_error2) {
+      console.log(_error2);
+    }
+  });
+}
+
+  function enrollPatient() {
+    var http = new XMLHttpRequest();
+    var url = 'http://' + apiURL + ':' + apiPort + '/api/v1/patients/'+patient_id +"/programs/";
+    var params = JSON.stringify({
+      program_id: programID,
+    });
+    http.open('POST', url, true);
+    //Send the proper header information along with the request
+    http.setRequestHeader('Content-type', 'application/json');
+    http.onreadystatechange = function () { //Call a function when the state changes.
+      if (http.readyState == 4) {
+        if (http.status == 201) {
+          createPatientState();
+        } else if (http.status == 409) {
+          console.log('Username already exists');
+        } else {
+          console.log('error' + http.status);
+        }
+      }
+    }
+    http.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    http.send(params);
+  }
+
+
+  function submitCurrentPregnancyEncounter(){
+    var currentTime = moment().format(' HH:mm:ss');
+    var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+    encounter_datetime += currentTime;
+                        	
+    var encounter = {
+      encounter_type_name: 'DISPENSING',
+      encounter_type_id:  81,
+      patient_id: patient_id,
+      encounter_datetime: encounter_datetime
+    }
+    
+    submitParameters(encounter, "/encounters", "postCurrentPregnancyObs");
+  }
+
+  function postCurrentPregnancyObs(encounter){
+    var obs = {
+      encounter_id: encounter.encounter_id,
+      observations: [
+        { concept_id: 5596, value_datetime: moment(edod).format('YYYY-MM-DD').substr(1) },
+        { concept_id: 7980, value_numeric: parseInt(gestation) },
+        { concept_id: 968, value_datetime: $('lnmp').value.split("-").reverse().join("-") },
+        { concept_id: 8397, value_text: $('planned_delivery_place').value },
+        { concept_id: 2066, value_coded: YesNoConcepts[$('bed_net_available_for_use').value] },
+        { concept_id: 7124, value_numeric: $('ttv_given').value }
+      ]
+    }
+
+    if ($('bed_net_available_for_use').value === 'no') {
+      obs.observations.push(
+        { concept_id: 2723, value_coded: YesNoConcepts[$('bed_net_given').value] }
+      )
+    }
+    submitParameters(obs, "/observations", "nextPage")
+  }
+
+  function changeSubmitFunction(){
+    var nextButton = document.getElementById('nextButton');
+    nextButton.setAttribute('onmousedown', 'createPatientState()');
+  }
   
-  //-->
+  function nextPage(obs){
+    nextEncounter(sessionStorage.patientID, 1);
+  }
+
+
 </script>
 
 <style type="text/css">
@@ -352,17 +503,17 @@
         <div id="content">
         
         <form>
-          <input tt_onLoad="showCategory2('Current pregnancy');timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()"
+          <input type="hidden" name="week_of_first_visit" id="week_of_first_visit"/>
+          <input tt_onLoad="showCategory2('Current pregnancy');
+              timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()"
             field_type="date" helpText="Last Normal Menstrual Period"
             id="lnmp" name="previous_hiv_test"
-            tt_onUnload="clearTimeout(timedEvent);"
+            tt_onUnload="clearTimeout(timedEvent);getLocations();"
             tt_pageStyleClass="exclude" type="text"/>
 
           <select id="planned_delivery_place" name="planned_delivery_place"
-            tt_onLoad="showCategory2('Current pregnancy');addHereButton();"
+            tt_onLoad="showCategory2('Current pregnancy');addHereButton();" 
             helpText="Planned delivery place" tt_onUnload="">
-
-              <option value="">Here</option>
 
           </select>
 
@@ -371,182 +522,30 @@
             tt_onLoad="showCategory2('Current pregnancy');">
 
             <option value=""></option>  
-            <option value="Yes">Yes</option>  
-            <option value="No">No</option>  
+            <option value="yes">Yes</option>  
+            <option value="no">No</option>  
 
           </select>
 
           <select name="bed_net_given" id="bed_net_given"
             tt_onLoad="showCategory2('Current pregnancy');"
-            condition="$('bed_net_available_for_use').value == 'No';"
+            condition="$('bed_net_available_for_use').value == 'no';"
             helpText="Bed net given today">
 
             <option value=""></option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
 
           </select>
 
-          <input type="text" name="previous_ttv_given" id="previous_ttv_given"
+          <input type="text" name="previous_ttv_given" id="ttv_given"
             helpText="Previous TTV given before this pregnancy"
-            tt_onLoad="showCategory2('Current pregnancy')"
-            field_type="number" tt_pageStyleClass="NumbersOnly">
+            tt_onLoad="showCategory2('Current pregnancy');
+              changeSubmitFunction();" field_type="number" 
+            tt_pageStyleClass="NumbersOnly">
           
-          <input type="hidden" name="week_of_first_visit" id="week_of_first_visit"/>
-        
-
-          <!-- % options = {
-    :id => "tt_status_value",
-    :helptext => "Previous TTV Doses before this pregnancy  <span class='helper'> Current Pregnancy</span>",
-    :field_type => "number",
-    :absoluteMin => "0",
-    :max => "5",
-    # :flag => '{"condition":"^1$|^0$","message":"TT is inadequate"}',
-    :tt_pageStyleClass => "NumbersOnly",
-    :validationRule => "^([0-9])$",
-    :validationMessage => "Enter a valid number."
-  } %>
-          <!-- %= (touch_select_tag "Bed Net", @patient, options_for_select([["", ""],
-      ["Yes", "Yes"],
-      ["No", "No"]
-    ]),
-    {
-      :id => "bed_net_given",
-      :helptext => "Bed Net Given Today <span class='helper'> Current Pregnancy</span>",
-      :condition => "__$('bed_net_available').value == 'No'" }).html_safe %>
-
-          <%= select_tag "Bed Net Available", options_for_select([["", ""],
-      ["Yes", "Yes"],
-      ["No", "No"]
-    ]),
-    {
-      :id => "bed_net_available",
-      :helptext => "Mosquito net in good condition available for own use <span class='helper'> Current Pregnancy</span>" } %>
-
-          < %= select_tag "Planned delivery place", options_for_select(@locations),
-    {
-      :id => "planned_delivery_place",
-      :tt_onLoad => "addHereButton();",
-      :helptext => "Planned delivery place  <span class='helper'> Current Pregnancy</span>",
-      :tt_onUnload => "removeHereButton();"
-    } %>
-
-  < %= (touch_date_tag "LAST MENSTRUAL PERIOD", @patient, nil,
-    {:id => "lmp",
-    :helptext => "Last Normal Menstrual Period  <span class='helper'> Current Pregnancy</span>",
-    :tt_onLoad => "timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()",
-    :tt_onUnLoad => 'clearTimeout(timedEvent);
-    // if (__$("touchscreenInput" + tstCurrentPage).value == "Unknown" ) __$("lmp").value = tstEstimatedLMPDate;',
-    :tt_pageStyleClass => "exclude",
-    :min => ((session[:datetime] || Date.today).to_date - 42.week),
-    :absoluteMin => ((session[:datetime] || Date.today).to_date - 45.week),
-    :absoluteMax => ((session[:datetime] || Date.today).to_date - 1.day)
-  }).html_safe % -->
-</form>
-</div>
-</div>
-</body>
-
-
-  
-
-  <!-- %= text_field_tag "Estimate LMP", nil,
-    {:id => "estimate_lmp",
-    :condition => "__$('lmp').value == 'Unknown'",
-    :helpText => "Gestation (months)  <span class='helper'> Current Pregnancy</span>",
-    :field_type => "number",
-    :tt_pageStyleClass => "NumbersOnly",
-    :tt_onUnload => "setDate(__$('touchscreenInput' + tstCurrentPage).value);",
-    :max => 6,
-    :absoluteMax => 10
-  }
-% >
-
-  < %#= touch_select_tag "Week of First Visit", @patient,
-  options_for_select(["", "0-12", "13-24", "25-28", "28+"]),
-  {:id => "week_of_first_visit",
-  :helptext => "Week of First Visit",
-  :tt_onUnload => "checkLMP()" } %>
-  < %
-    @locations = []
-
-    File.open(Rails.root.to_s + "/public/data/locations.txt", "r").each{ |loc|
-      l = loc.split("/n").first
-      @locations << [l,l]
-    }
-  %>
-
-  <%= select_tag "Planned delivery place", options_for_select(@locations),
-    {
-      :id => "planned_delivery_place",
-      :tt_onLoad => "addHereButton();",
-      :helptext => "Planned delivery place  <span class='helper'> Current Pregnancy</span>",
-      :tt_onUnload => "removeHereButton();"
-    } %>
-
-
-  <%#= (touch_text_field_tag "Planned delivery place", @patient, nil,
-    {:id => "planned_delivery_place",
-    :helptext => "Planned delivery place  <span class='helper'> Current Pregnancy</span>",
-    :ajaxURL => "/encounters/static_locations?search_string=",
-    :tt_onLoad => "addHereButton();",
-    :tt_onUnLoad => "removeHereButton()" }).html_safe %>
-
-  <%#= text_field_tag :bed_net_ttv, nil,
-    {
-    :id => 'bed_net_ttv',
-    :tt_onLoad => "generateController();",
-    :field_type => "number",
-    :optional => "false",
-    :tt_pageStyleClass => "NumbersOnly"
-  } %>
-
-  <%= select_tag "Bed Net Available", options_for_select([["", ""],
-      ["Yes", "Yes"],
-      ["No", "No"]
-    ]),
-    {
-      :id => "bed_net_available",
-      :helptext => "Mosquito net in good condition available for own use <span class='helper'> Current Pregnancy</span>" } %>
-
-  <%= (touch_select_tag "Bed Net", @patient, options_for_select([["", ""],
-      ["Yes", "Yes"],
-      ["No", "No"]
-    ]),
-    {
-      :id => "bed_net_given",
-      :helptext => "Bed Net Given Today <span class='helper'> Current Pregnancy</span>",
-      :condition => "__$('bed_net_available').value == 'No'" }).html_safe %>
-
-  <%= touch_date_tag "Date received", @patient, nil,
-  {:id => "bed_date",
-    :helptext => "Date Bet Net Given",
-    :condition => "__$('bed_net_1').value == 'Yes'"
-  } %-->
-
-  <!-- % options = {
-    :id => "tt_status_value",
-    :helptext => "Previous TTV Doses before this pregnancy  <span class='helper'> Current Pregnancy</span>",
-    :field_type => "number",
-    :absoluteMin => "0",
-    :max => "5",
-    # :flag => '{"condition":"^1$|^0$","message":"TT is inadequate"}',
-    :tt_pageStyleClass => "NumbersOnly",
-    :validationRule => "^([0-9])$",
-    :validationMessage => "Enter a valid number."
-  } %>
-
-  <%= hidden_field_tag("observations[][concept_name]",  "TT STATUS", {:id => 'tt_status_concept_name'}) %>
-  <%= text_field_tag("observations[][value_numeric]",   nil, options) %>
-  <%= hidden_field_tag("observations[][patient_id]",    @patient.id) %>
-  <%= hidden_field_tag("observations[][obs_datetime]",  session_date) %>
-
-  <%= hidden_field_tag("observations[][concept_name]",  "Week of First Visit") %>
-  <%= hidden_field_tag("observations[][value_numeric]",   nil, {
-      :id => "week_of_first_visit"}) %>
-  <%= hidden_field_tag("observations[][patient_id]",    @patient.id) %>
-  <%= hidden_field_tag("observations[][obs_datetime]",  session_date) %>
-
-  <%= submit_tag 'Finish' %>
-<% end %-->
-  
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
