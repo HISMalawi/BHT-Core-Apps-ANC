@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <title>Encounters New</title>
+    <title>ANC - Lab Results</title>
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
@@ -12,17 +12,24 @@
     <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
 
     <script type="text/javascript">
       tstUsername = "admin";
       var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
-      var patient_id = sessionStorage.patientID;
-      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patient_id;
+      var patientID = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
+      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+
+      YesNoConcepts = {};
+      YesNoConcepts["Yes"] = 1065;
+      YesNoConcepts["No"] = 1066;
+
       var todayDate = new Date(tstCurrentDate);
       var originaltestDate = ""
           
       var alert_date = new Date(todayDate);
-      alert_date.setDate(alert_date.getDate()- 90);
+      alert_date.setDate(alert_date.getDate()- 90)
 
       // var alertDate = createDates(moment(alert_date).format("YYYY"), moment(alert_date).format("MM"), moment(alert_date).format("DD"));
       var patient_age = parseInt(sessionStorage.patientAge);
@@ -36,9 +43,35 @@
       var firstPositiveHivTestType = "UNKNOWN";
       var previous_hiv_test = false;
 
+      var concept_map = {
+        "positive": 703,
+        "negative": 664,
+        "unknown": 1064,
+        "inconsistence": 9436,
+        "trace" : 6698
+      }
+
       /**
        * * For ANC
        */
+  function checkHIVTestDate(){
+    if(__$("previous_test_status_from_before_currrent_facility_visit").value == "Negative in the last 3 months"){
+      
+      var hiv_test_date_str = __$("touchscreenInput" + tstCurrentPage).value.replace(/-/g, '/');
+
+      var hiv_test_date     = new Date(hiv_test_date_str);
+      var today             = new Date(tstCurrentDate);
+
+      var weeks_ago = parseInt((today.getTime()- hiv_test_date.getTime())/ (1000 * 60 * 60 * 24 * 7));
+
+      if (weeks_ago > 12){
+        showMessage("Patient needs to be tested again");
+        return true;
+      }
+      
+    }
+    return false;
+  }
 
           
       function getSelectedLabTests(){
@@ -46,7 +79,7 @@
         if($('available_test_results')){
           for(var o = 0; o < $('available_test_results').options.length; o++){
             if($('available_test_results').options[o].selected == true){
-              lab_tests += $('available_test_results').options[o].innerHTML + " ";
+              lab_tests += $('available_test_results').options[o].value + " ";
             }
           }
         }
@@ -58,7 +91,7 @@
         if($('available_urine_tests')){
           for(var o = 0; o < $('available_urine_tests').options.length; o++){
             if($('available_urine_tests').options[o].selected == true){
-              urine_tests += $('available_urine_tests').options[o].innerHTML + " ";
+              urine_tests += $('available_urine_tests').options[o].value + " ";
             }
           }
         }
@@ -109,568 +142,202 @@
         return previous_hiv_test;
       }
 
+      function addYesNoToLabTests() {
+        var tar = document.getElementById("inputFrame" + tstCurrentPage);
+        var attr = 'Pregnancy test done,3339#Previous HIV test done,9655'
+        buildYesNoUI('Lab Results', attr, tar);
+      }
+      
+      function submitLabResultsEncounter() {
+        var currentTime = moment().format(' HH:mm:ss');
+        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD');
+        encounter_datetime += currentTime;
+        
+        var encounter = {
+          encounter_type_name: 'LAB RESULTS',
+          encounter_type_id: 32,
+          patient_id: patientID,
+          encounter_datetime: encounter_datetime
+        }
+        
+        submitParameters(encounter,"/encounters/", "postLabResultsObs");
+      }
+
+      function postLabResultsObs(encounter) {
+        var obs = {
+          encounter_id: encounter.encounter_id,
+          observations: [
+            { concept_id: 2473, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Pregnancy test done']] },
+            { concept_id: 9655, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Previous HIV test done']] }
+          ]
+        };
+      
+        // Getting previous HIV test Results
+        if (yesNo_Hash['Lab Results']['Previous HIV test done'] === "Yes"){
+          var previous_hiv_test_result = $('prev_hiv_test_result').value;
+          var prev_hiv_test_date = $('prev_hiv_test_date').value.split("-").reverse().join("-");
+
+          obs.observations.push(
+            {concept_id: 9656, value_coded: concept_map[previous_hiv_test_result] },
+            {concept_id: 9657, value_datetime: prev_hiv_test_date }
+          )
+          
+          //Previous hiv test results is positive
+          if(previous_hiv_test_result === 'positive'){
+            var on_art = $('on_art').value
+            var arv_number = $('arv_number').value 
+
+            obs.observations.push(
+              {concept_id: 7010, value_coded: YesNoConcepts[on_art]}
+            )
+
+            if(on_art === 'Yes' && arv_number !== ''){
+              // Save to Patient Identifier
+              /** 
+               * obs.observations.push(
+               *   {concept_id: '', value_text: arv_number}
+               * )
+               */
+            }
+          }
+
+        }
+
+        if($('hiv_status').value !== ""){
+          obs.observations.push(
+            {concept_id: 3753, value_coded: concept_map[$('hiv_status').value]}
+          );
+
+          if ($('hiv_status').value === "positive") {
+            var on_art = $('on_art').value
+            var arv_number = $('arv_number').value 
+
+            obs.observations.push(
+              {concept_id: 7010, value_coded: YesNoConcepts[on_art]}
+            );
+
+            if(on_art === 'Yes' && arv_number !== ''){
+              // Save to Patient Identifier
+              /** 
+               * obs.observations.push(
+               *   {concept_id: '', value_text: arv_number}
+               * )
+               */
+            }
+          }
+        }
+
+        if ($('hb').value !== "") {
+          obs.observations.push(
+            {concept_id: 7982, value_numeric: parseInt($('hb').value) }
+          );
+        }
+        
+        if ($('syphilis').value !== "") {
+          obs.observations.push(
+            {concept_id: 7984, value_coded: concept_map[$('syphilis').value] }
+          );
+        }
+        
+        if ($('malaria').value !== "") {
+          obs.observations.push(
+            {concept_id: 9227, value_coded: concept_map[$('malaria').value] }
+          );
+        }
+        
+        if ($('blood_group').value !== "") {
+          obs.observations.push(
+            {concept_id: 300, value_text: $('blood_group').value }
+          );
+        }
+
+        if ($('protein').value !== "") {
+          obs.observations.push(
+            {concept_id: 6447, value_text: $('protein').value }
+          );
+        }
+        
+        if ($('glucose').value !== "") {
+          obs.observations.push(
+            {concept_id: 887, value_text: $('glucose').value }
+          );
+        }
+        
+        if ($('wbc').value !== "") {
+          obs.observations.push(
+            {concept_id: 678, value_numeric: parseInt($('wbc').value) }
+          );
+        }
+        
+        if ($('rbc').value !== "") {
+          obs.observations.push(
+            {concept_id: 679, value_numeric: parseInt($('rbc').value) }
+          );
+        }
+        
+        if ($('nitrate').value !== "") {
+          obs.observations.push(
+            {concept_id: 9618, value_coded: concept_map[$('nitrate').value] }
+          );
+        }
+
+
+        submitParameters(obs,"/observations/", "nextPage");
+      }
+
+      function nextPage(){
+        nextEncounter(patientID, programID);
+      }
+
+      function changeSubmitFunction(){
+        var nextButton =  document.getElementById('nextButton');
+        nextButton.onmousedown = function(){
+          var selected_lab_values = getSelectedLabTests().split(" ").filter(Boolean);
+          var selected_urine_values = getSelectedUrineTests().split(" ").filter(Boolean);
+
+          if (selected_lab_values.length > 0){
+            var field_name = $("touchscreenInput"+tstCurrentPage).name
+            if (selected_lab_values[selected_lab_values.length - 1] === field_name || 
+              selected_urine_values[selected_urine_values.length - 1] === field_name ){
+              if (selected_lab_values[selected_lab_values.length - 1] === "urine"){
+                if (selected_urine_values.length > 0){
+                  if (selected_urine_values[selected_urine_values.length - 1] === field_name) {
+                    submitLabResultsEncounter();
+                  }else{
+                    gotoNextPage();
+                  }
+                }else{
+                  submitLabResultsEncounter();
+                }
+              }else{
+                submitLabResultsEncounter();
+              }
+            }else{
+              gotoNextPage();
+            }
+          }else{
+            submitLabResultsEncounter();
+          }
+        }
+      }
+
+      function hideCategory() {
+        document.getElementById('category').style = 'display: none;'
+      }
+
     </script>
     
-    <style type="text/css">
-      #tab {
-        height:312px;
-      }
-      #barcode {
-        background:transparent none repeat scroll 0 0;
-        border-color:-moz-use-text-color -moz-use-text-color silver;
-        border-style:none none solid;
-        border-width:medium medium 1px;
-        font-family:"Nimbus Sans L","Arial Narrow",sans-serif;
-        font-size:2.2em;
-        padding-left:5px;
-        width:400px;
-      }
-      #header div {
-        font-weight:normal;
-        float:none;
-        clear:both;
-      }
-      .summary{
-        position:relative;
-        float:center;
-        width:100%;
-        padding-left:10px;
-        padding-right:10px;
-      }
-      .summary td , th{
-        border-style:solid;
-        border-width:thin;
-        padding:5px;
-      }
-      .summary tbody{
-        position:relative;
-        height:500px;
-        overflow:auto;
-        overflow-x: hidden;
-      }
-      .summary>tbody tr {
-        position:relative;
-        height:12px;
-      }
-      .summary>thead tr {
-        position:relative;
-        height:12px;
-      }
-      .tt_controls_date_of_confirmatory_hiv_test #num { display:none; }
-      .tt_controls_date_last_taken #num { display:none; }
-      .tt_controls_date_of_confirmatory_hiv_test table {  position: absolute; top: -360px; }
-      .tt_controls_date_art_last_taken table {  position: absolute; top: -360px; }
-      .tt_controls_last_arv_drugs_taken .keyboard { display:none; }
-      .tt_controls_cd4_count #qwerty , .tt_controls_cd4_percent #qwerty {
-        display: none;
-      }
-      .tt_controls_cd4_count #equals, .tt_controls_cd4_percent #equals {
-        display: inline;
-      }
-      .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan {
-        position: absolute;
-        right: 65%;
-      }
-      .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan {
-        position: absolute;
-        right: 65%;
-      }
-      .tt_controls_cd4_count #greaterthan , .tt_controls_cd4_percent #greaterthan{
-        position: absolute;
-        right: 65%;
-        top: 5px;
-      }
-      .tt_controls_cd4_count #lessthan , .tt_controls_cd4_percent #lessthan {
-        top: 145px;
-      }
-      .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan { display:block; float:right }
-      .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan { display:block; float:right }
-      .tt_controls_weight_kg #qwerty , .tt_controls_height_cm #qwerty {
-        display: none;
-      }
-      .tt_controls_confirmatory_hiv_test_year #Unknown { display: inline; }
-      .tt_controls_confirmatory_hiv_test_month .keyboard { display:none; }
-      #tt_page_month_of_cd4_count .inputFrameClass {  height: 86%; }
-      #tt_page_month_of_cd4_count #viewport {  height: 85%; }
-      #tt_page_confirmatory_hiv_test_month .options {  height: 90%; }
-      #tt_page_confirmatory_hiv_test_month .inputFrameClass {  height: 86%; }
-      .tt_controls_month_started_art .keyboard { display:none; }
-      #tt_page_month_started_art .options {  height: 90%; }
-      #tt_page_month_started_art .inputFrameClass {  height: 86%; }
-      .tt_controls_year_last_taken_arvs #Unknown { display: inline; }
-      .tt_controls_month_art_last_taken .keyboard { display:none; }
-      #tt_page_month_last_taken_arvs .options {  height: 90%; }
-      #tt_page_month_art_last_taken .inputFrameClass {  height: 86%; }
-      .tt_controls_year_started_art #Unknown { display: inline; }
-      .tt_controls_month_of_cd4_count .keyboard{ display: none !important; }
-      .NoKeyboard .options {
-        height: 591px !important;
-      }
-    </style>
   </head>
 
   <body id="mateme">
     <div id="container">
       <div id="content">
-        <script type="text/javascript">
-          
-          function checkTestDate(td) {
-            
-          }
-
-          function updateTestDate() {
-            
-          }
-          
-          function getDateStartedART() {
-          }
-          
-          function summary() {
-          }
-          
-          function hideCategory() {
-            document.getElementById('category').style = 'display: none;'
-          }
-          
-          function checkPregnancyAndAge() {
-            if ((patientAge >= 55)) {
-              return "true";
-            } else {
-              return "false";
-            }
-          }
-          
-          function submitHIVClinicRegistration() {
-            var currentTime = moment().format(' HH:mm:ss');
-            var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD');
-            encounter_datetime += currentTime;
-            
-            var encounter = {
-              encounter_type_id:  9,
-              patient_id: patient_id,
-              encounter_datetime: encounter_datetime
-            }
-            
-            submitParameters(encounter,"/encounters/", "postHIVClinicRegistrationObs");
-          }
-          
-          function submitVitalsRegistration() {
-            if (!(showConditions() == true)){
-              console.log("NOT a transfer in patient. Can't create vitals encounter")
-              return nextPage();
-            }
-            
-            console.log("Creating vitals encounter........")
-            var encounter = {
-              encounter_type_id:  6,
-              patient_id: patient_id,
-              encounter_datetime: answers_hash["date_art_started"]
-            }
-
-            submitParameters(encounter,"/encounters/", "postVitalsObs");
-          }
-          
-          function submitHIVStaging() {
-            if (!(showConditions() == true)){
-              console.log("NOT a transfer in patient. Can't create HIV staging encounter")
-              return nextPage();
-            }
-            
-            console.log("Creating HIV staging encounter........")
-            var encounter = {
-              encounter_type_id:  52,
-              patient_id: patient_id,
-              encounter_datetime: answers_hash["date_art_started"]
-            }
-            submitParameters(encounter,"/encounters/", "postHIVStagingObs");
-          }
-          
-          var answers_hash = {
-            followup_agreement: "", ever_received_art: "", date_art_last_taken: "",
-            taken_art_in_the_last_two_months: "", taken_art_in_the_last_two_weeks: "",
-            ever_registered: "", drug_art_last_taken: "", location_of_art_initiation: "",
-            drug_start_date: "", date_art_started: "", art_number_at_previous_location: "",
-            has_transfer_letter: "",height: "", weight: "", bmi: "", is_patient_pregnant: "",
-            is_patient_breastfeeding: "",
-            who_stages_criteria_present: "", who_stage: "", cd4_less_than_or_equal_to_250: "",
-            cd4_less_than_or_equal_to_350: "", cd4_less_than_or_equal_to_500: "",
-            cd4_less_than_25: "", reason_for_art_eligibility: "", cd4_location: "",
-            cd4_datetime: "", cd4_count: "", confirmatory_hiv_test_date: "",
-            confirmatory_hiv_test_location: "", confirmatory_hiv_test_type: "",
-            send_sms: "", cd4_percent: ""
-          }
-          
-          function postHIVClinicRegistrationObs(encounter) {
-            var obs = {
-              encounter_id: encounter.encounter_id,
-              observations: [
-                { concept_id: 3339, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently smokes?']] },
-                { concept_id: 9655, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Previous HIV Test done']] }
-              ]  /** 
-                { concept_id: 2552, value_coded: answers_hash["followup_agreement"].trim().toUpperCase() == "YES" ? 1065: 1066 },
-                { concept_id: 7937, value_coded: answers_hash["ever_registered"].trim().toUpperCase() == "YES" ? 1065: 1066 },
-                { concept_id: 6393, value_coded: answers_hash["has_transfer_letter"].trim().toUpperCase() == "YES" ? 1065: 1066 },
-                { concept_id: 7881, value_text: answers_hash["confirmatory_hiv_test_location"] },
-                { concept_id: 7880, value_text: answers_hash["confirmatory_hiv_test_type"] },
-                { concept_id: 8011, value_coded: answers_hash["send_sms"].trim().toUpperCase() == "YES" ? 1065: 1066 },
-                { concept_id: 7751, value_datetime: answers_hash["date_art_last_taken"], value_text: date_art_last_taken_value_text },
-                { concept_id: 7752, value_coded: answers_hash["taken_art_in_the_last_two_months"].trim().toUpperCase() == "YES" ? 1065: 1066 },
-                { concept_id: 6394, value_coded: answers_hash["taken_art_in_the_last_two_weeks"].trim().toUpperCase() == "YES" ? 1065: 1066 },
-                { concept_id: 7750, value_text: answers_hash["location_of_art_initiation"] },
-                { concept_id: 1499, value_datetime: answers_hash["drug_start_date"] },
-                { concept_id: 2516, value_datetime: answers_hash["date_art_started"] },
-                { concept_id: 5497, value_numeric: answers_hash["cd4_count"], value_modifier: cd4_count_modifier_global },
-                { concept_id: 6981, value_text: answers_hash["art_number_at_previous_location"] },
-                ]*/
-            };
-            
-            var agrees_to_followup_agreement_concept_id = 2552;
-            var phone_only_concept_id = 9685;
-            var visit_only_concept_id = 9686;
-            var visit_and_phone_concept_id = 9687;
-
-            var phone_only_answer_yes_no = yesNo_Hash["AGREES TO FOLLOW UP"]["Phone only?"];
-            var phone_only_answer_value_coded = getAgreesToFollowUpConceptID(phone_only_answer_yes_no);
-
-            var visit_only_answer_yes_no = yesNo_Hash["AGREES TO FOLLOW UP"]["Visit only?"];
-            var visit_only_answer_value_coded = getAgreesToFollowUpConceptID(visit_only_answer_yes_no);
-
-            var visit_and_phone_answer_yes_no = yesNo_Hash["AGREES TO FOLLOW UP"]["Visit and phone"];
-            var visit_and_phone_answer_value_coded = getAgreesToFollowUpConceptID(visit_and_phone_answer_yes_no);
-
-            obs.observations.push(
-              {concept_id: agrees_to_followup_agreement_concept_id, value_coded: phone_only_concept_id, child: {concept_id: phone_only_concept_id, value_coded: phone_only_answer_value_coded}}
-            )
-
-            obs.observations.push(
-              {concept_id: agrees_to_followup_agreement_concept_id, value_coded: visit_only_concept_id, child: {concept_id: visit_only_concept_id, value_coded: visit_only_answer_value_coded}}
-            )
-
-            obs.observations.push(
-              {concept_id: agrees_to_followup_agreement_concept_id, value_coded: visit_and_phone_concept_id, child: {concept_id: visit_and_phone_concept_id, value_coded: visit_and_phone_answer_value_coded}}
-            )
-            
-            submitParameters(obs,"/observations/", "submitVitalsRegistration()");
-          }
-
-                    function getAgreesToFollowUpConceptID(answer){
-                        if (answer.match(/YES/i)){
-                            return 1065;
-                        }
-
-                        if (answer.match(/NO/i)){
-                            return 1066;
-                        }
-
-                        return ""
-                    }
-
-                    function postVitalsObs(encounter){
-                        var obs = {
-                            encounter_id: encounter.encounter_id,
-                            observations: [
-                                { concept_id: 5090, value_numeric: answers_hash["height"]},
-                                { concept_id: 5089, value_numeric: answers_hash["weight"]},
-                                { concept_id: 2137, value_numeric: answers_hash["bmi"] }                            ]
-                        };
-
-                        submitParameters(obs,"/observations/", "submitHIVStaging");
-                    }
-
-                    function postHIVStagingObs(encounter){
-                        var obs = {
-                            encounter_id: encounter.encounter_id,
-                            observations: [
-                                { concept_id: 7562, value_text: answers_hash["who_stage"] },
-                                { concept_id: 8262, value_text: answers_hash["cd4_less_than_or_equal_to_250"] },
-                                { concept_id: 8207, value_text: answers_hash["cd4_less_than_or_equal_to_350"] },
-                                { concept_id: 9389, value_text: answers_hash["cd4_less_than_or_equal_to_500"] },
-                                { concept_id: 7032, value_text: answers_hash["cd4_less_than_25"] },
-                                { concept_id: 7563, value_text: answers_hash["reason_for_art_eligibility"] },
-                                { concept_id: 6830, value_text: answers_hash["cd4_location"] },
-                                { concept_id: 6831, value_datetime: answers_hash["cd4_datetime"] },
-                                { concept_id: 5497, value_numeric: answers_hash["cd4_count"], value_modifier: cd4_count_modifier_global },
-                                { concept_id: 730, value_text: answers_hash["cd4_percent"], value_modifier: cd4_percent_modifier_global }
-                            ]
-                        };
-
-                        if (patientGender == "FEMALE"){
-                            obs.observations.push({ concept_id: 6131, value_coded: (answers_hash["is_patient_pregnant"].length > 0 ? (answers_hash["is_patient_pregnant"].trim().toUpperCase() == "YES" ? 1065: 1066): "" )})
-                            obs.observations.push({ concept_id: 7965, value_coded: (answers_hash["is_patient_breastfeeding"].length > 0 ? (answers_hash["is_patient_breastfeeding"].trim().toUpperCase() == "YES" ? 1065: 1066): "") })
-                        }
-
-                        for (condition in selected_stage_conditions) {
-                            if (selected_stage_conditions[condition].length > 0) {
-                                conditions = selected_stage_conditions[condition].split(';');
-                                for (i = 0; i < conditions.length; i++) {
-                                    obs.observations.push({ concept_id: 2743, value_coded: who_stage_concept_map[conditions[i]] })
-                                }
-                            }
-                        }
-
-                        //obs= JSON.stringify(obs);
-
-                        submitParameters(obs,"/observations", "nextPage");
-                    }
-
-
-
-                    function nextPage(){
-                        nextEncounter(sessionStorage.patientID, 1);
-                        // alert("Done");
-                    }
-
-                    function setNextButtonToGetInputValue(key){
-                        __$('nextButton').onmousedown = function(){
-                            value = __$('touchscreenInput' + tstCurrentPage).value;
-                            answers_hash[key] = value;
-                            gotoNextPage();
-                        }
-                    }
-
-                    function setNextButtonToGetDateARTLastTaken(key){
-                        __$('nextButton').onmousedown = function(){
-                            year_art_last_taken = $('year_art_last_taken').value
-                            month_art_last_taken = $('month_art_last_taken').value
-                            day_art_last_taken = __$('touchscreenInput' + tstCurrentPage).value;
-
-
-                            date_art_last_taken = year_art_last_taken + "-" + month_art_last_taken + "-" + day_art_last_taken
-                            answers_hash[key] = date_art_last_taken;
-                            gotoNextPage();
-                        }
-                    }
-                    
-                    function setNextButtonToGetDateStartedART(key){
-                        __$('nextButton').onmousedown = function(){
-                            year_started_art = $('year_started_art').value
-                            month_started_art = $('month_started_art').value
-                            day_started_art = __$('touchscreenInput' + tstCurrentPage).value;
-
-                            art_start_date = year_started_art + "-" + month_started_art + "-" + day_started_art
-                            answers_hash[key] = art_start_date;
-                            gotoNextPage();
-                        }
-                    }
-
-                    function setNextButtonToGetCD4(key){
-                        __$('nextButton').onmousedown = function(){
-                            $('year_of_cd4').value, $('month_of_cd4').value
-
-                            cd4_year = $('year_of_cd4').value
-                            cd4_month = $('month_of_cd4').value
-                            cd4_day = __$('touchscreenInput' + tstCurrentPage).value;
-
-                            cd4_date = cd4_year + "-" + cd4_month + "-" + cd4_day
-                            answers_hash[key] = art_start_date;
-                            gotoNextPage();
-                        }
-                    }
-
-                    function setNextButtonToGetConfirmatoryTestDate(key){
-                        __$('nextButton').onmousedown = function(){
-                            confirmatory_hiv_test_year = $('confirmatory_hiv_test_year').value
-                            confirmatory_hiv_test_month = $('confirmatory_hiv_test_month').value
-                            confirmatory_hiv_test_day = __$('touchscreenInput' + tstCurrentPage).value;
-
-                            confirmatory_date = confirmatory_hiv_test_year + "-" + confirmatory_hiv_test_month + "-" + confirmatory_hiv_test_day;
-                            answers_hash[key] = art_start_date;
-                            gotoNextPage();
-                        }
-                    }
-
-                    function submitParametersOnUnknownConfirmatoryDate(){
-                        var nextButton =  document.getElementById('nextButton');
-                        nextButton.onmousedown = function(){
-                            value = $('touchscreenInput'+tstCurrentPage).value;
-                            if (value.match(/UNKNOWN/i)){
-                                submitHIVClinicRegistration();
-                                
-                            } else{
-                                gotoNextPage();
-                            }
-                        }
-                    }
-
-                    function submitParametersOnUnknownConfirmatoryTestType(){
-                        var nextButton =  document.getElementById('nextButton');
-                        nextButton.onmousedown = function(){
-                            value = __$('touchscreenInput' + tstCurrentPage).value;
-                            answers_hash["confirmatory_hiv_test_type"] = value;
-                            if (value.match(/NOT DONE/i)){
-                                submitHIVClinicRegistration();
-
-                            } else{
-                                gotoNextPage();
-                            }
-                        }
-                    }
-
-
-                    var date_art_last_taken_value_text = "";
-                    
-                    function setDateARTLastTaken(){
-                        taken_art_in_the_last_two_months = answers_hash["taken_art_in_the_last_two_months"].toUpperCase();
-                        taken_art_in_the_last_two_weeks = answers_hash["taken_art_in_the_last_two_weeks"].toUpperCase();
-
-                        year_art_taken = parseInt(__$("year_art_last_taken").value);
-                        month_art_taken = __$("month_art_last_taken").value;
-                        day_art_taken = parseInt(__$("day_art_last_taken").value);
-
-                        if (taken_art_in_the_last_two_months == 'YES'){
-                            if (taken_art_in_the_last_two_weeks == 'YES'){
-                                var date = new Date();
-                                date.setDate(date.getDate() - 14); //two weeks
-                                date = date.toDateString();
-                                answers_hash["date_art_last_taken"] = date;
-                                date_art_last_teken_value_text = "Estimated";
-                            }
-                            if (taken_art_in_the_last_two_weeks == 'NO'){
-                                var date = new Date();
-                                date.setDate(date.getDate() - 60); // 2 months
-                                date = date.toDateString();
-                                answers_hash["date_art_last_taken"] = date;
-                                date_art_last_taken_value_text = "Estimated";
-                            }
-                        }
-
-                        if (taken_art_in_the_last_two_months == 'NO'){
-                            var date = new Date();
-                            date.setDate(date.getDate() - 90); //3 months
-                            date = date.toDateString();
-                            answers_hash["date_art_last_taken"] = date;
-                            date_art_last_taken_value_text = "Estimated";
-                        }
-
-                        if (year_art_taken > 1 && month_art_taken != 'Unknown' && !(isNaN(day_art_taken)) && day_art_taken > 0){
-                            date = year_art_taken + "/" + month_art_taken + "/" + day_art_taken;
-                            answers_hash["date_art_last_taken"] = date;
-                        }
-
-                        if (year_art_taken > 1 && month_art_taken == 'Unknown'){
-                            date = year_art_taken + "/July/01";
-                            answers_hash["date_art_last_taken"] = date;
-                            date_art_last_taken_value_text = "Estimated";
-                        }
-                        else if (year_art_taken > 1 && month_art_taken != 'Unknown' &&  isNaN(day_art_taken)){
-                            date = year_art_taken + "/" +  month_art_taken + "/15";
-                            answers_hash["date_art_last_taken"] = date;
-                            date_art_last_taken_value_text = "Estimated";
-                        }
-
-                    }
-
-                    function setDateARTStarted(){
-                        year_started_art = parseInt(__$("year_started_art").value);
-                        month_started_art = __$("month_started_art").value;
-                        day_started_art = parseInt(__$("day_started_art").value);
-
-                        art_start_date_estimation = __$("art_start_date_estimation").value;
-
-                        if (art_start_date_estimation.match(/6 months/i)){
-                            var date = new Date();
-                            date.setDate(date.getDate() - 180); // 6 months
-                            date = date.toDateString();
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                        if (art_start_date_estimation.match(/12 months/i)){
-                            var date = new Date();
-                            date.setDate(date.getDate() - 365); // 6 months
-                            date = date.toDateString();
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                        if (art_start_date_estimation.match(/18 months/i)){
-                            var date = new Date();
-                            date.setDate(date.getDate() - 540); // 6 months
-                            date = date.toDateString();
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                        if (art_start_date_estimation.match(/24 months/i)){
-                            var date = new Date();
-                            date.setDate(date.getDate() - 730); // 6 months
-                            date = date.toDateString();
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                        if (art_start_date_estimation.match(/Over 2 years/i)){
-                            var date = new Date();
-                            date.setDate(date.getDate() - 730); // 6 months
-                            date = date.toDateString();
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                        if (year_started_art > 1 && month_started_art != 'Unknown' && day_started_art > 0){
-                            date = year_started_art + "/" + month_started_art + "/" + day_started_art;
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                        if (year_started_art > 1 && month_started_art == 'Unknown'){
-                            date = year_started_art + "/July/01";
-                            answers_hash["date_art_started"] = date;
-                        }
-                        else if (year_started_art > 1 && month_started_art != 'Unknown' &&  isNaN(day_started_art)){
-                            date = year_started_art + "/" +  month_started_art + "/15";
-                            answers_hash["date_art_started"] = date;
-                        }
-
-                    }
-
-                    function changeSubmitFunction(){
-                        var nextButton =  document.getElementById('nextButton');
-                        nextButton.onmousedown = function(){
-                            submitHIVClinicRegistration();
-                            // alert("Form submitted")
-                        }
-                    }
-
-                    function showCategory2(category) {
-                        if (category.length < 1)
-                            return;
-
-                        var pos = checkCtrl(__$("content"));
-
-                        if (__$("category")) {
-                            document.body.removeChild(__$("category"));
-                        }
-
-                        var cat = document.createElement("div");
-                        cat.id = "category";
-                        cat.style.position = "absolute";
-                        cat.style.right = "10px";
-                        cat.style.top = (pos[2] + 2) + "px";
-                        cat.style.fontSize = "26px";
-                        cat.style.padding = "10px";
-                        cat.style.backgroundColor = "#9e9";
-                        cat.style.borderColor = "#7c7";
-                        cat.style.color = "#000";
-                        cat.style.opacity = "0.95";
-                        cat.style.zIndex = 100;
-                        cat.style.textAlign = "center";
-                        cat.style.borderRadius = "30px";
-                        cat.innerHTML = category;
-
-                        document.body.appendChild(cat);
-                    }
-
-
-                    setTimeout(function () {showCategory2('')}, 500);
-
-                    function addYesNoToLabTests() {
-                        var tar = document.getElementById("inputFrame" + tstCurrentPage);
-                        var attr = 'Pregnancy test done,3339#Previous HIV test done,9655'
-                        buildYesNoUI('Lab Results', attr, tar);
-                    }
-
-                </script>
-
-        <form  onsubmit="submitParameters();">
-  
+        <form>
           <input type="text" name="lab-results"
-            tt_onLoad="__$('keyboard').style.display = 'none'; addYesNoToLabTests(); addHIVOption();"
-            optional="true" tt_onUnload="removeHIVOption();updatePreviousHIVTestDoneResponse();"
+            tt_onLoad="__$('keyboard').style.display = 'none'; 
+              addYesNoToLabTests(); addHIVOption();"
+            optional="true" tt_onUnload="removeHIVOption();
+              updatePreviousHIVTestDoneResponse();"
             tt_pageStyleClass= "NoControls" helpText="Lab Results" />
 
           <select tt_onLoad="" condition="checkPreviousHIVTest();" 
@@ -679,21 +346,21 @@
             tt_pageStyleClass="NoKeyboard">
               
               <option value=''></option>
-              <option value="Negative">Negative</option>
-              <option value="Positive">Positive</option>
-              <option value="Inconclusive">Inconclusive</option>
-              <option value="Unknown">Unknown</option>
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="inconclusive">Inconclusive</option>
+              <option value="unknown">Unknown</option>
               
           </select>
 
           <input tt_onLoad="" condition="$('prev_hiv_test_result').value !== '';" 
             field_type="date" helpText="Previous HIV test date"
-            id="prev_hiv_test_date" name="previous_hiv_test"
-            tt_pageStyleClass="" type="text"/>
+            id="prev_hiv_test_date" name="previous hiv test date"
+            tt_pageStyleClass="Date DatesOnly" type="text"/>
 
           <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-            allowFreeText="false" condition="$('prev_hiv_test_result').value === 'Positive'" 
-            helpText="Patient on ART" id="on_art" name="on_art" 
+            allowFreeText="false" condition="$('prev_hiv_test_result').value === 'positive'" 
+            helpText="Patient on ART" id="on_art" name="on art" 
             tt_pageStyleClass="NoKeyboard">
             
               <option value=''></option>
@@ -710,27 +377,28 @@
           <select condition="" multiple="multiple" 
             helpText="Available Lab Tests" optional="true" 
             id="available_test_results" name="available_test_results" 
-            tt_onLoad="" tt_pageStyleClass="NoKeyboard">
+            tt_onLoad="showCategory2('Lab results');changeSubmitFunction();" 
+            tt_pageStyleClass="NoKeyboard">
 
-              <option value=""></option>
-              <option value="hiv" id="hiv">HIV</option>
-              <option value="hb" id="hb">HB</option>
-              <option value="syphilis" id="syphilis">Syphilis</option>
+              <option value="hiv_status" id="hiv">HIV</option>
+              <option value="hb">HB</option>
+              <option value="syphilis">Syphilis</option>
               <option value="malaria">Malaria</option>
-              <option value="blood group">Blood Group</option>
+              <option value="blood_group">Blood Group</option>
               <option value="urine">Urine</option>
           
           </select>
 
-          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-            allowFreeText="false" condition="getSelectedLabTests().match(/HIV/)" 
+          <select tt_onLoad="showCategory2('Available Lab Test Results');
+              changeSubmitFunction();" allowFreeText="false" 
+            condition="getSelectedLabTests().match(/hiv/)" 
             helpText="HIV Test Result" id="hiv_status" 
             name="hiv_status" tt_pageStyleClass="NoKeyboard">
             
               <option value=''></option>
-              <option value="Negative">Negative</option>
-              <option value="Positive">Positive</option>
-              <option value="Inconclusive">Inconclusive</option>
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
+              <option value="inconclusive">Inconclusive</option>
               <!-- option value="Unknown">Unknown< /option-->
           
           </select>
@@ -751,37 +419,41 @@
             id="arv_number" name="arv_number" tt_pageStyleClass="" 
             type="text" />
 
-          <input condition="getSelectedLabTests().match(/HB/);" field_type="number" 
+          <input condition="getSelectedLabTests().match(/hb/);" field_type="number" 
             helpText="HB Test Result (g/dl)" id="hb" name="hb" 
-            tt_onLoad="showCategory2('Available Lab Test Results');" 
+            tt_onLoad="showCategory2('Available Lab Test Results');
+              changeSubmitFunction();" 
             tt_onUnLoad="" type="text" max="16" min="2"
             validationCode="" tt_pageStyleClass="Numeric NumbersOnlyWithDecimal" 
             validationMessage="" />
 
-          <select tt_onLoad="showCategory2('Available Lab Test Results');" allowFreeText="false" 
-            condition="getSelectedLabTests().match(/Syphilis/)" 
+          <select tt_onLoad="showCategory2('Available Lab Test Results');
+              changeSubmitFunction" allowFreeText="false" 
+            condition="getSelectedLabTests().match(/syphilis/)" 
             helpText="Syphilis Test Result" 
             id="syphilis" name="syphilis" tt_pageStyleClass="NoKeyboard">
              
               <option value=''></option>
-              <option value="Negative">Negative</option>
-              <option value="Positive">Positive</option>
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
               
           </select>
           
-          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-            allowFreeText="false" condition="getSelectedLabTests().match(/Malaria/)" 
+          <select tt_onLoad="showCategory2('Available Lab Test Results');
+              changeSubmitFunction();" 
+            allowFreeText="false" condition="getSelectedLabTests().match(/malaria/)" 
             helpText="Malaria Test Result" 
             id="malaria" name="malaria" tt_pageStyleClass="NoKeyboard">
               
               <option value=''></option>
-              <option value="Negative">Negative</option>
-              <option value="Positive">Positive</option>
+              <option value="negative">Negative</option>
+              <option value="positive">Positive</option>
               
           </select>
 
-          <select tt_onLoad="showCategory2('Available Lab Test Results');" allowFreeText="false" 
-            condition="getSelectedLabTests().match(/Blood Group/);" 
+          <select tt_onLoad="showCategory2('Available Lab Test Results');
+              changeSubmitFunction();" allowFreeText="false" 
+            condition="getSelectedLabTests().match(/blood_group/);" 
             helpText="Blood Group Test Result" id="blood_group" 
             name="blood_group" tt_pageStyleClass="NoKeyboard">
             
@@ -797,14 +469,15 @@
               
           </select>
           
-          <select condition="getSelectedLabTests().match(/Urine/);" multiple="multiple" 
+          <select condition="getSelectedLabTests().match(/urine/);" multiple="multiple" 
             helpText="Available Urine Tests Results" optional="true" 
-            id="available_urine_tests" name="available_urine_tests" 
-            tt_onLoad="showCategory2(Available Lab Test Results)" 
+            id="available_urine_tests" name="urine" 
+            tt_onLoad="showCategory2(Available Lab Test Results);
+              changeSubmitFunction();" 
             tt_pageStyleClass="NoKeyboard">
 
               <option value=""></option>
-              <option value="urine protein">Urine protein</option>
+              <option value="protein">Urine protein</option>
               <option value="glucose">Glucose</option>
               <option value="wbc">WBC</option>
               <option value="rbc">RBC</option>
@@ -812,9 +485,9 @@
                     
           </select>
           
-          <select allowFreeText="false" condition="getSelectedUrineTests().match(/Urine protein/)" 
+          <select allowFreeText="false" condition="getSelectedUrineTests().match(/protein/)" 
             helpText="Urine Protein Test Result" 
-            id="urine_protein_test" name="urine_protein_test" 
+            id="protein" name="protein" 
             tt_onLoad="showCategory2('Available Urine Test Results');" 
             tt_onUnLoad="">
 
@@ -828,10 +501,11 @@
           
           </select>
                     
-          <select condition="getSelectedUrineTests().match(/Glucose/)" 
+          <select condition="getSelectedUrineTests().match(/glucose/)" 
             helpText="Glucose Test Result (mg/dl)" 
-            id="glucose_test" name="glucose_test" 
-            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            id="glucose" name="glucose" 
+            tt_onLoad="showCategory2('Available Urine Test Results');
+              changeSubmitFunction();" 
             tt_onUnLoad="" validationMessage="">
 
               <option value=""></option>
@@ -842,24 +516,27 @@
                     
           </select>
           
-          <input condition="getSelectedUrineTests().match(/WBC/);" 
+          <input condition="getSelectedUrineTests().match(/wbc/);" 
             field_type="number" min="0" max="1000000"
             helpText="White Blood Cells Test Result (cmm)" 
             id="wbc" name="wbc" 
-            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            tt_onLoad="showCategory2('Available Urine Test Results');
+              changeSubmitFunction();" 
             tt_onUnload="" type="text" 
             tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
 
-          <input condition="getSelectedUrineTests().match(/RBC/)" 
+          <input condition="getSelectedUrineTests().match(/rbc/)" 
             field_type="number" min="0" max="1000000" 
             helpText="Red Blood Cells Test Result (cmm)" 
             id="rbc" name="rbc" 
-            tt_onLoad="showCategory2('Available Urine Test Results');" 
+            tt_onLoad="showCategory2('Available Urine Test Results');
+              changeSubmitFunction();" 
             tt_onUnload="" type="text" 
             tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
 
-          <select tt_onLoad="showCategory2('Available Urine Test Results');"  
-            allowFreeText="false" condition="getSelectedUrineTests().match(/Nitrate/);" 
+          <select tt_onLoad="showCategory2('Available Urine Test Results');
+              changeSubmitFunction();" allowFreeText="false" 
+            condition="getSelectedUrineTests().match(/nitrate/);" 
             helpText="Nitrate Test Result" id="nitrate" 
             name="nitrate" tt_onUnload="" tt_pageStyleClass="NoKeyboard">
             
@@ -870,7 +547,7 @@
                
           </select>
 
-          <input name="commit" type="submit" value="Finish" />
+          <input name="commit" type="submit" value="Finish" onmousedown="submitLabResultsEncounter();"/>
 
         </form>
       </div>
