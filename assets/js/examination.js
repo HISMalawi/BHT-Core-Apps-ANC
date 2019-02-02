@@ -1,182 +1,158 @@
 var fundus_by_lmp = "<%= @anc_patient.fundus_by_lmp %>"
-    function selectNone(){
+var check = 0;
+var breech = 0;
+var selectedSigns = "";
+var values_hash = {};
+
+function selectNone(){
     
-    if (__$("chkSelectAll") && __$("lblSelectAll")){
+  if (__$("chkSelectAll") && __$("lblSelectAll")){
 
-      __$("lblSelectAll").innerHTML = "None";
+    __$("lblSelectAll").innerHTML = "None";
 
-      __$("chkSelectAll").onclick = function(){
-        if ( __$("chkSelectAll").src.match(/unticked/))
+    __$("chkSelectAll").onclick = function(){
+      if ( __$("chkSelectAll").src.match(/unticked/))
         __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
-        checkAll();
-        __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true")
-        setTimeout("gotoNextPage()", 200);
-      }
-      __$("lblSelectAll").onclick = function(){
+      checkAll();
+      __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true")
+      setTimeout("gotoNextPage()", 200);
+    }
+    __$("lblSelectAll").onclick = function(){
 
-        if ( __$("chkSelectAll").src.match(/unticked/))
-          __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
-        checkAll();
-        __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true");
+      if ( __$("chkSelectAll").src.match(/unticked/))
+        __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
+      checkAll();
+      __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true");
 
-        setTimeout("gotoNextPage()", 200);
+      setTimeout("gotoNextPage()", 200);
+    }
+  }
+  setTimeout("selectNone()", 50);
+}
+
+function changeUnknownToNone() {
+  if (__$("Unknown")) {
+    __$("Unknown").innerHTML = "<span>None</span>";
+    __$("Unknown").onmousedown = function () {
+      __$("touchscreenInput" + tstCurrentPage).value = "None";
+    }
+  }
+}
+
+function readableMessage() {
+
+  var conceptName = conceptHash[tstCurrentPage]
+  try {
+      conceptName = conceptName.charAt(0).toUpperCase() + conceptName.slice(1).toLowerCase();
+      if (__$("messageBar") && !__$("messageBar").innerHTML.match(conceptName)) {
+        __$("messageBar").innerHTML = __$("messageBar").innerHTML.replace("Value", conceptName + " Value").replace("value", conceptName + " value").replace("a " + conceptName + " value", conceptName + " value")
       }
+  } catch (ex) {
+
+  }
+  
+  setTimeout(function () {
+    readableMessage()
+  }, 50);
+}
+
+function buildConceptsHash() {
+  var count = 0;
+  var inputArr = document.getElementsByTagName("input")
+  conceptHash = {};
+  for (var i = 0; i < inputArr.length; i++) {
+    if (inputArr[i].name && inputArr[i].name.match("concept_name") && inputArr[i].name.match("observations")) {
+      conceptHash[count] = inputArr[i].value;
+      count++;
+    }
+  }
+}
+
+function set_ajaxURL_for_suggestions(url, filter_value) {
+  $('touchscreenInput' + tstCurrentPage).setAttribute('ajaxURL', url + filter_value + "&search_string=");
+  listSuggestions(tstCurrentPage);
+}
+
+function ajaxify(cat, selected) {
+  
+  if (selected == "Ball" || selected == "Nill palpable") {
+    __$("frame2").style.display = "none";
+    __$("htext2").style.display = "none";
+    jQuery
+  } else if (selected.length > 0) {
+    try {
+      __$("frame2").style.display = "block";
+      __$("htext2").style.display = "block";
+    }catch(e){
+
+    }
+  }
+  
+  if (cat == "presentation") {
+    if ((selected.toLowerCase() == 'breech') && 
+      ( __$('presentation').value.toLowerCase() == 'breech')) {
+      data = ["", "Right Sacro Anterior", "Left Sacro Anterior", "Unknown"].join('|')
+      handleResultData(cat, data, "breech_presentation");
+    }else if (selected.toLowerCase() == 'cephalic') {
+      data = ["", "Right Occipito Anterior", "Left Occipito Anterior", "Unknown"].join('|')
+      handleResultData(cat, data, "cephalic_presentation");
+    }else if (selected.toLowerCase() == 'ball' || selected.toLowerCase() == 'nill palpable') {
+      data = "";
+      handleResultData(cat, data, "");
     }
 
-    setTimeout("selectNone()", 50);
+  } else if (cat == "district") {
+    data = ""
+    handleResultData(cat, data);
   }
 
-    function calculateBP(pos) {
-        var bp;
+}
 
-        if (!$('bp')) {
-            var div = document.createElement("div");
-            div.id = "bp";
-            div.className = "statusLabel";
+function updateCustomTouchscreenInput(element) {
+  values_hash["district"] = element.innerHTML;
+  var inputTarget = tstInputTarget;
 
-            $("inputFrame" + tstCurrentPage).appendChild(div);
-        }
+  if (element.value.length > 1)
+    inputTarget.value = element.value;
+  else if (element.innerHTML.length > 1)
+    inputTarget.value = element.innerHTML;
 
-        if (pos == 1) {
-            bp = ($("touchscreenInput" + tstCurrentPage).value.trim().length > 0 ? $("touchscreenInput" +
-                    tstCurrentPage).value.trim() : "?") +
-                    "/" + ($("diastolic_blood_pressure").value.trim().length > 0 ? $("diastolic_blood_pressure").value.trim() : "?");
-        } else if (pos == 2) {
-            bp = ($("systolic_blood_pressure").value.trim().length > 0 ? $("systolic_blood_pressure").value.trim() : "?") +
-                    "/" + ($("touchscreenInput" + tstCurrentPage).value.trim().length > 0 ? $("touchscreenInput" +
-                    tstCurrentPage).value.trim() : "?");
-        }
+  highlightSelection(element.parentNode.childNodes, inputTarget);
+  tt_update(inputTarget);
+}
 
-        $("bp").innerHTML = "Blood Pressure: <i style='font-size: 1.2em; float: right;'>" + bp + "</i>";
+function verifyFields() {
 
-        timedEvent = setTimeout('calculateBP(' + pos + ')', 500);
+  if (__$("viewport3")) {
+    var handlers = ["viewport", "viewport2", "viewport3", "viewport4"];
+    var messages = {"viewport": "Select presentation to proceed",
+    "viewport2": "Select presentation type to proceed",
+    "viewport3": "Select position to proceed",
+    "viewport4": "Select position type to proceed"
+   }
+   
+   var targets = {"viewport": "presentation",
+      "viewport2": "",
+      "viewport3": "position",
+      "viewport4": ""
     }
+    
+    //******* clear deselected fields
+    var selectedNodes = jQuery("#viewport3 ul li, #viewport4 ul li").filter(function () {
+      return this.style.backgroundColor == 'lightblue';
+    });
+    console.log(selectedNodes)
+    console.log(selectedNodes)
+    console.log(selectedNodes)
+    
+    if (selectedNodes.length > 0 && jQuery(selectedNodes[0]).visible() == false) {
+      __$("position").value = "";
+      if(__$("presentation").value.toLowerCase().trim() == "ball" || 
+        __$("presentation").value.toLowerCase().trim() == "nill palpable"){
 
-    function changeUnknownToNone() {
-        if (__$("Unknown")) {
-            __$("Unknown").innerHTML = "<span>None</span>";
-            __$("Unknown").onmousedown = function () {
-                __$("touchscreenInput" + tstCurrentPage).value = "None";
-            }
-        }
-    }
-
-
-    function readableMessage() {
-
-        var conceptName = conceptHash[tstCurrentPage]
-        try {
-            conceptName = conceptName.charAt(0).toUpperCase() + conceptName.slice(1).toLowerCase();
-            if (__$("messageBar") && !__$("messageBar").innerHTML.match(conceptName)) {
-                __$("messageBar").innerHTML = __$("messageBar").innerHTML.replace("Value", conceptName + " Value").replace("value", conceptName + " value").replace("a " + conceptName + " value", conceptName + " value")
-            }
-        } catch (ex) {
-        }
-
-        setTimeout(function () {
-            readableMessage()
-        }, 50);
-    }
-
-    function buildConceptsHash() {
-        var count = 0;
-        var inputArr = document.getElementsByTagName("input")
-        conceptHash = {};
-        for (var i = 0; i < inputArr.length; i++) {
-            if (inputArr[i].name && inputArr[i].name.match("concept_name") && inputArr[i].name.match("observations")) {
-                conceptHash[count] = inputArr[i].value;
-                count++;
-            }
-        }
-    }
-
-    var check = 0;
-
-    function set_ajaxURL_for_suggestions(url, filter_value) {
-        $('touchscreenInput' + tstCurrentPage).setAttribute('ajaxURL', url + filter_value + "&search_string=");
-        listSuggestions(tstCurrentPage);
-    }
-    var breech = 0;
-    function ajaxify(cat, selected) {
-        console.log(selected);
-
-        if (selected == "Ball" || selected == "Nil_palpable") {
-
-            __$("frame2").style.display = "none";
-            __$("htext2").style.display = "none";
-            jQuery
-        } else if (selected.length > 0) {
-
-            __$("frame2").style.display = "block";
-            __$("htext2").style.display = "block";
-        }
-
-        if (cat == "presentation") {
-
-            if ((selected.toLowerCase() == 'breech') && ( __$('presentation').value.toLowerCase() == 'breech')) {
-                data = ["", "Right Sacro Anterior", "Left Sacro Anterior", "Unknown"].join('|')
-                handleResultData(cat, data, "breech_presentation")
-            }
-            else if (selected.toLowerCase() == 'cephalic') {
-                data = ["", "Right Occipito Anterior", "Left Occipito Anterior", "Unknown"].join('|')
-                handleResultData(cat, data, "cephalic_presentation");
-            }
-            else if (selected.toLowerCase() == 'ball' || selected.toLowerCase() == 'nil palpable') {
-
-                data = "";
-                handleResultData(cat, data, "");
-            }
-
-        } else if (cat == "district") {
-            data = ""
-            handleResultData(cat, data);
-        }
-    }
-
-    function updateCustomTouchscreenInput(element) {
-
-        values_hash["district"] = element.innerHTML;
-        var inputTarget = tstInputTarget;
-
-        if (element.value.length > 1)
-            inputTarget.value = element.value;
-        else if (element.innerHTML.length > 1)
-            inputTarget.value = element.innerHTML;
-
-        highlightSelection(element.parentNode.childNodes, inputTarget);
-        tt_update(inputTarget);
-    }
-
-    function verifyFields() {
-
-        if (__$("viewport3")) {
-            var handlers = ["viewport", "viewport2", "viewport3", "viewport4"];
-            var messages = {"viewport": "Select presentation to proceed",
-                "viewport2": "Select presentation type to proceed",
-                "viewport3": "Select position to proceed",
-                "viewport4": "Select position type to proceed"
-            }
-
-            var targets = {"viewport": "presentation",
-                "viewport2": "",
-                "viewport3": "position",
-                "viewport4": ""
-            }
-
-            //******* clear deselected fields
-            var selectedNodes = jQuery("#viewport3 ul li, #viewport4 ul li").filter(function () {
-                return this.style.backgroundColor == 'lightblue';
-            });
-
-            if (selectedNodes.length > 0 && jQuery(selectedNodes[0]).visible() == false) {
-
-                __$("position").value = "";
-
-                if(__$("presentation").value.toLowerCase().trim() == "ball" || __$("presentation").value.toLowerCase().trim() == "nil palpable"){
-
-                    __$("breech_presentation").value = "";
-                    __$("cephalic_presentation").value = "";
-                }
+        __$("breech_presentation").value = "";
+        __$("cephalic_presentation").value = "";
+      }
                 if (jQuery(selectedNodes[0]).attr("target") != "") {
 
                     for (var i in selectedNodes) {
@@ -224,9 +200,9 @@ var fundus_by_lmp = "<%= @anc_patient.fundus_by_lmp %>"
             if (proceed) {
                  gotoPage(tstCurrentPage + 1)
             }
-        } else {
-             gotoNextPage();
-        }
+        } //else {
+          //gotoNextPage();
+        //}
     }
 
     function handleResultData(cat, result, target) {
@@ -234,29 +210,20 @@ var fundus_by_lmp = "<%= @anc_patient.fundus_by_lmp %>"
         values_hash["district"] = '';
 
         if (cat == "presentation") {
-
-
             __$("sc2").innerHTML = ""
-
             var data = result.split("|");
-
             var ul = document.createElement("ul");
-
             for (var i = 0; i < data.length; i++) {
-
                 var li = document.createElement("li")
                 li.setAttribute("class", "district");
                 li.setAttribute("target", target);
                 li.value = data[i]
                 li.innerHTML = data[i]
                 li.onmousedown = function () {
-
                     updateCustomTouchscreenInput(this);
                 }
-
                 ul.appendChild(li);
             }
-
             __$("sc2").appendChild(ul);
         } else if (cat == "district") {
 
@@ -397,10 +364,12 @@ var fundus_by_lmp = "<%= @anc_patient.fundus_by_lmp %>"
             li.onmousedown = function () {
 
                 __$("position").value = this.getAttribute("data");
+                console.log(this.getAttribute('data'));
 
                 var targetCheckers = jQuery("#sc4 ul li").filter(function () {
                     return this.style.backgroundColor == 'lightblue';
                 });
+                console.log(targetCheckers);
 
                 if (targetCheckers && targetCheckers.length == 1) {
                     var target  = targetCheckers[0].getAttribute("target")
@@ -414,8 +383,9 @@ var fundus_by_lmp = "<%= @anc_patient.fundus_by_lmp %>"
                 var arr = [""];
                 var target = "";
                 target = __$("position").value.trim().toLowerCase();
+                console.log(target);
 
-                switch (__$("position").value.trim().toLowerCase()) {
+                switch (this.getAttribute('data').trim().toLowerCase()) {
 
                     case "vertex":
                         arr = ["", "Left Occipito Anterior",

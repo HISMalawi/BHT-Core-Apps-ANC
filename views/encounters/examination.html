@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <title>Encounters New</title>
+    <title>Examination</title>
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
@@ -12,6 +12,7 @@
     <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/jquery-visible.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/examination.js"></script>
 
@@ -19,8 +20,67 @@
       tstUsername = "admin";
       var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
       var timedEvent;
-    var selectedSigns = "";
-    var values_hash = {};
+      var YesNoConcepts = {
+        "yes" : 1065,
+        "no" : 1066
+      };
+      
+      function submitExaminationsEncounter(){
+        var currentTime = moment().format(' HH:mm:ss');
+        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+        encounter_datetime += currentTime;
+                        	
+        var encounter = {
+          encounter_type_name: 'ANC EXAMINATION',
+          encounter_type_id:  98,
+          patient_id: patient_id,
+          encounter_datetime: encounter_datetime
+        }
+    
+        submitParameters(encounter, "/encounters", "postExaminationObs");
+      }
+
+  function postExaminationObs(encounter){
+    var obs = {
+      encounter_id: encounter.encounter_id,
+      observations: [
+        { concept_id: 6686, value_coded: YesNoConcepts[$('ultrasound').value] },
+        { concept_id: 7433, value_text: values_hash['region'] },
+        { concept_id: 7837, value_text: values_hash['district'] },
+        { concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value) },
+        { concept_id: 7979, value_coded: YesNoConcepts[$('fetal_heart_beat').value] },
+        { concept_id: 9637, value_coded: YesNoConcepts[$('enter_fetal_movement').value] },
+        { concept_id: 9562, value_coded: YesNoConcepts[$('fetal_movement_felt').value] },
+        { concept_id: 9563, value_numeric: parseInt($('last_fmf').value) }
+      ]
+    }
+
+    if ($('ultrasound').value === 'yes') {
+        obs.observations.push(
+          { concept_id: 7142, value_text: $('multiple_gestation').value },
+          { concept_id: 7919, value_text: $('liquor').value },
+          { concept_id: 7836, value_text: $('lie').value },
+          { concept_id: 9654, value_coded: YesNoConcepts[($('fetal_heart_movement_seen').value)] },
+        )
+    }
+
+    if ($('fetal_heart_beat').value == 'yes'){
+      obs.observations.push(
+        { concept_id: 7839, value_numeric: parseInt($('fetal_heart_rate').value) },
+      )
+    }
+    console.log(obs);
+    //submitParameters(obs, "/observations", "nextPage")
+  }
+
+  function changeSubmitFunction(){
+    var nextButton = document.getElementById('nextButton');
+    nextButton.setAttribute('onmousedown', 'submitExaminationEncounter()');
+  }
+  
+  function nextPage(obs){
+    nextEncounter(sessionStorage.patientID, 1);
+  }
 
     
     </script>
@@ -72,144 +132,65 @@
         position:relative;
         height:12px;
       }
+      .showPlus #plus {
+        display: block;
+        float: right;
+      }
 
-        .tt_controls_date_of_confirmatory_hiv_test #num { display:none; }
+      .inputFrameClass {
+        margin-left: 18px;
+      }
 
-        .tt_controls_date_last_taken #num { display:none; }
+      #viewport {
+        height: 100%;
+      }
+    </style>
 
-        .tt_controls_date_of_confirmatory_hiv_test table {  position: absolute; top: -360px; }
+  </head>
 
-        .tt_controls_date_art_last_taken table {  position: absolute; top: -360px; }
+  <body id="mateme">
+    <div id="container">
+      <div id="content">
+        <form action="">
 
-        .tt_controls_last_arv_drugs_taken .keyboard { display:none; }
+          <select name="ultrasound" id="ultrasound"
+            helpText="Ultrasound scan results available"
+            tt_onLoad="showCategory2('Examination');">
 
-        .tt_controls_cd4_count #qwerty , .tt_controls_cd4_percent #qwerty {
-            display: none;
-            }
+              <option value=""></option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
 
-            .tt_controls_cd4_count #equals, .tt_controls_cd4_percent #equals {
-                display: inline;
-            }
-
-            .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan {
-                position: absolute;
-                right: 65%;
-            }
-
-            .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan {
-                position: absolute;
-                right: 65%;
-            }
-
-            .tt_controls_cd4_count #greaterthan , .tt_controls_cd4_percent #greaterthan{
-                position: absolute;
-                right: 65%;
-                top: 5px;
-            }
-
-            .tt_controls_cd4_count #lessthan , .tt_controls_cd4_percent #lessthan {
-                top: 145px;
-            }
-
-            .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan { display:block; float:right }
-            .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan { display:block; float:right }
-
-            .tt_controls_weight_kg #qwerty , .tt_controls_height_cm #qwerty {
-                display: none;
-            }
-
-            .tt_controls_confirmatory_hiv_test_year #Unknown { display: inline; }
-
-            .tt_controls_confirmatory_hiv_test_month .keyboard { display:none; }
-
-            #tt_page_month_of_cd4_count .inputFrameClass {  height: 86%; }
-
-            #tt_page_month_of_cd4_count #viewport {  height: 85%; }
-
-            #tt_page_confirmatory_hiv_test_month .options {  height: 90%; }
-
-            #tt_page_confirmatory_hiv_test_month .inputFrameClass {  height: 86%; }
-
-            .tt_controls_month_started_art .keyboard { display:none; }
-
-            #tt_page_month_started_art .options {  height: 90%; }
-
-            #tt_page_month_started_art .inputFrameClass {  height: 86%; }
-
-            .tt_controls_year_last_taken_arvs #Unknown { display: inline; }
-
-            .tt_controls_month_art_last_taken .keyboard { display:none; }
-
-            #tt_page_month_last_taken_arvs .options {  height: 90%; }
-
-            #tt_page_month_art_last_taken .inputFrameClass {  height: 86%; }
-
-            .tt_controls_year_started_art #Unknown { display: inline; }
-
-            .tt_controls_month_of_cd4_count .keyboard{ display: none !important; }
-
-            .NoKeyboard .options {
-                height: 591px !important;
-            }
-          .showPlus #plus {
-            display: block;
-            float: right;
-          }
-
-          .inputFrameClass {
-            margin-left: 18px;
-          }
-
-          #viewport {
-            height: 100%;
-          }
-        </style>
-
-    </head>
-
-    <body id="mateme">
-      <div id="container">
-        <div id="content">
-          <form action="">
-
-            <select name="ultrasound_scan" id="ultrasound_scan"
-              helpText="Ultrasound scan results available"
-              tt_onLoad="showCategory2('Examination');">
-
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-
-            </select>
+          </select>
             
-            <select name="multiple_gestation" id="multiple_gestation"
-              helpText="Number of fetuses"
-              tt_onLoad="showCategory2('Examination');"
-              condition="$('ultrasound_scan').value = 'Yes';">
+          <select name="multiple_gestation" id="multiple_gestation"
+            helpText="Number of fetuses"
+            tt_onLoad="showCategory2('Examination');"
+            condition="$('ultrasound').value == 'yes';">
             
-                <option value=""></option>
-                <option value="one">One</option>
-                <option value="two">Two</option>
-                <option value="three">Three</option>
-                <option value="four">Four</option>
-                <option value="unknown">Unknown</option>
+              <option value=""></option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+              <option value="4">Four</option>
+              <option value="unknown">Unknown</option>
 
-            </select>
+          </select>
 
-            <select name="liquor" id="liquor"
-              helpText="Liquor" tt_onLoad="showCategory2('Examination');"
-              condition="$('ultrasound_scan').value = 'Yes';">
+          <select name="liquor" id="liquor"
+            helpText="Liquor" tt_onLoad="showCategory2('Examination');"
+            condition="$('ultrasound').value == 'yes';">
               
-                <option value=""></option>  
-                <option value="adequate">Adequate</option>
-                <option value="not_adequate">Not adequate</option>
-                <option value="unknown">Unknown</option>
+              <option value=""></option>  
+              <option value="Adequate">Adequate</option>
+                <option value="Not adequate">Not adequate</option>
+                <option value="Unknown">Unknown</option>
               
             </select>
 
             <select name="lie" id="lie"
               helpText="Lie" tt_onLoad="showCategory2('Examination');"
-              condition="$('ultrasound_scan').value = 'Yes';">
+              condition="$('ultrasound').value == 'yes';">
               
                 <option value=""></option>  
                 <option value="longitudinal">Longitudinal</option>
@@ -221,7 +202,7 @@
 
             <select name="fetal_heart_movement_seen" id="fetal_heart_movement_seen"
               helpText="Fetal heart movement seen" tt_onLoad="showCategory2('Examination');"
-              condition="$('ultrasound_scan').value = 'Yes';">
+              condition="$('ultrasound').value == 'yes';">
               
                 <option value=""></option>  
                 <option value="yes">Yes</option>
@@ -287,28 +268,28 @@
               </select>
 
               <input field_type="number" type="text"
-               id="enter_fundal_height" 
-               tt_onLoad="showCategory2('Examination'); //validateFundalHeight();"
-               helpText="Fundal height (cm)" name="fundal_height"
-               tt_pageStyleClass="NumbersOnlyWithUnknown"
-               absoluteMax="45" absoluteMin="10"/>
+                id="enter_fundal_height" 
+                tt_onLoad="showCategory2('Examination'); //validateFundalHeight();"
+                helpText="Fundal height (cm)" name="fundal_height"
+                tt_pageStyleClass="NumbersOnlyWithUnknown"
+                absoluteMax="45" absoluteMin="10"/>
 
-              <select id="enter_fetal_heart" name="fetal_heart_beat"
+              <select id="fetal_heart_beat" name="fetal_heart_beat"
                 helpText="Fetal heart beat" 
-                tt_onLoad="showCategory2('Examination');"
-                condition="$('presentation').value != 'Ball' || $('presentation').value != 'Nil palpable'">
+                tt_onLoad="showCategory2('Examination');">
+              <!--condition="$('presentation').value != 'Ball' || $('presentation').value != 'Nill palpable'"-->
 
                 <option value=""></option>
-                <option value="heard">Heard</option>
-                <option value="not heard">Not heart</option>
+                <option value="Heard">Heard</option>
+                <option value="Not heard">Not heart</option>
 
               </select>
 
               <input id="fetal_heart_rate" field_type="number"
                 name="fetal_heart_rate" type="text"
-                helpText="Fetal heart rate" tt_onLoad="showCategory2('Examination')"
+                helpText="Fetal heart rate" 
+                tt_onLoad="showCategory2('Examination');"
                 tt_pageStyleClass="NumbersOnlyWithUnknown"
-                condition="$('enter_fetal_heart').value == 'heard'"
                 min="120" max="140"/>
 
               <select name="FETAL MOVEMENT HEARD" id="enter_fetal_movement"
