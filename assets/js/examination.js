@@ -80,12 +80,8 @@ function ajaxify(cat, selected) {
     __$("htext2").style.display = "none";
     jQuery
   } else if (selected.length > 0) {
-    try {
-      __$("frame2").style.display = "block";
-      __$("htext2").style.display = "block";
-    }catch(e){
-
-    }
+    __$("frame2").style.display = "block";
+    __$("htext2").style.display = "block";
   }
   
   if (cat == "presentation") {
@@ -200,9 +196,9 @@ function verifyFields() {
             if (proceed) {
                  gotoPage(tstCurrentPage + 1)
             }
-        } //else {
-          //gotoNextPage();
-        //}
+        } else {
+          gotoNextPage();
+        }
     }
 
     function handleResultData(cat, result, target) {
