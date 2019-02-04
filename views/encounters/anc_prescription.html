@@ -14,10 +14,18 @@
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/anc_prescription.js"></script>
+    <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
     <!--link rel="stylesheet" href="styles.css" type="text/css"-->
     <!-- %= stylesheet_link_tag "prescription/styles" % -->
     <script>
-      var tt_cancel_destination = "/patients/show/<%= @patient.patient_id %>";
+      var apiProtocol = sessionStorage.apiProtocol;
+      var apiURL = sessionStorage.apiURL;
+      var apiPort = sessionStorage.apiPort;
+      var patientID = sessionStorage.patientID;
+      var programID = sessionStorage.programID;
+      var authToken = sessionStorage.authorization
+
+      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
       var drugs = [];
       var strengths = [];
       var units = [];
@@ -30,10 +38,29 @@
       var drug_set_frequency = [];
       var drug_set_duration = [];		
 
-      drugs = ["Albendazole", "Fansida", "Fefol"]
-      strengths = ["1", "2", "3"]
-      units = ['am', 'pm', 'kg']
-      drug_ids = [11,15,12]
+      function getDrugs(){
+        var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs"
+        apiPath += "?page_size=100";
+        
+        GET({
+          url: apiPath,
+          async: true,
+          headers: {
+            'Authorization': authToken
+          }
+        }, {}, function (data) {
+          for(var i = 0; i < data.length; i++){
+            drugs.push(data[i]['name']);
+            strengths.push(data[i]['dose_strength']);
+            units.push(data[i]['units']);
+            drug_ids.push(data[i]['drug_id']);
+          }
+        }, function (error) {
+          console.log(error);
+        });
+      }
+
+      getDrugs();
 
       var drug_sets = {} //<%= @drug_sets.to_json.html_safe %>
       var set_names = {} //<%= @set_names.to_json.html_safe %>
