@@ -90,16 +90,47 @@
         var orders = [];
         for (selected_drug in selectedDrugs){
           var drug_id = selected_drug.match(/\d+/)[0];
+          drug_name = $("row_"+selected_drug).getAttribute("d-name"); 
           var frequency = __$("row_frequency_" + selected_drug).innerHTML;
           var duration = parseInt(__$("row_duration_" + selected_drug).innerHTML);
+          dose = $("row_" + selected_drug).getAttribute("dose");
+          units = $("row_" + selected_drug).getAttribute("units"); //to be edited.
+          var instructions = "";
+
           var start_date = new Date(sessionStorage.sessionDate);
           var start_date_formated = getFormattedDate(start_date);
           var auto_expire_date = start_date.setDate(start_date.getDate() + duration);
           var auto_expire_date_formated = getFormattedDate(new Date(auto_expire_date));
-          dose = 1; //to be edited.
-          units = "tabs"; //to be edited.
           var eq_daily_dose = parseFloat(dose) * dosesPerDay(frequency)
-          
+
+
+          if (frequency.toUpperCase() == "VARIABLE") {
+            if (instructions == "") {
+              instructions = drug.name+":";
+              if (dose[0] !== "" && parseFloat(dose[0]) == 0){
+                instructions += " IN THE MORNING (QAM):"+dose[0]+" "+units;
+              }else if (dose[1] !== "" && parseFloat(dose[1]) == 0){
+                instructions += " ONCE A DAY AT NOON (QNOON):"+dose[1]+" "+units;
+              }else if (dose[2] !== "" && parseFloat(dose[2]) == 0){
+                instructions += " IN THE EVENING (QPM):"+dose[2]+" "+units;
+              }else if (does[3] !== "" && parseFloat(dose[3]) == 0){
+                instructions += " ONCE A DAY AT NIGHT (QHS):"+dose[3]+" "+units;
+              }
+              instructions += " for "+duration+" days";
+            }
+
+            if (Array.isArray(dose)){
+              total_dose = dose.reduce((a, b) => a + b, 0);
+              dose = total_dose;
+            }
+            eq_daily_dose = dose || eq_daily_dose;
+        
+          }else {
+            if (instructions === ""){
+              instructions = drug_name+": "+dose+" "+units+" "+frequency+" for "+duration+" days";
+            }
+          }
+
           drug_order = {
             drug_inventory_id: drug_id,
             dose: dose,
@@ -107,14 +138,13 @@
             frequency: frequency,
             start_date: start_date_formated,
             auto_expire_date: auto_expire_date_formated,
-            instructions: "instructions",
+            instructions: instructions,
             units: units
           }
 
           drug_orders_params.drug_orders.push(drug_order);
 
         }
-        
         submitParameters(drug_orders_params, "/drug_orders", "nextPage");
       }
 
@@ -184,6 +214,10 @@
       }
       getPrescriptions();
 
+      function nextPage(obs){
+        nextEncounter(sessionStorage.patientID, programID);
+      }
+
 
     </script>
   </head>
@@ -247,7 +281,7 @@
           </div>
           <div class="cell" style="border: 0px solid #999; width: 200px; text-align: center; vertical-align: top;">
             <!--button class='button_red' id='btncancel' style='float: none;'-->
-            <button class='big_button button_green' id='btndone' style='float: none;' onmousedown = 'buildParams();'>
+            <button class='big_button button_green' id='btndone' style='float: none;' onmousedown = 'submitTreatmentEncounter();'>
               Finish
             </button>
             <button class='big_button button_blue' id='btnback' style='float: none;' onmousedown="clearAll();">
