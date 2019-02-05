@@ -1,0 +1,122 @@
+{
+  "encounters": {
+   "vitals": {
+      "available": true,
+      "activitiesIcon": "/assets/images/vitals.png",
+      "url": "/views/patient/vitals.html"
+    },
+    "appointment": {
+      "available": true,
+      "activitiesIcon": "/assets/images/appointment.png",
+      "url": "/views/patient/appointment.html"
+    },
+    "obstetric history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/obstetric_history.png",
+      "url": "/apps/ANC/views/encounters/obstetric_history.html"
+    },
+    "Current pregnancy": {
+      "available": true,
+      "activitiesIcon": "/assets/images/current_preg.png",
+      "url": "/apps/ANC/views/encounters/current_pregnancy.html"
+    },
+    "Lab results": {
+    "available": true,
+    "activitiesIcon": "/assets/images/lab.png",
+    "url": "/apps/ANC/views/encounters/lab_results.html"
+    },
+    "PMTCT": {
+      "available": true,
+      "activitiesIcon": "/assets/images/pmtct.png",
+      "url": "/apps/ANC/views/encounters/pmtct.html"
+    },
+    "Examination": {
+      "available": true,
+      "activitiesIcon": "/assets/images/diagnosis.png",
+      "url": "/apps/ANC/views/encounters/examination.html"
+    },
+    "ANC prescription": {
+      "available": true,
+      "activitiesIcon": "/assets/images/dispensing.png",
+      "url": "/apps/ANC/views/encounters/anc_prescription.html"
+    },
+    "Visit type": {
+      "available": true,
+      "activitiesIcon": "/assets/images/registration.png",
+      "url": "/apps/ANC/views/encounters/visit_type.html"
+    },
+    "Medical history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/medical_history.png",
+      "url": "/apps/ANC/views/encounters/medical_history.html"
+    },
+    "Surgical history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/surgical_history.png",
+      "url": "/apps/ANC/views/encounters/surgical_history.html"
+    },
+    "Social history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/social_history.png",
+      "url": "/apps/ANC/views/encounters/social_history.html"
+    },
+    "TTV prescription": {
+      "available": true,
+      "activitiesIcon": "/assets/images/prescription/medication.png",
+      "url": "/apps/ANC/views/encounters/ttv.html"
+    }
+  },
+  "activities": {
+    "url": "/apps/ANC/views/activities.html",
+    "tasks": [
+      ["ANC Visit Type", "anc visit type"],
+      ["OBSTETRIC HISTORY", "obstetric history"],
+      ["MEDICAL HISTORY", "medical history"],
+      ["SURGICAL HISTORY", "surgical history"],
+      ["SOCIAL HISTORY", "social history"],
+      ["LAB RESULTS", "lab results"],
+      ["CURRENT PREGNANCY", "current pregnancy"],
+      ["OBSERVATIONS", "anc examination"]
+    ]
+  },
+    
+  "others": [
+    {
+      "activitiesName": "National ID (Print)",
+      "available": false,
+      "activitiesIcon": "/assets/images/barcode.png",
+      "activitiesDescription": "Print Patient National ID",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    },
+    {
+      "activitiesName": "Lab activities",
+      "available": false,
+      "activitiesIcon": "/assets/images/lab.png",
+      "activitiesDescription": "Print Patient Visit Summary",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    },
+    {
+      "activitiesName": "Demographics (Print)",
+      "available": false,
+      "activitiesIcon": "/assets/images/print.png",
+      "activitiesDescription": "Print Patient Demographics",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    },
+    {
+      "activitiesName": "Demographics (Edit)",
+      "available": false,
+      "activitiesIcon": "/assets/images/edit.png",
+      "url": "/views/patient/edit_demographics.html",
+      "activitiesDescription": "Print Patient Demographics",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    },
+    {
+      "activitiesName": "Change session date",
+      "available": false,
+      "activitiesIcon": "/assets/images/time.png",
+      "url": "/views/change_session_date.html",
+      "activitiesDescription": "Change session date (for retrospective entry)",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    }
+  ]
+}
