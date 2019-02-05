@@ -856,17 +856,24 @@ function switchViews(current){
 }
 
 function addDrug(id){
+    
+    var drug = __$(id).getAttribute("drug");
+    var frequency = __$(id).getAttribute("frequency");
+    var duration = __$(id).getAttribute("duration");
+    var dose = __$(id).getAttribute("dose");
+    var units = __$(id).getAttribute("unit");
+    
     var row = document.createElement("div");
     row.className = "row";
     row.id = "row_" + id;
+    row.setAttribute("dose", dose);
+    row.setAttribute("units", units);
+    row.setAttribute("d-name", drug);
   
     __$("drugs").appendChild(row);
     scroll(__$("scroll_me"));
    
     
-    var drug = __$(id).getAttribute("drug");
-    var frequency = __$(id).getAttribute("frequency");
-    var duration = __$(id).getAttribute("duration");
   
     var cell1 = document.createElement("div");
     cell1.className = "cell borderRightBottom";
