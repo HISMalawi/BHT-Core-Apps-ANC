@@ -35,12 +35,12 @@
       "activitiesIcon": "/assets/images/diagnosis.png",
       "url": "/apps/ANC/views/encounters/examination.html"
     },
-    "ANC prescription": {
+    "Treatment": {
       "available": true,
       "activitiesIcon": "/assets/images/dispensing.png",
       "url": "/apps/ANC/views/encounters/anc_prescription.html"
     },
-    "Visit type": {
+    "anc visit type": {
       "available": true,
       "activitiesIcon": "/assets/images/registration.png",
       "url": "/apps/ANC/views/encounters/visit_type.html"
@@ -60,7 +60,7 @@
       "activitiesIcon": "/assets/images/social_history.png",
       "url": "/apps/ANC/views/encounters/social_history.html"
     },
-    "TTV prescription": {
+    "dispensing": {
       "available": true,
       "activitiesIcon": "/assets/images/prescription/medication.png",
       "url": "/apps/ANC/views/encounters/ttv.html"
@@ -76,7 +76,8 @@
       ["SOCIAL HISTORY", "social history"],
       ["LAB RESULTS", "lab results"],
       ["CURRENT PREGNANCY", "current pregnancy"],
-      ["OBSERVATIONS", "anc examination"]
+      ["OBSERVATIONS", "anc examination"],
+      ["DISPENSING", "TTV Dispensation"]
     ]
   },
     
