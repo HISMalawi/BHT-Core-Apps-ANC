@@ -162,27 +162,26 @@
       }
   
       function selectNone(){
-        $('chkSelectAll').src = "";
-        $('chkSelectAll').src = "/public/touchscreentoolkit/lib/images/unticked.jpg";
 
         if (__$("chkSelectAll") && __$("lblSelectAll")){
 
           __$("lblSelectAll").innerHTML = "None";
+          __$("chkSelectAll").src = "/public/touchscreentoolkit/lib/images/unticked.jpg";
 
           __$("chkSelectAll").onclick = function(){
             if ( __$("chkSelectAll").src.match(/unticked/))
-              __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
+              __$("chkSelectAll").src = "/public//touchscreentoolkit/lib/images/ticked.jpg";
             checkAll();
             __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true")
-            setTimeout("gotoNextPage()", 200);
+            setTimeout("nextPage()", 200);
           }
           __$("lblSelectAll").onclick = function(){
 
             if ( __$("chkSelectAll").src.match(/unticked/))
-              __$("chkSelectAll").src = __$("chkSelectAll").src.replace(/unticked/, "ticked");
+              __$("chkSelectAll").src = "/public/touchscreentoolkit/lib/images/unticked.jpg";
             checkAll();
             __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true");
-            setTimeout("gotoNextPage()", 200);
+            setTimeout("nextPage()", 200);
           }
         }
 
