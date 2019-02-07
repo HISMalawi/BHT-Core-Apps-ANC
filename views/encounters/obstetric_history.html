@@ -26,6 +26,51 @@
       var counts = {};
 
       var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID; 
+      tt_cancel_show = "/patients/show/<%= @patient.id %>";
+      tt_cancel_destination = "/patients/show/<%= @patient.id %>";
+      var deliveries = 0;
+      var max_delivered = 1;
+      var parity;
+      var parsedConceptName;
+      var x = [];
+
+      var anc_visits = [];
+      var last_visit = "";
+      var birth_year = "1990";
+      var max_birth_year = "2000";
+      var min_birth_year = "2018";
+      var abs_max_birth_year = "2019";
+      var current_popup = "Enter Value";
+
+      var hash = {
+        "TBA" : "T.B.A",
+        "Spontaneous vaginal delivery" : "S.V.D",
+        "Caesarean Section" : "C.S",
+        "Vacuum Extraction Delivery" : "V.E.D",
+        "Big Baby (Above 4kg)" : "> 4kg",
+        "Small Baby (Less than 2.5kg)" : "< 2.5kg"
+      }
+
+      var fields = ["Year of birth", "Place of birth",
+        "Gestation (weeks)", "Method of delivery",
+        "Condition at birth", "Birth weight",
+        "Alive Now", "Age at Death"];
+
+      var abortionHash = {
+        "Incomplete abortion" : "Incomplete",
+        "Complete abortion" : "Complete",
+        "Manual Vacuum Aspiration (MVA)" : "M.V.A"
+      }
+
+      var abortionFields = ["Year of abortion", "Place of abortion",
+        "Type of abortion", "Procedure done", "Gestation (weeks)"
+      ];
+
+      var $$ = {};
+      var data = {};
+      var counts = {};
+      anc_visits.push("zero");
+      var parsedConceptName = "Visit Number";
 
 
       function increment(pos) {
@@ -143,7 +188,6 @@
         var delivered_pregnancies = $("para").value;
 
         if (delivered_pregnancies > 0) {
-          console.log(delivered_pregnancies);
           var headerHolder = document.createElement("div");
           headerHolder.style.height = "63px";
           headerHolder.style.width = "100%";
@@ -252,262 +296,6 @@
 
       function updateDeliveries() {
         deliveries = __$('para').value;
-      }
-
-      function buildParams() {
-        console.log(data);
-        var keys = Object.keys(data)
-        for (var i = 0; i < keys.length; i++) {
-
-          var count = data[keys[i]]["count"];
-          for (var c = 1; c <= count; c++) {
-
-            if (data[keys[i]] == undefined)
-              data[keys[i]] = {};
-            if (data[keys[i]][c] == undefined)
-              data[keys[i]][c] = {};
-          }
-        }
-
-        var abortions = parseInt(__$("abortions").value);
-
-        if (abortions > 0) {
-
-          for (var i = 1; i <= abortions; i++) {
-            if ($$[i] == undefined)
-              $$[i] = {};
-          }
-        }
-
-        // update various fields
-        __$("data_obj").value = JSON.stringify(data);
-
-        __$("abortion_obj").value = JSON.stringify($$);
-
-        var str = __$("data_obj").value.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s+]/g, ' ')
-
-        if (str.match(/caesarean section/i)) {
-          __$("ever_had_c_sections").value = "Yes";
-        } else {
-          __$("ever_had_c_sections").value = "No";
-        }
-
-        if (str.match(/vacuum extraction delivery/i)) {
-          __$("ever_had_a_vacuum_extraction").value = "Yes";
-        } else {
-          __$("ever_had_a_vacuum_extraction").value = "No";
-        }
-
-        if (str.match(/still birth/i)) {
-          __$("ever_had_still_births").value = "Yes";
-        } else {
-          __$("ever_had_still_births").value = "No";
-        }
-      }
-
-      function loadSplitSelections(arr) {
-        //array format [url, input_id, helpText]
-        var arr = [
-          ["/encounters/yes_no_options", "ever_had_episiotomy"],
-          ["/encounters/hemorrhage_options", "hemorrhage"],
-          ["/encounters/yes_no_options", "pre_eclampsia"],
-          ["/encounters/yes_no_options", "eclampsia"]
-        ];
-
-        var count = arr.length;
-        var n = Math.floor(Math.sqrt(count));
-        var v_count = Math.ceil(count / n);
-        var h_count = Math.ceil(count / n);
-        var e_count = count % n;
-
-        __$("keyboard").style.display = "none";
-        __$("touchscreenInput" + tstCurrentPage).style.display = "none";
-        __$("inputFrame" + tstCurrentPage).style.height = (0.72 * screen.height) + "px";
-        __$("inputFrame" + tstCurrentPage).style.marginTop = (0.05 * screen.height) + "px";
-        //__$("inputFrame" + tstCurrentPage).style.background = "lightblue";
-
-        if (count > 0) {
-
-          var n = 0;
-          var holder = document.createElement("div");
-          holder.id = 'holder';
-          holder.style.height = (0.72 * screen.height) + "px";
-          holder.style.width = "100%";
-          holder.style.display = "none";
-          holder.setAttribute("class", "options");
-          holder.style.borderRadius = "5px";
-          holder.style.background = "white";
-          __$("inputFrame" + tstCurrentPage).appendChild(holder);
-
-          for (var r = 1; r <= v_count; r++) {
-
-            var row = document.createElement("div");
-            row.id = r;
-            row.style.display = "table-row";
-            row.setAttribute("class", "row");
-            holder.appendChild(row);
-
-            for (var c = 1; c <= h_count; c++) {
-
-              var cell = document.createElement("div");
-              cell.id = r + "_" + c;
-              cell.style.display = "table-cell";
-              cell.setAttribute("class", "cell");
-              cell.style.background = "white";
-
-              var helpText = __$(arr[n][1]).getAttribute("helpText");
-              var heada = document.createElement("div");
-              heada.style.height = "40px";
-              heada.innerHTML = helpText;
-              heada.style.marginTop = "5px";
-              heada.style.background = "#CFE4CD";
-              heada.style.borderRadius = "3px";
-              heada.style.border = "2px gray solid";
-              heada.style.fontSize = "28px";
-              heada.style.marginLeft = "5px";
-              heada.style.marginRight = "5px";
-              cell.appendChild(heada);
-
-              if (c != 1) {
-                cell.style.borderLeft = "1px solid";
-              }
-
-              if (r != 1) {
-                cell.style.borderTop = "1px solid";
-              }
-
-              cell.style.height = ((72 / v_count) - 2) * 0.001 * screen.height + "px";
-              cell.style.width = ((100 / h_count)) + "%";
-              row.appendChild(cell);
-
-              n++;
-              if (n != arr.length - 1) {
-
-                ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
-              } else {
-
-                ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
-              }
-
-            }
-          }
-
-          __$("2_2").style.display = "none";
-          __$("1_2").style.borderBottom = "1px solid";
-          __$("2_1").style.borderRight = "1px solid";
-
-        }
-      }
-
-      function ajaxCustomRequest(aUrl, id, n, dom_id) {
-
-        var httpRequest = new XMLHttpRequest();
-        httpRequest.onreadystatechange = function () {
-          handleCustomResult(httpRequest, id, n, dom_id);
-        };
-        try {
-          httpRequest.open('GET', aUrl, true);
-          httpRequest.send(null);
-        } catch (e) {}
-      }
-
-      function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
-        console.log(aXMLHttpRequest);
-
-        if (!aXMLHttpRequest) return;
-
-        if (aXMLHttpRequest.readyState == 4 && (aXMLHttpRequest.status == 200 ||
-            aXMLHttpRequest.status == 304)) {
-
-          var result = aXMLHttpRequest.responseText;
-
-          var data = result.split("|");
-
-          var ul = document.createElement("ul");
-          ul.id = id + "_ul"
-          ul.style.paddingLeft = "5px";
-          ul.style.paddingRight = "5px";
-          __$(dom_id).appendChild(ul);
-          var items = [];
-
-          for (var i = 0; i < data.length; i++) {
-
-            var li = document.createElement("li");
-            li.setAttribute("class", "cell-data");
-            li.setAttribute("target", id);
-            li.value = data[i];
-            ul.appendChild(li);
-            li.setAttribute("value", data[i]);
-            li.innerHTML = "<img height=34 style='margin-right: 10px; margin-bottom: -5px;' src='/touchscreentoolkit/lib/images/unchecked.png' />" + data[i];
-            items.push(li)
-
-            li.onmousedown = function () {
-              __$(this.getAttribute("target")).value = this.getAttribute("value");
-
-              if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/Yes/i)) {
-
-                __$("2_2").style.display = "table-cell";
-                __$("2_2").style.opacity = 1;
-                __$("1_2").style.borderBottom = "hidden";
-                __$("2_1").style.borderRight = "hidden";
-              } else if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/No/i)) {
-
-                __$("eclampsia").value = "";
-                __$("1_2").style.borderBottom = "1px solid";
-                __$("2_1").style.borderRight = "1px solid";
-                hideMsg("2_2");
-              }
-
-              updateTouchscreenInput(this);
-
-              var target = this.getAttribute("target")
-              var nodes = jQuery("[target=" + target + "]");
-
-              for (var i = 0; i < nodes.length; i++) {
-
-                nodes[i].getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/unchecked.png';
-              }
-
-              this.getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/checked.png';
-            }
-
-            if (i % 2 == 0) {
-
-              li.className = "even";
-              li.setAttribute("group", "even");
-
-            } else {
-
-              li.className = "odd";
-              li.setAttribute("group", "odd");
-            }
-
-          }
-
-          for (var j = 0; j < items.length; j++) {
-
-            if (__$(id).value && __$(id).value == items[j].getAttribute("value")) {
-
-              updateTouchscreenInput(items[j]);
-              __$(items[j].getAttribute("target")).value = items[j].getAttribute("value");
-              var nodes = jQuery("[target=" + id + "]");
-              for (var i = 0; i < nodes.length; i++) {
-                nodes[i].getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/unchecked.png';
-              }
-              items[j].getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/checked.png';
-              if (items[j].getAttribute("target") == "pre_eclampsia" && __$("pre_eclampsia").value == "Yes") {
-                __$("pre_eclampsia").value = "";
-                __$("2_2").style.display = "block";
-                items[j].onmousedown.apply(items[j]);
-              }
-            }
-          }
-
-          if (n == "table")
-            setTimeout(function () {
-              __$('holder').style.display = n;
-            }, 150);
-        }
       }
 
       function disablePastVisits() {
@@ -715,7 +503,7 @@
                 }
                 var d1 = document.createElement("div");
                 d1.id = n;
-                d1.innerHTML = " <span style=' color: " + (type == "abortion" ? "red" : "black") + "'> " + "<img height='46' class = 'img-preg-cell' src='/touchscreentoolkit/lib/images/unchecked.jpg'>" +
+                d1.innerHTML = " <span style=' color: " + (type == "abortion" ? "red" : "black") + "'> " + "<img height='46' class = 'img-preg-cell' src='/public/touchscreentoolkit/lib/images/unchecked.jpg'>" +
                   n + (n == 1 ? "<sup>st</sup>" : ((n == 2 ? "<sup>nd</sup>" : (n == 3 ? "<sup>rd</sup>" : "<sup>th</sup>")))) + " " +
                   type + " </span>";
                 d1.setAttribute("class", "preg-cell");
@@ -735,14 +523,14 @@
                         nodes[i].setAttribute("selected", "false");
                         var image = nodes[i].getElementsByTagName("img")[0];
                         if (image != undefined && image.src.length > 0) {
-                          image.src = '/touchscreentoolkit/lib/images/unchecked.jpg';
+                          image.src = '/public/touchscreentoolkit/lib/images/unchecked.jpg';
                         }
                       }
                     }
 
                     var img = this.getElementsByTagName("img")[0];
                     if (img.src.match("unchecked")) {
-                      img.src = '/touchscreentoolkit/lib/images/checked.jpg'
+                      img.src = '/public/touchscreentoolkit/lib/images/checked.jpg'
                     }
                     this.setAttribute("selected", "true");
                     populate(this.id, type)
@@ -755,7 +543,7 @@
 
                   var img = d1.getElementsByTagName("img")[0];
                   d1.setAttribute("selected", "true");
-                  img.src = '/touchscreentoolkit/lib/images/checked.jpg'
+                  img.src = '/public/touchscreentoolkit/lib/images/checked.jpg'
                   populate(n, type);
                   c += 1;
                 }
@@ -1919,7 +1707,6 @@
     }
 
     function buildParams() {
-      console.log(data);
       var keys = Object.keys(data)
       for (var i = 0; i < keys.length; i++) {
 
@@ -1969,7 +1756,7 @@
       }
     }
 
-    function loadSplitSelections(arr) {
+    function loadSplitSelections() {
       //array format [url, input_id, helpText]
       var arr = [
         ["/encounters/yes_no_options", "ever_had_episiotomy"],
@@ -2069,22 +1856,32 @@
       httpRequest.onreadystatechange = function () {
         handleCustomResult(httpRequest, id, n, dom_id);
       };
-      try {
+      //try {
         httpRequest.open('GET', aUrl, true);
         httpRequest.send(null);
-      } catch (e) {}
+      //} catch (e) {
+        //console.log(e);
+      //}
     }
 
     function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
+      console.log(id);
 
       if (!aXMLHttpRequest) return;
 
-      if (aXMLHttpRequest.readyState == 4 && (aXMLHttpRequest.status == 200 ||
-          aXMLHttpRequest.status == 304)) {
+      if (aXMLHttpRequest.status == 404) {
 
         var result = aXMLHttpRequest.responseText;
+        if (id == "hemorrhage"){
+          var data = ["No", "APH", "PPH"] //result.split("|");
+        }else{
+          var data = ["Yes", "No"] //result.split("|");
+        }
+        if (x.includes(id))
+          return
+        x.push(id);
 
-        var data = result.split("|");
+        console.log(data);
 
         var ul = document.createElement("ul");
         ul.id = id + "_ul"
@@ -2101,7 +1898,7 @@
           li.value = data[i];
           ul.appendChild(li);
           li.setAttribute("value", data[i]);
-          li.innerHTML = "<img height=34 style='margin-right: 10px; margin-bottom: -5px;' src='/touchscreentoolkit/lib/images/unchecked.png' />" + data[i];
+          li.innerHTML = "<img height=34 style='margin-right: 10px; margin-bottom: -5px;' src='/public/touchscreentoolkit/lib/images/unchecked.png' />" + data[i];
           items.push(li)
 
           li.onmousedown = function () {
@@ -2128,10 +1925,10 @@
 
             for (var i = 0; i < nodes.length; i++) {
 
-              nodes[i].getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/unchecked.png';
+              nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
             }
 
-            this.getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/checked.png';
+            this.getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
           }
 
           if (i % 2 == 0) {
@@ -2155,9 +1952,9 @@
             __$(items[j].getAttribute("target")).value = items[j].getAttribute("value");
             var nodes = jQuery("[target=" + id + "]");
             for (var i = 0; i < nodes.length; i++) {
-              nodes[i].getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/unchecked.png';
+              nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
             }
-            items[j].getElementsByTagName("img")[0].src = '/touchscreentoolkit/lib/images/checked.png';
+            items[j].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
             if (items[j].getAttribute("target") == "pre_eclampsia" && __$("pre_eclampsia").value == "Yes") {
               __$("pre_eclampsia").value = "";
               __$("2_2").style.display = "block";
@@ -2401,14 +2198,14 @@
               
             </select>
 
-            <%= (touch_select_tag "Vacuum extraction delivery", @patient, options_for_select([["", ""], ["No", "No"], ["Yes", "Yes"]]),
-          {:id => "ever_had_a_vacuum_extraction",
-          :helptext => "Vacuum Extraction",
-          :tt_onLoad => " parsedConceptName = 'Vacuum extraction delivery'",
-          :tt_onUnLoad => "parsedConceptName = ''",
-          :condition => "false" }).html_safe %>
+            <!-- %= (touch_select_tag "Vacuum extraction delivery", @patient, options_for_select([["", ""], ["No", "No"], ["Yes", "Yes"]]),
+          { :id => "ever_had_a_vacuum_extraction",
+           :helptext => "Vacuum Extraction",
+           :tt_onLoad => " parsedConceptName = 'Vacuum extraction delivery'",
+           :tt_onUnLoad => "parsedConceptName = ''",
+           :condition => "false" }).html_safe % -->
 
-            <select name="heamoghage" id="hemorrhage"
+            <select name="HEMORRHAGE" id="hemorrhage"
               helptext="Hemorrhage" tt_onLoad=" parsedConceptName = 'HEMORRHAGE'"
               tt_onUnLoad="parsedConceptName = ''"
               condition="false">
