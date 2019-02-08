@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <title>Encounters New</title>
+    <title>ANC Visit type</title>
 
     <style type="text/css">
       #tab {
@@ -50,75 +50,6 @@
         position:relative;
         height:12px;
       }
-      .tt_controls_date_of_confirmatory_hiv_test #num { display:none; }
-      .tt_controls_date_last_taken #num { display:none; }
-      .tt_controls_date_of_confirmatory_hiv_test table {  position: absolute; top: -360px; }
-      .tt_controls_date_art_last_taken table {  position: absolute; top: -360px; }
-      .tt_controls_last_arv_drugs_taken .keyboard { display:none; }
-      .tt_controls_cd4_count #qwerty , .tt_controls_cd4_percent #qwerty {
-        display: none;
-      }
-      .tt_controls_cd4_count #equals, .tt_controls_cd4_percent #equals {
-        display: inline;
-      }
-
-        .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan {
-            position: absolute;
-            right: 65%;
-        }
-
-        .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan {
-            position: absolute;
-            right: 65%;
-        }
-
-        .tt_controls_cd4_count #greaterthan , .tt_controls_cd4_percent #greaterthan{
-            position: absolute;
-            right: 65%;
-            top: 5px;
-        }
-
-        .tt_controls_cd4_count #lessthan , .tt_controls_cd4_percent #lessthan {
-            top: 145px;
-        }
-
-        .tt_controls_cd4_count #lessthan, .tt_controls_cd4_count #greaterthan { display:block; float:right }
-        .tt_controls_cd4_percent #lessthan, .tt_controls_cd4_percent #greaterthan { display:block; float:right }
-
-        .tt_controls_weight_kg #qwerty , .tt_controls_height_cm #qwerty {
-            display: none;
-        }
-
-        .tt_controls_confirmatory_hiv_test_year #Unknown { display: inline; }
-
-        .tt_controls_confirmatory_hiv_test_month .keyboard { display:none; }
-
-        #tt_page_month_of_cd4_count .inputFrameClass {  height: 86%; }
-
-        #tt_page_month_of_cd4_count #viewport {  height: 85%; }
-
-        #tt_page_confirmatory_hiv_test_month .options {  height: 90%; }
-
-        #tt_page_confirmatory_hiv_test_month .inputFrameClass {  height: 86%; }
-
-        .tt_controls_month_started_art .keyboard { display:none; }
-
-        #tt_page_month_started_art .options {  height: 90%; }
-
-        #tt_page_month_started_art .inputFrameClass {  height: 86%; }
-
-        .tt_controls_year_last_taken_arvs #Unknown { display: inline; }
-
-        .tt_controls_month_art_last_taken .keyboard { display:none; }
-
-        #tt_page_month_last_taken_arvs .options {  height: 90%; }
-
-        #tt_page_month_art_last_taken .inputFrameClass {  height: 86%; }
-
-        .tt_controls_year_started_art #Unknown { display: inline; }
-
-        .tt_controls_month_of_cd4_count .keyboard{ display: none !important; }
-
         .NoKeyboard .options {
             height: 591px !important;
         }
@@ -141,8 +72,46 @@
       var apiPort = sessionStorage.apiPort;
       var patientID = sessionStorage.patientID;
       var programID = sessionStorage.programID;
+      var past_visits = {}
 
       var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+
+      function getAncVisitNumber() {
+        var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
+        url += '/programs/'+programID+'/patients/'+patientID+'/anc_visit';
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+
+          if (this.readyState == 4) {
+            if (this.status == 200) {
+              var results = JSON.parse(this.responseText);
+                past_visits = JSON.stringify(results);
+                console.log(past_visits);
+            }else {
+              past_visits = {};
+            }
+          }
+        };
+        try {
+          req.open('GET', url, true);
+          req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+          req.send(null);
+        } catch (e) {
+    
+        }
+
+      }
+
+      function disablePastVisits(){
+        for(var i = 0; i < past_visits.length; i++){
+          if(__$(past_visits[i])){
+            __$(past_visits[i]).className = "keyboardButton gray";
+            __$(past_visits[i]).onmousedown = function(){}
+          }
+        }
+      }
+
+      getAncVisitNumber();
 
       function submitVisitTypeEncounter(){
         if ($('touchscreenInput'+tstCurrentPage).value === ""){
@@ -193,7 +162,8 @@
           <form>
             <input field_type="number" helpText="ANC Visit Number" 
               id="anc visit number" name="anc_visit_number" 
-              tt_onLoad="__$('zero').style.display = 'none'; submitFunction();" 
+              tt_onLoad="__$('zero').style.display = 'none'; 
+                submitFunction(); disablePastVisits();" 
               tt_pageStyleClass="NumbersOnly" optional=false 
               type="text" />
           </form>
