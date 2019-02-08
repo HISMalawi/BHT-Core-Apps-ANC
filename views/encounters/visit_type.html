@@ -155,7 +155,7 @@
                         	
         var encounter = {
           encounter_type_name: 'ANC VISIT TYPE',
-          encounter_type_id:  102,
+          encounter_type_id:  107,
           patient_id: patientID,
           encounter_datetime: encounter_datetime
         }
@@ -177,6 +177,10 @@
         var nextButton = document.getElementById('nextButton');
         nextButton.innerHTML = '<span>Finish</span>';
         nextButton.setAttribute('onmousedown', 'submitVisitTypeEncounter()');
+      }
+
+      function nextPage(){
+        nextEncounter(sessionStorage.patientID, sessionStorage.programID);
       }
 
   </script>
