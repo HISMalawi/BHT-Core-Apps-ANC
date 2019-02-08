@@ -7,6 +7,17 @@
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style>
+      li.highlighted {
+        background-color: lightblue;
+      }
+      li {
+        cursor: pointer;
+        font-size: 1.5em;
+        margin: 2px;
+        -moz-user-select: none;
+      }
+    </style>
 
     <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
     <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
@@ -27,6 +38,19 @@
       YesNoConcepts = {};
       YesNoConcepts["Yes"] = 1065;
       YesNoConcepts["No"] = 1066;
+      concept_hash = {
+        "Yes":1065,
+        "No":1066,
+        "alcohol":3340,
+        "smoker":3339,
+        "civil_status":1054,
+        "Never Married":1057,
+        "Married":5555,
+        "Separated":1056,
+        "Divorced": 1058
+      }
+      var validationInterval = '';
+      var observations = [];
 
       function submitSocialHistoryEncounter() {
         var currentTime = moment().format(' HH:mm:ss');
@@ -45,14 +69,9 @@
 
       function postSocialHistoryObs(encounter) {
 
-        marital_status = $('marital_status').value
         var obs = {
           encounter_id: encounter.encounter_id,
-          observations: [
-            { concept_id: 3339, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently smokes?']] },
-            { concept_id: 3340, value_coded: YesNoConcepts[yesNo_Hash['Social History']['Patient currently takes alcohol?']] },
-            { concept_id: 1054, value_coded: marital_status }
-          ]
+          observations: observations
         }; 
 
         submitParameters(obs, "/observations", "nextPage")  
@@ -74,6 +93,253 @@
         nextButton.setAttribute('onmousedown', 'submitSocialHistoryEncounter()');
       }
 
+      function appendMaritalStatus(){
+        var select = document.createElement('select');
+        var div = document.createElement('div');
+        div.setAttribute("id", "inputFrame1");
+        div.setAttribute("class", "inputFrameClass");
+
+        select.setAttribute("helpText", "Marital status");
+        select.setAttribute("name", "Marital status");
+        select.setAttribute("id", "marital_statue");
+        select.setAttribute("allowFreeText","false")
+        select.setAttribute("helpText","Marital status")
+        select.setAttribute("tt_onLoad","__$('nextButton').style.display='block';submitFunction();")
+
+        var statusTable = document.createElement("table");
+        statusTable.setAttribute("class","yes_no_table");
+        var r1 = document.createElement("tr");
+        td11 = document.createElement("td");
+        td11.innerHTML = "Marital status";
+        r1.appendChild(td11);
+        statusTable.appendChild(r1);
+
+        var options = [["1057","Never married"],
+          ["5555", "Married"],
+          ["1056", "Separated"],
+          ["1058", "Divorced"]]
+        empty_option = document.createElement('option');
+        select.appendChild(empty_option);
+
+        for (var i = 0; i < options.length; i++) {
+          option = document.createElement('option');
+          option.value = options[i][0];
+          option.textContent = options[i][1];
+          select.appendChild( option );
+        }
+        td12 = document.createElement("td");
+        td12.append(select)
+        r1.appendChild(td12);
+        statusTable.appendChild(r1)
+
+        div.appendChild(statusTable);
+        $('page'+tstCurrentPage).appendChild(div);
+        console.log(select)
+
+      }
+
+      function loadSplitSelections(arr){
+    console.log("here")
+    //array format [url, input_id, helpText]
+    var options = ["Yes", "No"].join('|')
+    var marital_status = ["Never Married","Married","Separated","Divorced"].join('|')
+    var religion =["None", "Christian", "Jehova witness", "Muslim", "Hindu", "African traditional", "Other"].join("|");
+    var arr = [[options, "smoker"],
+      [options, "alcohol"],
+      [marital_status, "civil_status"],
+      [religion, "religion"]
+    ];
+
+    var count = arr.length;
+    var n = Math.floor(Math.sqrt(count));
+    var v_count = Math.ceil(count/n);
+    var h_count = Math.ceil(count/n);
+    var e_count = count % n;
+
+    __$("keyboard").style.display = "none";
+    __$("touchscreenInput" + tstCurrentPage).style.display = "none";
+    __$("inputFrame" + tstCurrentPage).style.height = (0.72 * screen.height) + "px";
+    __$("inputFrame" + tstCurrentPage).style.marginTop = (0.05 * screen.height) + "px";
+    //__$("inputFrame" + tstCurrentPage).style.background = "lightblue";
+    console.log(v_count)
+
+    if (count > 0){
+
+      var n = 0;
+      var holder = document.createElement("div");
+      holder.id = 'holder';
+      holder.style.height =  (0.72 * screen.height) + "px";
+      holder.style.width = "100%";
+      holder.style.display = "none";
+      holder.setAttribute("class", "options");
+      holder.style.borderRadius = "5px";
+      holder.style.background = "white";
+      __$("inputFrame" + tstCurrentPage).appendChild(holder);
+      
+
+      for (var r = 1; r <= v_count; r ++){
+
+        var row = document.createElement("div");
+        row.id = r;
+        row.style.display = "table-row";
+        row.setAttribute("class", "row");
+        holder.appendChild(row);
+
+        for(var c = 1; c <= h_count; c ++){
+
+          var cell = document.createElement("div");
+          cell.id = r + "_" + c;
+          cell.style.display = "table-cell";
+          cell.setAttribute("class", "cell");
+          cell.style.background = "white";
+
+          console.log($(arr[c][1]));
+
+          var helpText = __$(arr[n][1]).getAttribute("helpText");
+          var heada = document.createElement("div");
+          heada.style.height = "40px";
+          heada.innerHTML = helpText;
+          heada.style.marginTop = "5px";
+          heada.style.background = "#CFE4CD";
+          heada.style.borderRadius = "3px";
+          heada.style.border = "2px gray solid";
+          heada.style.fontSize = "28px";
+          heada.style.marginLeft = "5px";
+          heada.style.marginRight = "5px";
+          if (__$(arr[n][1]).getAttribute("helpText") != "Religion")
+          {
+            cell.appendChild(heada);
+          }
+          
+
+          if(c != 1){
+            cell.style.borderLeft = "1px solid";
+          }
+
+          if(r != 1){
+            cell.style.borderTop = "1px solid";
+          }
+
+          cell.style.height = ((72/v_count) - 2) * 0.001 * screen.height + "px";
+          cell.style.width = ((100/h_count)) + "%";
+          row.appendChild(cell);
+
+          n ++;
+          if (n != arr.length - 1){
+            console.log(arr)
+            handleResultData(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
+          }else{
+            console.log(arr)
+
+            handleResultData(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
+          }
+
+        }
+      }
+
+      __$("2_2").style.borderLeft = "hidden";
+      __$("2_2").style.borderTop = "hidden";
+      __$("1_2").style.borderBottom = "1px solid";
+      __$("2_1").style.borderRight = "1px solid";
+
+      __$("2_2").style.display = "none";
+
+    }
+  }
+
+  function handleResultData(result, id, n, dom_id) {
+
+    var data = result.split('|');
+
+    var ul = document.createElement("ul");
+    ul.style.paddingLeft = "5px";
+    ul.style.paddingRight = "5px";
+
+    for(var i = 0; i < data.length; i ++){
+
+      var li = document.createElement("li")
+      li.setAttribute("class", "cell-data");
+      li.setAttribute("target", id);
+      li.value = data[i];
+      li.setAttribute("value", data[i]);     
+      li.innerHTML =  "<img height=34 style='margin-right: 10px; margin-bottom: -5px;' src='/public/touchscreentoolkit/lib/images/unchecked.png' />" + data[i];
+      li.onmousedown = function(){
+
+        __$(this.getAttribute("target")).value = this.getAttribute("value");
+          observations.push(
+            {concept_id: concept_hash[this.getAttribute('target')], 
+            value_coded: concept_hash[this.getAttribute('value')]}
+          );
+
+        updateTouchscreenInput(this);
+
+        var target = this.getAttribute("target")
+        var nodes = jQuery("[target=" + target + "]");
+
+        for (var i = 0; i< nodes.length; i++){
+
+          nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
+        }
+
+        this.getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
+      }
+
+      if(i % 2 == 0){
+
+        li.className = "even";
+        li.setAttribute("group", "even");
+
+      } else {
+
+        li.className = "odd";
+        li.setAttribute("group", "odd");
+      }
+
+      ul.appendChild(li);
+    }
+
+    __$(dom_id).appendChild(ul);
+
+    if (n == "table")
+      setTimeout(function(){
+        __$('holder').style.display = n;
+      }, 350);
+
+  }
+
+
+  function showMsg(div){
+    setTimeout(function(){fadeOut(div, 0);}, 1);
+  }
+
+  function addValidationInterval(){
+
+    var interval = setInterval(function(){
+      var arr = ["smoker", "alcohol", "civil_status"];
+     
+      var check = 0
+      for (var i = 0; i < arr.length; i ++){
+
+        var node = __$(arr[i]);
+        if (node != undefined && node.value == ""){
+          check = check + 1;
+        }
+      }
+
+      if (check > 0){
+        console.log(check);
+        __$("nextButton").onmousedown = function(){
+          showMessage("Select all fields to proceed");
+        }
+      }else{
+        __$("nextButton").onmousedown = function(){
+          submitSocialHistoryEncounter();
+        }
+      }
+    }, 100);
+    return interval;
+  }
+
     </script>
   </head>
   
@@ -81,24 +347,66 @@
     <div id="container">
       <div id="content">
         <form>
+            <select name="Patient currently smokes"
+              id="smoker" tt_requireNextClick="false"
+              helptext="Currently Smoking " 
+              condition='false' tt_onLoad="">
+              
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
 
-          <input type="text" name="summary"
+            </select>
+
+            <select name="Patient currently consumes alcohol"
+              id="alcohol" tt_requireNextClick="false"
+              helptext="Currently taking alcohol" 
+              condition='false' tt_onLoad="">
+
+              <option value=""></option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+
+            </select>
+
+            <select name="Civil status"
+              id="civil_status" tt_requireNextClick="false"
+              helptext="Marital status" 
+              condition='false' tt_onLoad="">
+
+              <option value=''></option>
+              <option value="Never Married">Never Married</option>
+              <option value="Married">Married</option>
+              <option value="Separated">Separated</option>
+              <option value="Divorced">Divorced</option>
+
+            </select>
+
+            <input type="text" name="social information"
+            id="social_information" helptext="Social Information" 
+            tt_onLoad="v = addValidationInterval();
+            jQuery('#backButton').css('display', 'none');
+            jQuery('#clearButton').css('display', 'none');
+            loadSplitSelections();"
+            tt_onUnLoad="clearInterval(v);"/>
+
+          <!--input type="text" name="summary"
             tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();"
-            tt_pageStyleClass= "NoControls" helpText="Social History" optional = "true"/>
+            tt_pageStyleClass= "NoControls" helpText="Social History" optional = "true"/ >
 
-          <select allowFreeText="false" name="marital status"
+          < select allowFreeText="false" name="marital status"
             helpText="Marital status" id="marital_status"
             tt_onLoad="__$('nextButton').style.display='block';
               submitFunction();" 
             tt_onUnLoad="">
               
-            <option value=''></option>
-            <option value="1057">Never Married</option>
-            <option value="5555">Married</option>
-            <option value="1056">Separated</option>
-            <option value="1058">Divorced</option>
+            < option value=''>< /option>
+            < option value="1057">Never Married< /option>
+            < option value="5555">Married< /option>
+            < option value="1056">Separated< /option>
+            < option value="1058">Divorced< /option>
           
-          </select>
+          < /select-->
         
         </form>
       </div>
