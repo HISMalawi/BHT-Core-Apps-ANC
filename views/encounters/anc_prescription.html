@@ -32,7 +32,6 @@
       var units = [];
       var drug_ids = [];	
   
-      var drug_sets = {} //<%= @drug_sets.to_json.html_safe %>
       var set_names = {} //<%= @set_names.to_json.html_safe %>
       var set_descriptions = {} //<%= @set_descriptions.to_json.html_safe %>
 
@@ -65,7 +64,30 @@
           console.log(error);
         });
       }
+      
+      function getDrugSets(){
+        var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drug_sets"
+        
+        GET({
+          url: apiPath,
+          async: true,
+          headers: {
+            'Authorization': authToken
+          }
+        }, {}, function (data) {
+          console.log(data);
+          /**for(var i = 0; i < data.length; i++){
+            drugs.push(data[i]['name']);
+            strengths.push(data[i]['dose_strength']);
+            units.push(data[i]['units']);
+            drug_ids.push(data[i]['drug_id']);
+          }*/
+        }, function (error) {
+          console.log(error);
+        });
+      }
 
+      getDrugSets();
       getDrugs();
 
       function submitTreatmentEncounter(){
@@ -131,7 +153,7 @@
               instructions = drug_name+": "+dose+" "+units+" "+frequency+" for "+duration+" days";
             }
           }
-          quantity = eq_daily_dose + dose;
+          quantity = eq_daily_dose * dose;
           drug_order = {
             drug_inventory_id: drug_id,
             dose: dose,
