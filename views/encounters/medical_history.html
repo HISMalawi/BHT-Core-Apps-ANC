@@ -173,7 +173,7 @@
               __$("chkSelectAll").src = "/public//touchscreentoolkit/lib/images/ticked.jpg";
             checkAll();
             __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true")
-            setTimeout("nextPage()", 200);
+            setTimeout("submitMedicalHistoryEncounter()", 200);
           }
           __$("lblSelectAll").onclick = function(){
 
@@ -181,7 +181,7 @@
               __$("chkSelectAll").src = "/public/touchscreentoolkit/lib/images/unticked.jpg";
             checkAll();
             __$("touchscreenInput" + tstCurrentPage).setAttribute("optional", "true");
-            setTimeout("nextPage()", 200);
+            setTimeout("submitMedicalHistoryEncounter()", 200);
           }
         }
 
@@ -203,10 +203,12 @@
               hash["value_coded"] = 1065
               medical_complications_obs.push(hash);
               //__$(id).value = "Yes";
-            }
-            //else if(id && __$('img' + (i-1)).src.match("unticked")){
+            }else if(id && __$('img' + (i-1)).src.match("unticked")){
+              hash["concept_id"] = parseInt(id)
+              hash["value_coded"] = 1066
+              medical_complications_obs.push(hash);
             //  console.log("here")
-            //}
+            }
           }
         }
       }
@@ -223,7 +225,7 @@
         submitParameters(obs, "/observations", "nextPage")
       }
 
-      function nextPage(obs){
+      function nextPage(){
         nextEncounter(patientID, programID);
       }
 
