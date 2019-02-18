@@ -3,7 +3,6 @@
   <head>
     <title>ANC Prescription</title>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
     <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
@@ -45,7 +44,7 @@
 
       function getDrugs(){
         var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs"
-        apiPath += "?page_size=100";
+        apiPath += "?page_size=50";
         
         GET({
           url: apiPath,
@@ -75,20 +74,17 @@
             'Authorization': authToken
           }
         }, {}, function (data) {
-          console.log(data);
-          /**for(var i = 0; i < data.length; i++){
-            drugs.push(data[i]['name']);
-            strengths.push(data[i]['dose_strength']);
-            units.push(data[i]['units']);
-            drug_ids.push(data[i]['drug_id']);
-          }*/
+          drug_sets = data['drug_sets'];
+          set_names = data['set_names'];
+          set_descriptions = data['set_descriptions'];
         }, function (error) {
           console.log(error);
         });
       }
 
-      getDrugSets();
       getDrugs();
+      getDrugSets();
+      listAllDrugs();
 
       function submitTreatmentEncounter(){
         var currentTime = moment().format(' HH:mm:ss');
@@ -113,11 +109,11 @@
         var orders = [];
         for (selected_drug in selectedDrugs){
           var drug_id = selected_drug.match(/\d+/)[0];
-          drug_name = $("row_"+selected_drug).getAttribute("d-name"); 
+          drug_name = __$("row_"+selected_drug).getAttribute("d-name"); 
           var frequency = __$("row_frequency_" + selected_drug).innerHTML;
           var duration = parseInt(__$("row_duration_" + selected_drug).innerHTML);
-          dose = $("row_" + selected_drug).getAttribute("dose");
-          units = $("row_" + selected_drug).getAttribute("units"); //to be edited.
+          dose = __$("row_" + selected_drug).getAttribute("dose");
+          units = __$("row_" + selected_drug).getAttribute("units"); //to be edited.
           var instructions = "";
 
           var start_date = new Date(sessionStorage.sessionDate);
@@ -187,11 +183,10 @@
     
 
         for (var i = 0; i < drugOrders.length; i++) {
-          console.log(drugOrders[i]);
           drug_quantity_hash[drugOrders[i].drug_inventory_id]["order_id"] = drugOrders[i].order_id;
         }
         
-        submitParameters(encounter, "/encounters", "postDispensationObs");
+        submitParameters(encounter, "/encounters", "updateDrugOrder");
       }
 
       function postDispensationObs(encounter){
@@ -212,7 +207,7 @@
         for(var key in drug_quantity_hash){
           drug_order.dispensations.push({date: sessionStorage.sessionDate, 
             drug_order_id: drug_quantity_hash[key]['order_id'], 
-            quantity: drug_quantity_hash['value_numeric']}
+            quantity: drug_quantity_hash[key]['value_numeric']}
           )
         }
         submitParameters(drug_order, "/dispensations", "nextPage");
@@ -287,6 +282,7 @@
       function nextPage(obs){
         nextEncounter(sessionStorage.patientID, programID);
       }
+      //setInterval("getDrugs();", 500);
 
 
     </script>
@@ -377,9 +373,6 @@
         </div>
       </div>
     </div>
-    <!-- Add at the end of the document for proper functioning -->
-    <!--script type="text/javascript" src="scripts.js">< /script-->
-    <%=javascript_include_tag "prescription/scripts"%>
   </body>
 </html>
 

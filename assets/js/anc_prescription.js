@@ -792,6 +792,7 @@ function listDrugsSets(){
                     for (var i = 0; i < set_drugs.length; i ++){
 
                         var data = drug_sets[this.getAttribute("set_id")][set_drugs[i]];
+                        console.log(data);
                         
                         var div = document.createElement("input");
 
@@ -807,6 +808,10 @@ function listDrugsSets(){
                         addDrug(div.id);
                         div.className = "selected";
                         selectedDrugs[div.id] = true;
+
+                        attr_div = document.getElementById("row_all_"+set_drugs[i]);
+                        attr_div.setAttribute("dose", data["dose"])
+                        attr_div.setAttribute("units", data["units"])
                            
                     }                    
                  
