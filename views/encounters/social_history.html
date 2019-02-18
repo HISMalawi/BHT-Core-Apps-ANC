@@ -25,6 +25,7 @@
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
 
     <script>
       var apiProtocol = sessionStorage.apiProtocol;
@@ -134,12 +135,10 @@
 
         div.appendChild(statusTable);
         $('page'+tstCurrentPage).appendChild(div);
-        console.log(select)
 
       }
 
       function loadSplitSelections(arr){
-    console.log("here")
     //array format [url, input_id, helpText]
     var options = ["Yes", "No"].join('|')
     var marital_status = ["Never Married","Married","Separated","Divorced"].join('|')
@@ -161,7 +160,6 @@
     __$("inputFrame" + tstCurrentPage).style.height = (0.72 * screen.height) + "px";
     __$("inputFrame" + tstCurrentPage).style.marginTop = (0.05 * screen.height) + "px";
     //__$("inputFrame" + tstCurrentPage).style.background = "lightblue";
-    console.log(v_count)
 
     if (count > 0){
 
@@ -193,7 +191,6 @@
           cell.setAttribute("class", "cell");
           cell.style.background = "white";
 
-          console.log($(arr[c][1]));
 
           var helpText = __$(arr[n][1]).getAttribute("helpText");
           var heada = document.createElement("div");
@@ -226,10 +223,8 @@
 
           n ++;
           if (n != arr.length - 1){
-            console.log(arr)
             handleResultData(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
           }else{
-            console.log(arr)
 
             handleResultData(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
           }
@@ -327,7 +322,6 @@
       }
 
       if (check > 0){
-        console.log(check);
         __$("nextButton").onmousedown = function(){
           showMessage("Select all fields to proceed");
         }
@@ -384,29 +378,11 @@
 
             <input type="text" name="social information"
             id="social_information" helptext="Social Information" 
-            tt_onLoad="v = addValidationInterval();
+            tt_onLoad="v = addValidationInterval(); showCategory2('Social history');
             jQuery('#backButton').css('display', 'none');
             jQuery('#clearButton').css('display', 'none');
             loadSplitSelections();"
             tt_onUnLoad="clearInterval(v);"/>
-
-          <!--input type="text" name="summary"
-            tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();"
-            tt_pageStyleClass= "NoControls" helpText="Social History" optional = "true"/ >
-
-          < select allowFreeText="false" name="marital status"
-            helpText="Marital status" id="marital_status"
-            tt_onLoad="__$('nextButton').style.display='block';
-              submitFunction();" 
-            tt_onUnLoad="">
-              
-            < option value=''>< /option>
-            < option value="1057">Never Married< /option>
-            < option value="5555">Married< /option>
-            < option value="1056">Separated< /option>
-            < option value="1058">Divorced< /option>
-          
-          < /select-->
         
         </form>
       </div>

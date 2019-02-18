@@ -103,7 +103,6 @@
         }
         locationsFile.send(null);
 
-        console.log(select);
 
       }
 
@@ -131,7 +130,6 @@
         var div = document.createElement("div");
         div.id = "expected_date_of_delivery";
         div.className = "statusLabel";
-        console.log("Am here");
 
         $("inputFrame" + tstCurrentPage).appendChild(div);
       }
@@ -362,7 +360,6 @@
 
 function getStateIdByName() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  console.log(options);
 
   getProgramWorkflowStates({
     programId: sessionStorage.programID,
@@ -482,7 +479,7 @@ function createPatientState() {
   }
   
   function nextPage(obs){
-    nextEncounter(sessionStorage.patientID, 1);
+    nextEncounter(sessionStorage.patientID, sessionStorage.programID);
   }
 
 

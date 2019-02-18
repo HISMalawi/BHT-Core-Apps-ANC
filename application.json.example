@@ -15,27 +15,27 @@
       "activitiesIcon": "/assets/images/obstetric_history.png",
       "url": "/apps/ANC/views/encounters/obstetric_history.html"
     },
-    "Current pregnancy": {
+    "current pregnancy": {
       "available": true,
       "activitiesIcon": "/assets/images/current_preg.png",
       "url": "/apps/ANC/views/encounters/current_pregnancy.html"
     },
-    "Lab results": {
-    "available": true,
-    "activitiesIcon": "/assets/images/lab.png",
-    "url": "/apps/ANC/views/encounters/lab_results.html"
+    "lab results": {
+      "available": true,
+      "activitiesIcon": "/assets/images/lab.png",
+      "url": "/apps/ANC/views/encounters/lab_results.html"
     },
-    "PMTCT": {
+    "pmtct": {
       "available": true,
       "activitiesIcon": "/assets/images/pmtct.png",
       "url": "/apps/ANC/views/encounters/pmtct.html"
     },
-    "Examination": {
+    "anc examination": {
       "available": true,
       "activitiesIcon": "/assets/images/diagnosis.png",
       "url": "/apps/ANC/views/encounters/examination.html"
     },
-    "Treatment": {
+    "treatment": {
       "available": true,
       "activitiesIcon": "/assets/images/dispensing.png",
       "url": "/apps/ANC/views/encounters/anc_prescription.html"
@@ -45,17 +45,17 @@
       "activitiesIcon": "/assets/images/registration.png",
       "url": "/apps/ANC/views/encounters/visit_type.html"
     },
-    "Medical history": {
+    "medical history": {
       "available": true,
       "activitiesIcon": "/assets/images/medical_history.png",
       "url": "/apps/ANC/views/encounters/medical_history.html"
     },
-    "Surgical history": {
+    "surgical history": {
       "available": true,
       "activitiesIcon": "/assets/images/surgical_history.png",
       "url": "/apps/ANC/views/encounters/surgical_history.html"
     },
-    "Social history": {
+    "social history": {
       "available": true,
       "activitiesIcon": "/assets/images/social_history.png",
       "url": "/apps/ANC/views/encounters/social_history.html"
@@ -69,14 +69,14 @@
   "activities": {
     "url": "/apps/ANC/views/activities.html",
     "tasks": [
-      ["ANC Visit Type", "anc visit type"],
+      ["ANC VISIT TYPE", "anc visit type"], 
       ["OBSTETRIC HISTORY", "obstetric history"],
       ["MEDICAL HISTORY", "medical history"],
       ["SURGICAL HISTORY", "surgical history"],
       ["SOCIAL HISTORY", "social history"],
       ["LAB RESULTS", "lab results"],
       ["CURRENT PREGNANCY", "current pregnancy"],
-      ["OBSERVATIONS", "anc examination"],
+      ["ANC EXAMINATION", "anc examination"],
       ["DISPENSING", "TTV Dispensation"]
     ]
   },
