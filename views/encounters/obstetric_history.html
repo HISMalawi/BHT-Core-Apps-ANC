@@ -15,63 +15,39 @@
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/obstetric_history.js"></script>
-        <style type="text/css">
-            #tab {
-                height:312px;
-            }
-            #barcode {
-                background:transparent none repeat scroll 0 0;
-                border-color:-moz-use-text-color -moz-use-text-color silver;
-                border-style:none none solid;
-                border-width:medium medium 1px;
-                font-family:"Nimbus Sans L","Arial Narrow",sans-serif;
-                font-size:2.2em;
-                padding-left:5px;
-                width:400px;
-            }
+    <script type="text/javascript">
 
-            #header div {
-                font-weight:normal;
-                float:none;
-                clear:both;
-            }
+      function gotoNextRoute(){
+        try{
+          var gravida = $('touchscreenInput'+tstCurrentPage).value;
+          if (gravida == "" || gravida == null){
+            showMessage("You must enter a value to continue");
+          }
+          if (gravida == 1){
+            $('gravida').value = gravida;
+            submitObstetricEncounter();
+          }else if(gravida > 1){
+            gotoNextPage();
+          }
+        }catch(e){
+          console.log(e);
+        }
+      }
 
-            .summary{
-                position:relative;
-                float:center;
-                width:100%;
-                padding-left:10px;
-                padding-right:10px;
-            }
+      function submitButton(){
+        var nextButton = document.getElementById('nextButton');
+        nextButton.onmousedown = function(){
+          gotoNextRoute();
+        }
+      }
+    </script>
 
-            .summary td , th{
-                border-style:solid;
-                border-width:thin;
-                padding:5px;
-            }
-
-            .summary tbody{
-                position:relative;
-                height:500px;
-                overflow:auto;
-                overflow-x: hidden;
-            }
-
-            .summary>tbody tr {
-                position:relative;
-                height:12px;
-            }
-            .summary>thead tr {
-                position:relative;
-                height:12px;
-            }
-        </style>
     </head>
 
   <body id="mateme">
     <div id="container">
       <div id="content">
-        <form  onsubmit="submitFunction();">
+        <form>
             <input type="hidden" name="data" id="data" />
             <input type="hidden" name="data_obj" id="data_obj" />
             <input type="hidden" name="abortion_obj" id="abortion_obj" />
@@ -79,7 +55,8 @@
             <input field_type="number" type="text"
               helpText="Gravida" id="gravida" 
               name="gravida" 
-              tt_onLoad="__$('zero').style.display = 'none';
+              tt_onLoad="submitButton();
+                __$('zero').style.display = 'none';
                 showCategory2('Obstetric history');" 
               tt_pageStyleClass="NumbersOnly" 
             />
@@ -88,7 +65,8 @@
               helpText="Para" id="para" 
               name="para" 
               condition="$('gravida').value > 1;"
-              tt_onLoad="__$('zero').style.display = 'none';
+              tt_onLoad="$('nextButton').onmousedown = function(){ gotoNextPage(); };
+                __$('zero').style.display = 'none';
                 showCategory2('Obstetric history');data = {};
                 $('touchscreenInput' + tstCurrentPage).setAttribute('absoluteMax', (__$('gravida').value - 1)); 
                 details_available = []"

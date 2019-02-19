@@ -72,7 +72,6 @@ tstUsername = "admin";
       }
 
       function submitObstetricEncounter(){
-        console.log("ama in a lkas")
         var currentTime = moment().format(' HH:mm:ss');
         var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
         encounter_datetime += currentTime;
@@ -96,24 +95,30 @@ tstUsername = "admin";
             ]
         }
 
-        if ($('para').value !== ""){
-          obs.observations.push(
-              {concept_id: 1053, value_numeric: parseInt($('para').value)}
-          );
-        }
-        
-        if ($('abortions').value !== ""){
-          obs.observations.push(
-              {concept_id: 7942, value_numeric: parseInt($('abortions').value)}
-          );
-        }
-
-        if (observations.length > 0){
-          for(var i = 0; i < observations.length; i++){
-            obs.observations.push(observations[i]);
+        try{
+          if ($('para').value !== ""){
+            obs.observations.push(
+                {concept_id: 1053, value_numeric: parseInt($('para').value)}
+            );
+          }
+          
+          if ($('abortions').value !== ""){
+            obs.observations.push(
+                {concept_id: 7942, value_numeric: parseInt($('abortions').value)}
+            );
           }
 
+          if (observations.length > 0){
+            for(var i = 0; i < observations.length; i++){
+              obs.observations.push(observations[i]);
+            }
+
+          }
+
+        }catch(e){
+          console.log(e);
         }
+
 
         console.log(obs);
         submitParameters(obs, "/observations", "nextPage");
