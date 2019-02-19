@@ -54,6 +54,44 @@
       /**
        * * For ANC
        */
+
+      Object.defineProperty(Date.prototype, "format", {
+         value: function (format) {
+                 var date = this;
+                 var result = "";
+
+                 if (!format) {
+
+                              format = ""
+
+                 }
+
+                  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                  var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                              "October", "November", "December"];
+
+                  if (format.match(/YYYY\-mm\-dd/)) {
+
+                              result = date.getFullYear() + "-" + padZeros((parseInt(date.getMonth()) + 1), 2) + "-" + padZeros(date.getDate(), 2);
+
+                  } else if (format.match(/mmm\/d\/YYYY/)) {
+
+                              result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
+
+                  } else if (format.match(/d\smmmm,\sYYYY/)) {
+
+                              result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
+
+                  } else {
+
+                              result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
+
+                  }
+
+                          return result;
+                 }
+      });
   function checkHIVTestDate(){
     if(__$("previous_test_status_from_before_currrent_facility_visit").value == "Negative in the last 3 months"){
       
@@ -289,6 +327,38 @@
         nextEncounter(patientID, programID);
       }
 
+      function setAbsoluteMaxYear() {
+        var y = document.getElementById('touchscreenInput' + tstCurrentPage);
+        var maxYear = moment(sessionStorage.sessionDate).subtract(1, "day").format("DD-MM-YYYY");
+        y.setAttribute('max', maxYear);
+     }
+
+     function checkMaxAndValue() {
+
+        var yearInput = document.getElementById('touchscreenInput' + tstCurrentPage);
+        var yearInputValue = yearInput.value;
+        var maxValue = yearInput.getAttribute('max');
+
+        var inputDate = yearInputValue.split("-").reverse().join("-");
+        var maxDate = maxValue.split("-").reverse().join("-");
+
+          if(inputDate > maxDate && inputDate !== 'Invalid date') {
+            showMessage('Value bigger than maximum '+maxDate);
+            return;
+          }else {
+            gotoNextPage();
+          }
+
+     }
+
+     function submitButton(){
+        var nextButton =  document.getElementById('nextButton');
+        nextButton.onmousedown = function(){
+          checkMaxAndValue();
+        }
+      
+     }
+
       function changeSubmitFunction(){
         var nextButton =  document.getElementById('nextButton');
         nextButton.onmousedown = function(){
@@ -353,7 +423,8 @@
               
           </select>
 
-          <input tt_onLoad="" condition="$('prev_hiv_test_result').value !== '';" 
+          <input tt_onLoad="setAbsoluteMaxYear();submitButton();
+            __$('today').style.display='none';" tt_onUnLoad="" condition="$('prev_hiv_test_result').value !== '';" 
             field_type="date" helpText="Previous HIV test date"
             id="prev_hiv_test_date" name="previous hiv test date"
             tt_pageStyleClass="Date DatesOnly" type="text"/>
