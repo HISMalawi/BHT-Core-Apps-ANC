@@ -26,27 +26,27 @@
       YesNoConcepts["Yes"] = 1065;
       YesNoConcepts["No"] = 1066;
 
-      function submitHIVreception() {
+      function submitARTFollowUpEncounter() {
         var currentTime = moment().format(' HH:mm:ss');
         var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
         encounter_datetime += currentTime;
                         	
         var encounter = {
-          encounter_type_name: 'DISPENSING',
-          encounter_type_id:  54,
+          encounter_type_name: 'ART_FOLLOWUP',
+          encounter_type_id:  10,
           patient_id: patientID,
           encounter_datetime: encounter_datetime
         }
 
-        submitParameters(encounter, "/encounters", "postVitalsObs");
+        submitParameters(encounter, "/encounters", "postARTFollowUpObs");
       }
 
-      function postVitalsObs(encounter) {
+      function postARTFollowUpObs(encounter) {
 
         var obs = {
-          encounter_id: encounter["encounter_id"],
+          encounter_id: encounter.encounter_id,
           observations: [
-            { concept_id: 1805, value_coded: YesNoConcepts[yesNo_Hash['DISPENSING']['TTV given?']] }
+            { concept_id: 1811, value_text: $('reason_for_not_starting_art').value }
           ]
         }; 
 
@@ -54,13 +54,41 @@
       }
 
       function nextPage(obs){
-        nextEncounter(sessionStorage.patientID, 1);
+        nextEncounter(patientID, programID);
       }
 
       function addYesNo() {
         var tar = document.getElementById("inputFrame" + tstCurrentPage);
         var attr = 'Proceed to PMTCT'
         buildYesNoUI('DISPENSING', attr, tar);
+      }
+
+      function changeSubmitFunction(){
+        $('nextButton').onmousedown = function(){
+          response = yesNo_Hash["DISPENSING"]["Proceed to PMTCT"];
+          if(response == null){
+            showMessage('Please complete selection by clicking Yes / No');
+            return;
+          }
+
+          if (response == 'No'){
+            gotoNextPage();
+          }else if (response == 'Yes'){
+            // Proceed to ART Application
+
+          }
+        };
+      }
+
+      function submitFunction(){
+        $('nextButton').onmousedown = function(){
+          reason = $('reason_for_not_starting_art').value;
+          if (reason == '' || reason == null) {
+            showMessage("You must enter a value to continue");
+            return;
+          }
+          submitARTFollowUpEncounter();
+        };
       }
 
     </script>
@@ -70,22 +98,23 @@
       <div id="content">
         <form>
           <input type="text" name="summary"
-            tt_onLoad="__$('keyboard').style.display = 'none';addYesNo();"
+            tt_onLoad="__$('keyboard').style.display = 'none';
+            addYesNo();changeSubmitFunction();"
             tt_pageStyleClass= "NoControls" helpText="PMTCT" optional = "true"/>
             
             <select name="reason for not starting art" 
               id="reason_for_not_starting_art"
               helpText="Reason for not starting ART"
-              tt_onLoad="showCategory2('PMTCT');">
+              tt_onLoad="submitFunction(); showCategory2('PMTCT');">
 
                 <option value=""></option>
-                <option value="already on art at another facility">
+                <option value="Already on art at another facility">
                   Already on ART at another facility
                 </option>
-                <option value="to be done in another room">
+                <option value="To be done in another room">
                   To be done in another room
                 </option>
-                <option value="not willing">
+                <option value="Not willing">
                   Not willing
                 </option>
 
