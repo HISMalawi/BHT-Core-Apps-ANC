@@ -25,7 +25,7 @@
       "activitiesIcon": "/assets/images/lab.png",
       "url": "/apps/ANC/views/encounters/lab_results.html"
     },
-    "pmtct": {
+    "art_followup": {
       "available": true,
       "activitiesIcon": "/assets/images/pmtct.png",
       "url": "/apps/ANC/views/encounters/pmtct.html"
@@ -77,7 +77,8 @@
       ["LAB RESULTS", "lab results"],
       ["CURRENT PREGNANCY", "current pregnancy"],
       ["ANC EXAMINATION", "anc examination"],
-      ["DISPENSING", "TTV Dispensation"]
+      ["DISPENSING", "TTV Dispensation"],
+      ["ART_FOLLOWUP", "art_followup"]
     ]
   },
     
