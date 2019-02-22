@@ -192,27 +192,25 @@ function removeHIVOption(){
   var hiv_option = $('hiv');
   
   var prev_hiv_test_res = ""
+
+  var hiv_test_date = ""
         
   if ($('prev_hiv_test_result')){
     
     prev_hiv_test_res = $('prev_hiv_test_result').value
   
   }
+
   
   try{
     
-    if ($('9655_yes') !== null){
+    prev_test_done = yesNo_Hash["Lab Results"]["Previous HIV test done"];
     
-      if ($('9655_yes').attributes.class.nodeValue.match(/\ clicked/) || prev_hiv_test_res === 'Positive'){
+    if ((prev_test_done.toLowerCase() === 'yes' && prev_hiv_test_res.toLowerCase() === 'positive') || 
+        hiv_status.toLowerCase() === 'positive'){
 
         lab_test_list.options[hiv_option.index] = null;
 
-      }
-    
-    }else {
-        
-      lab_test_list.options[hiv_option.index] = null;
-        
     }
   
   }catch(e){
@@ -480,9 +478,9 @@ function checkMaxAndValue() {
 
   var yearInputValue = yearInput.value;
 
-  var maxValue = yearInput.getAttribute('max');
+  var maxValue = yearInput.max
 
-  var inputDate = yearInputValue.split("-").reverse().join("-");
+  var inputDate = yearInputValue.toString().split("-").reverse().join("-");
 
   var maxDate = maxValue.split("-").reverse().join("-");
 
@@ -504,8 +502,18 @@ function submitButton(){
   var nextButton =  document.getElementById('nextButton');
 
   nextButton.onmousedown = function(){
+    
+    var ftype = document.getElementById('touchscreenInput' + tstCurrentPage).getAttribute('field_type');
 
-    checkMaxAndValue();
+    if (ftype !== null && ftype.toLowerCase() === 'date'){
+        
+      checkMaxAndValue();
+   
+    }else{
+    
+      gotoNextPage();
+
+    }
 
   }
 

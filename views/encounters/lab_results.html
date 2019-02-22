@@ -14,6 +14,16 @@
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/lab_results.js"></script>
+    <style>
+      #summary{
+        font-size: 1.8em;
+        padding: 25px;
+      }
+      #summary .value{
+        color: red;
+        font-style: italic;
+      }
+    </style>
     
   </head>
 
@@ -32,8 +42,7 @@
           <input type="text" name="lab-results"
             tt_onLoad="__$('keyboard').style.display = 'none'; 
               addYesNoToLabTests(); addHIVOption();"
-            optional="true" tt_onUnload="removeHIVOption();
-              updatePreviousHIVTestDoneResponse();"
+            optional="true" tt_onUnload="updatePreviousHIVTestDoneResponse();"
             tt_pageStyleClass= "NoControls" helpText="Lab Results" />
 
           <select tt_onLoad="" condition="checkPreviousHIVTest();" 
@@ -50,7 +59,8 @@
           </select>
 
           <input tt_onLoad="setAbsoluteMaxYear();submitButton();
-            __$('today').style.display='none';" tt_onUnLoad="" condition="$('prev_hiv_test_result').value !== '';" 
+            __$('today').style.display='none';" tt_onUnLoad="removeHIVOption();" 
+            condition="$('prev_hiv_test_result').value !== '';" 
             field_type="date" helpText="Previous HIV test date"
             id="prev_hiv_test_date" name="previous hiv test date"
             tt_pageStyleClass="Date DatesOnly" type="text"/>
