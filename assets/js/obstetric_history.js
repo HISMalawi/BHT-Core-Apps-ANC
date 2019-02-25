@@ -44,8 +44,9 @@ concepts_hash = {
     'eclampsia': 7156,
     'ever_had_episiotomy' : 8758,
     'PPH' : 230,
-    'APH' : 228
-  
+    'APH' : 228,
+    'Complete abortion' : 7372,
+    'Incomplete abortion' : 905
   }
   
 var last_visit = "";
@@ -149,68 +150,72 @@ function postObstetricObs(encounter){
 
       for(key in data){
 
-        var year_of_birth = data[key][1]["Year of birth"];
+        for(i in data[key]){
+
+          var year_of_birth = data[key][i]["Year of birth"];
+          
+          var place_of_birth = data[key][i]["Place of birth"];
+          
+          var gestation = data[key][i]["Gestation (weeks)"];
+
+          var mode_of_delivery = data[key][i]["Method of delivery"];
+          
+          var condition_at_birth = data[key][i]["Condition at birth"];
+
+          var birth_weight = data[key][i]["Birth weight"];
+          
+          var alive_now = data[key][i]["Alive Now"];
+
+          var age_at_death = data[key][i]["Age at Death"];
+
+
+          if (year_of_birth !== undefined && year_of_birth !== "?"){
         
-        var place_of_birth = data[key][1]["Place of birth"];
+            obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_birth)});
+
+          }
+
+          if (place_of_birth !== undefined && place_of_birth !== "?"){
         
-        var gestation = data[key][1]["Gestation (weeks)"];
+            obs.observations.push({concept_id: 2997, value_text: place_of_birth});
 
-        var mode_of_delivery = data[key][1]["Method of delivery"];
+          }
+
+          if (gestation !== undefined && gestation !== "?"){
+      
+            obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
+
+          }
+
+          if (mode_of_delivery !== undefined && mode_of_delivery !== "?"){
+
+            obs.observations.push({concept_id: 5630, value_text: mode_of_delivery});
+
+          }
+
+          if (condition_at_birth !== undefined && condition_at_birth !== "?") {
         
-        var condition_at_birth = data[key][1]["Condition at birth"];
+            obs.observations.push({concept_id: 1053, value_text: condition_at_birth});
 
-        var birth_weight = data[key][1]["Birth weight"];
+          }
+
+          if (birth_weight !== undefined && birth_weight !== "?"){
         
-        var alive_now = data[key][1]["Alive Now"];
+            obs.observations.push({concept_id: 5916, value_text: birth_weight});
 
-        var age_at_death = data[key][1]["Age at Death"];
+          }
 
+          if (alive_now !== undefined && alive_now !== "?"){
+        
+            obs.observations.push({concept_id: 2895, value_coded: concepts_hash[alive_now]});
 
-        if (year_of_birth !== undefined && year_of_birth !== "?"){
-      
-          obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_birth)});
+          }
 
-        }
+          if (age_at_death !== undefined && age_at_death !== "?"){
+        
+            obs.observations.push({concept_id: 7999, value_text: age_at_death});
 
-        if (place_of_birth !== undefined && place_of_birth !== "?"){
-      
-          obs.observations.push({concept_id: 2997, value_text: place_of_birth});
-
-        }
-
-        if (gestation !== undefined && gestation !== "?"){
-      
-          obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
-
-        }
-
-        if (mode_of_delivery !== undefined && mode_of_delivery !== "?"){
-
-          obs.observations.push({concept_id: 5630, value_text: mode_of_delivery});
-
-        }
-
-        if (condition_at_birth !== undefined && condition_at_birth !== "?") {
-      
-          obs.observations.push({concept_id: 1053, value_text: condition_at_birth});
-
-        }
-
-        if (birth_weight !== undefined && birth_weight !== "?"){
-      
-          obs.observations.push({concept_id: 5916, value_text: birth_weight});
-
-        }
-
-        if (alive_now !== undefined && alive_now !== "?"){
-      
-          obs.observations.push({concept_id: 2895, value_text: alive_now});
-
-        }
-
-        if (age_at_death !== undefined && age_at_death !== "?"){
-      
-          obs.observations.push({concept_id: 7999, value_text: age_at_death});
+          }
 
         }
 
@@ -218,11 +223,67 @@ function postObstetricObs(encounter){
         
     }
         
-    if ($('abortions').value !== ""){
+    if ($('abortions').value !== "" && parseInt($('abortions').value) > 0) {
             
       obs.observations.push(
             {concept_id: 7942, value_numeric: parseInt($('abortions').value)}
           );
+
+      for (key in $$){
+
+        //for(k in $$[key]){
+
+          //console.log($$[key]);
+
+          var gestation = $$[key]["Gestation (weeks)"];
+
+          var place_of_abortion = $$[key]["Place of abortion"];
+
+          var procedure_done = $$[key]["Procedure done"];
+
+          var type_of_abortion = $$[key]["Type of abortion"];
+
+          var year_of_abortion = $$[key]["Year of abortion"];
+
+
+          if (year_of_abortion !== undefined && year_of_abortion !== "?"){
+            
+            obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_abortion)});
+
+          }
+          
+          if (gestation !== undefined && gestation !== "?"){
+            
+            obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
+          
+          }
+
+
+          if (type_of_abortion !== undefined && type_of_abortion !== "?"){
+            
+            obs.observations.push(
+                {concept_id: 8359, value_coded: parseInt(concepts_hash[type_of_abortion])}
+              );
+
+          }
+
+          if (procedure_done !== undefined && procedure_done !== "?"){
+            
+            obs.observations.push(
+                {concept_id: 7439, value_text: procedure_done}
+              );
+
+          }
+
+          if (place_of_abortion !== undefined && place_of_abortion !== "?"){
+            
+            obs.observations.push({concept_id: 2997, value_text: place_of_abortion});
+
+          }
+
+        //}
+
+      }
         
     }
     
@@ -252,470 +313,753 @@ function nextPage(){
       
 }
 
+function increment(pos) {
+  
+  var i = parseInt(__$("input_" + pos).value);
+        
+  if (i <= 3) {
+    
+    __$("input_" + pos).value = parseInt(__$("input_" + pos).value) + 1;
+          
+    updateInput(pos);
+        
+  } else {
+    
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
+          
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
+        
+  }
+  
+  if (i + 1 == 13) {
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
+          
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
+        
+  }
+  
+  if (i + 1 > 1) {
+          
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow.png')";
+          
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
+        
+  }
+      
+}
 
-      function increment(pos) {
+function decrement(pos) {
+  
+  var i = parseInt(__$("input_" + pos).value);
+        
+  if (parseInt(__$("input_" + pos).value) > 1) {
 
-        var i = parseInt(__$("input_" + pos).value);
-        if (i <= 3) {
+    __$("input_" + pos).value = parseInt(__$("input_" + pos).value) - 1;
+          
+    updateInput(pos);
+        
+  } else {
+    
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
+          
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
+        
+  }
+  
+  if (i - 1 == 1) {
 
-          __$("input_" + pos).value = parseInt(__$("input_" + pos).value) + 1;
-          updateInput(pos);
-        } else {
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
+          
+    __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
+        
+  }
+  
+  if (i - 1 < 13) {
+          
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow.png')";
+          
+    __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
+        
+  }
+      
+}
 
-          __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
-          __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
-        }
+function checkSelection(pos) {
+  
+  if (__$("img_" + pos).src.match(/unticked/)) {
 
-        if (i + 1 == 13) {
+    __$("img_" + pos).src = "/apps/ANC/assets/images/ticked.jpg";
+          
+    updateInput(pos, true);
+        
+  } else {
+    
+    __$("img_" + pos).src = "/apps/ANC/assets/images/unticked.jpg";
+          
+    updateInput(pos, false);
+        
+  }
+      
+}
 
-          __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
-          __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
-        }
+function updateInput(pos, bool) {
+  
+  if (data[pos] == undefined) {
 
-        if (i + 1 > 1) {
-          __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow.png')";
-          __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
-        }
+    data[pos] = {};
+        
+  }
+  
+  data[pos]["count"] = parseInt(__$("input_" + pos).value);
+
+  if (bool != undefined)
+          
+    data[pos]["condition"] = bool;
+
+  __$("data").value = stringfy(data);
+      
+}
+
+function stringfy(hash) {
+
+  var keys = Object.keys(hash);
+        
+  var vals = "{";
+        
+  var cons = "{";
+
+  for (var i = 0; i < keys.length; i++) {
+
+    vals += keys[i] + " => ";
+          
+    cons += keys[i] + " => ";
+
+    if (i != keys.length - 1) {
+
+      vals += data[keys[i]]["count"] + ", ";
+            
+      cons += data[keys[i]]["condition"] + ", ";
+          
+    } else {
+
+      vals += data[keys[i]]["count"] + "}";
+            
+      cons += data[keys[i]]["condition"] + "}";
+          
+    }
+        
+  }
+  
+  var string = "{'values' => " + vals + ", 'conditions' => " + cons + "}";
+
+  return string;
+      
+}
+
+function loadSelections() {
+        
+  $("keyboard").style.display = "none";
+        
+  $("touchscreenInput" + tstCurrentPage).style.display = "none";
+        
+  $("inputFrame" + tstCurrentPage).style.height = 0.72 * screen.height + "px";
+        
+  $("inputFrame" + tstCurrentPage).style.marginTop = 0.05 * screen.height + "px";
+        
+  $("inputFrame" + tstCurrentPage).style.background = "white";
+
+  var delivered_pregnancies = $("para").value;
+
+  if (delivered_pregnancies > 0) {
+          
+    var headerHolder = document.createElement("div");
+          
+    headerHolder.style.height = "63px";
+          
+    headerHolder.style.width = "100%";
+          
+    headerHolder.style.borderRadius = "10px";
+
+          
+    var header = document.createElement("div");
+          
+    header.id = "header";
+          
+    header.style.width = "100%";
+          
+    headerHolder.appendChild(header);
+
+          
+    var t1 = document.createElement("div");
+          
+    t1.innerHTML = "Pregnancy";
+          
+    t1.setAttribute("class", "h-cell");
+          
+    header.appendChild(t1);
+
+          
+    var t2 = document.createElement("div");
+          
+    t2.innerHTML = "Baby count";
+          
+    t2.setAttribute("class", "h-cell");
+          
+    header.appendChild(t2);
+
+          
+    var t3 = document.createElement("div");
+          
+    t3.innerHTML = "Details available";
+          
+    t3.setAttribute("class", "h-cell");
+          
+    header.appendChild(t3);
+
+          
+    $("inputFrame" + tstCurrentPage).appendChild(headerHolder);
+
+          
+    var container = document.createElement("div");
+          
+    container.style.height = 0.64 * screen.height + "px";
+          
+    container.id = "container";
+
+          
+    $("inputFrame" + tstCurrentPage).appendChild(container);
+          
+    var table = document.createElement("div");
+          
+    table.id = "table";
+
+          
+    container.appendChild(table);
+
+          
+    for (var p = 1; p <= delivered_pregnancies; p++) {
+            
+      var row = document.createElement("div");
+            
+      row.setAttribute("class", "data-row");
+            
+      row.id = "row_" + p;
+            
+      if (p % 2 == 1) {
+              
+        row.style.background = "#F8F8F8";
+            
       }
+            
+      table.appendChild(row);
 
-      function decrement(pos) {
+            
+      var cell1 = document.createElement("div");
+            
+      cell1.id = "cell_" + p + "_1";
+            
+      cell1.style.paddingLeft = "15%";
+            
+      cell1.setAttribute("class", "data-cell");
+            
+      cell1.innerHTML = p + (p == 1 ? "<sup>st</sup>" : ((p == 2 ? "<sup>nd</sup>" : (p == 3 ? "<sup>rd</sup>" : "<sup>th</sup>"))));
+            
+      row.appendChild(cell1);
 
-        var i = parseInt(__$("input_" + pos).value);
-        if (parseInt(__$("input_" + pos).value) > 1) {
+            
+      var cell2 = document.createElement("div");
+            
+      cell2.id = "cell_" + p + "_2";
+            
+      cell2.setAttribute("class", "data-cell");
 
-          __$("input_" + pos).value = parseInt(__$("input_" + pos).value) - 1;
-          updateInput(pos);
-        } else {
+      cell2.style.paddingLeft = "7%";
 
-          __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
-          __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
-        }
-
-        if (i - 1 == 1) {
-
-          __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
-          __$("input_" + pos).parentNode.parentNode.children[0].childNodes[0].style.backgroundRepeat = "no-repeat";
-        }
-
-        if (i - 1 < 13) {
-          __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.background = "url('/apps/ANC/assets/images/up_arrow.png')";
-          __$("input_" + pos).parentNode.parentNode.children[2].childNodes[1].style.backgroundRepeat = "no-repeat";
-        }
-      }
-
-      function checkSelection(pos) {
-
-        if (__$("img_" + pos).src.match(/unticked/)) {
-
-          __$("img_" + pos).src = "/apps/ANC/assets/images/ticked.jpg";
-          updateInput(pos, true);
-        } else {
-
-          __$("img_" + pos).src = "/apps/ANC/assets/images/unticked.jpg";
-          updateInput(pos, false);
-        }
-      }
-
-      function updateInput(pos, bool) {
-
-        if (data[pos] == undefined) {
-
-          data[pos] = {};
-        }
-
-        data[pos]["count"] = parseInt(__$("input_" + pos).value);
-
-        if (bool != undefined)
-          data[pos]["condition"] = bool;
-
-        __$("data").value = stringfy(data);
-      }
-
-      function stringfy(hash) {
-
-        var keys = Object.keys(hash);
-        var vals = "{";
-        var cons = "{";
-
-        for (var i = 0; i < keys.length; i++) {
-
-          vals += keys[i] + " => ";
-          cons += keys[i] + " => ";
-
-          if (i != keys.length - 1) {
-
-            vals += data[keys[i]]["count"] + ", ";
-            cons += data[keys[i]]["condition"] + ", ";
-          } else {
-
-            vals += data[keys[i]]["count"] + "}";
-            cons += data[keys[i]]["condition"] + "}";
-          }
-        }
-
-        var string = "{'values' => " + vals + ", 'conditions' => " + cons + "}";
-
-        return string;
-      }
-
-      function loadSelections() {
-        $("keyboard").style.display = "none";
-        $("touchscreenInput" + tstCurrentPage).style.display = "none";
-        $("inputFrame" + tstCurrentPage).style.height = 0.72 * screen.height + "px";
-        $("inputFrame" + tstCurrentPage).style.marginTop = 0.05 * screen.height + "px";
-        $("inputFrame" + tstCurrentPage).style.background = "white";
-
-        var delivered_pregnancies = $("para").value;
-
-        if (delivered_pregnancies > 0) {
-          var headerHolder = document.createElement("div");
-          headerHolder.style.height = "63px";
-          headerHolder.style.width = "100%";
-          headerHolder.style.borderRadius = "10px";
-
-          var header = document.createElement("div");
-          header.id = "header";
-          header.style.width = "100%";
-          headerHolder.appendChild(header);
-
-          var t1 = document.createElement("div");
-          t1.innerHTML = "Pregnancy";
-          t1.setAttribute("class", "h-cell");
-          header.appendChild(t1);
-
-          var t2 = document.createElement("div");
-          t2.innerHTML = "Baby count";
-          t2.setAttribute("class", "h-cell");
-          header.appendChild(t2);
-
-          var t3 = document.createElement("div");
-          t3.innerHTML = "Details available";
-          t3.setAttribute("class", "h-cell");
-          header.appendChild(t3);
-
-          $("inputFrame" + tstCurrentPage).appendChild(headerHolder);
-
-          var container = document.createElement("div");
-          container.style.height = 0.64 * screen.height + "px";
-          container.id = "container";
-
-          $("inputFrame" + tstCurrentPage).appendChild(container);
-          var table = document.createElement("div");
-          table.id = "table";
-
-          container.appendChild(table);
-
-          for (var p = 1; p <= delivered_pregnancies; p++) {
-            var row = document.createElement("div");
-            row.setAttribute("class", "data-row");
-            row.id = "row_" + p;
-            if (p % 2 == 1) {
-              row.style.background = "#F8F8F8";
-            }
-            table.appendChild(row);
-
-            var cell1 = document.createElement("div");
-            cell1.id = "cell_" + p + "_1";
-            cell1.style.paddingLeft = "15%";
-            cell1.setAttribute("class", "data-cell");
-            cell1.innerHTML = p + (p == 1 ? "<sup>st</sup>" : ((p == 2 ? "<sup>nd</sup>" : (p == 3 ? "<sup>rd</sup>" : "<sup>th</sup>"))));
-            row.appendChild(cell1);
-
-            var cell2 = document.createElement("div");
-            cell2.id = "cell_" + p + "_2";
-            cell2.setAttribute("class", "data-cell");
-
-            cell2.style.paddingLeft = "7%";
-
-            cell2.innerHTML = "<table class='button-table'><tr><td><button id = 'inc" + p + "' class = 'minus' onmousedown = 'decrement(" + p + ")'></button> </td> <td><input id = 'input_" +
+            
+      cell2.innerHTML = "<table class='button-table'><tr><td><button id = 'inc" + p + "' class = 'minus' onmousedown = 'decrement(" + p + ")'></button> </td> <td><input id = 'input_" +
               p + "'  value = '" + (counts[p] == undefined ? 1 : counts[p]) + "' class = 'label' id = 'label" + p + "' >  </input> </td><td> <button  id = 'dec" + p + "' class = 'plus' onmousedown = 'increment(" + p + ")'></button></td></tr></table>"
-            row.appendChild(cell2);
+       
+      row.appendChild(cell2);
+      
+      if (counts[p] != undefined && parseInt(counts[p]) > 1) {
+              
+        $("inc" + p).style.background = "url('/apps/ANC/assets/images/down_arrow.png')";
+              
+        $("inc" + p).style.backgroundRepeat = "no-repeat";
+            
+      } else {
+              
+        $("inc" + p).style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
+              
+        $("inc" + p).style.backgroundRepeat = "no-repeat";
+            
+      }
 
-            if (counts[p] != undefined && parseInt(counts[p]) > 1) {
-              $("inc" + p).style.background = "url('/apps/ANC/assets/images/down_arrow.png')";
-              $("inc" + p).style.backgroundRepeat = "no-repeat";
-            } else {
-              $("inc" + p).style.background = "url('/apps/ANC/assets/images/down_arrow_gray.png')";
-              $("inc" + p).style.backgroundRepeat = "no-repeat";
-            }
+      if (counts[p] != undefined && parseInt(counts[p]) == 13) {
+              
+        $("dec" + p).style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
+              
+        $("dec" + p).style.backgroundRepeat = "no-repeat";
+           
+      } else {
+              
+        $("dec" + p).style.background = "url('/apps/ANC/assets/images/up_arrow.png')";
+              
+        $("dec" + p).style.backgroundRepeat = "no-repeat";
+            
+      }
+      
+      var cell3 = document.createElement("div");
+            
+      cell3.id = "cell_" + p + "_3";
+            
+      cell3.setAttribute("class", "data-cell-img");
+            
+      cell3.setAttribute("p", p);
+            
+      cell3.innerHTML = '<img class = "dcimg" id = "img_' + p + '" onclick = "checkSelection(' + p + ')" src="/apps/ANC/assets/images/unticked.jpg" height="45" width="45"> ';
+            
+      row.appendChild(cell3);
 
-            if (counts[p] != undefined && parseInt(counts[p]) == 13) {
-              $("dec" + p).style.background = "url('/apps/ANC/assets/images/up_arrow_gray.png')";
-              $("dec" + p).style.backgroundRepeat = "no-repeat";
-            } else {
-              $("dec" + p).style.background = "url('/apps/ANC/assets/images/up_arrow.png')";
-              $("dec" + p).style.backgroundRepeat = "no-repeat";
-            }
+      if (data[p] == undefined)
+              
+        data[p] = {};
+            
+      data[p]["condition"] = false;
+            
+      data[p]["count"] = 1;
+          
+    }
 
-            var cell3 = document.createElement("div");
-            cell3.id = "cell_" + p + "_3";
-            cell3.setAttribute("class", "data-cell-img");
-            cell3.setAttribute("p", p);
-            cell3.innerHTML = '<img class = "dcimg" id = "img_' + p + '" onclick = "checkSelection(' + p + ')" src="/apps/ANC/assets/images/unticked.jpg" height="45" width="45"> ';
-            row.appendChild(cell3);
+    var width = __$("row_1").offsetWidth + "px";
+          
+    headerHolder.style.width = width;
+          
+    header.style.width = width;
+          
+    updateInput(1, false);
+        
+  }
+      
+}
 
-            if (data[p] == undefined)
-              data[p] = {};
-            data[p]["condition"] = false;
-            data[p]["count"] = 1;
+function calculateAbortions() {
+        
+  updateDeliveries();
+        
+  if ($('gravida').value > 1) {
+          
+    $('abortions').value = parseInt(__$('gravida').value) - parseInt(__$('para').value) - 1
+        
+  }
+      
+}
+
+function updateDeliveries() {
+        
+  deliveries = __$('para').value;
+      
+}
+
+function loadInputWindow() {
+  
+  var myModule = (function (jQ, $) {
+
+    function load() {
+
+      jQ("#touchscreenInput" + tstCurrentPage + ", #keyboard").css("display", "none");
+
+      __$("inputFrame" + tstCurrentPage).style.height = "80%"
+                
+      __$("inputFrame" + tstCurrentPage).style.marginTop = 0.05 * screen.height + "px";
+                
+      __$("inputFrame" + tstCurrentPage).style.background = "white";
+                
+      __$("inputFrame" + tstCurrentPage).style.width = "98%"
+
+                
+      var headerHolder = document.createElement("div");
+                
+      headerHolder.id = "hheader"
+                
+      headerHolder.style.height = "63px;";
+                
+      headerHolder.style.width = "100%";
+                
+      headerHolder.style.borderRadius = "10px";
+
+                
+      var header = document.createElement("div");
+                
+      header.id = "header";
+                
+      header.style.width = "100%";
+                
+      headerHolder.appendChild(header);
+
+                
+      var t1 = document.createElement("div");
+                
+      t1.innerHTML = "Pregnancy";
+                
+      t1.style.width = "20%";
+                
+      t1.setAttribute("class", "h-cell");
+                
+      header.appendChild(t1);
+
+                
+      var t2 = document.createElement("div");
+                
+      t2.innerHTML = "Details";
+                
+      t2.style.width = "80%";
+                
+      t2.setAttribute("class", "h-cell");
+                
+      header.appendChild(t2);
+
+                
+      __$("inputFrame" + tstCurrentPage).appendChild(headerHolder);
+      
+      __$("inputFrame" + tstCurrentPage).style.zIndex = 7;
+
+     
+      var container = document.createElement("div");
+     
+      container.style.height = 0.64 * screen.height + "px";
+     
+      container.id = "container2";
+
+
+      var pTable = document.createElement("div");
+
+      pTable.style.display = "table";
+
+      pTable.style.width = "100%";
+
+      container.appendChild(pTable);
+
+
+      var pregRow = document.createElement("div");
+
+      pregRow.style.display = "table-row";
+
+      pregRow.style.width = "100%";
+ 
+      pTable.appendChild(pregRow);
+
+
+      var pcell = document.createElement("div");
+
+      pcell.innerHTML = "<div id ='pcell' style='width: 100%; overflow: auto;'><table style='width: 100%;' id = 'pregs'></table></div>";
+
+      pcell.style.display = "table-cell";
+
+      pcell.style.width = "20%";
+
+      pcell.style.overflow = "hidden";
+
+      pregRow.appendChild(pcell);
+
+
+      var dcell = document.createElement("div");
+
+      dcell.innerHTML = "<div id = 'dcell' style='width: 100%; overflow: auto;'><table style='width: 100%;' id = 'details'></table></div>";
+
+      dcell.style.display = "table-cell";
+
+      dcell.style.width = "80%";
+
+      dcell.style.borderLeft = "1px black solid";
+
+      dcell.style.overflow = "hidden";
+
+      pregRow.appendChild(dcell);
+
+
+      __$("inputFrame" + tstCurrentPage).appendChild(container);
+
+
+      var table = document.createElement("div");
+
+      table.style.display = "table";
+
+
+      container.appendChild(pTable);
+
+      jQ("#dcell").css("height", "464px");
+
+      jQ("#details").css("margin-top", "20px");
+
+      jQ("#pcell").css("height", "464px");
+
+      c = 0;
+
+
+      for (var pos in $) {
+
+        if ($[pos]["condition"] == true) {
+               
+          loadPregnancy(pos, "delivery");
+          
+          details_available.push($[pos]["condition"]);
+          
+        }
+        
+      }
+
+      for (var i = 1; i <= parseInt(__$("abortions").value); i++) {
+
+        loadPregnancy(i, "abortion");
+
+      }
+       
+      var width = (__$("details").parentNode.offsetWidth + __$("pregs").parentNode.offsetWidth - 2) + "px";
+      
+      headerHolder.style.width = width;
+      
+      header.style.width = width;
+      
+    }
+
+    function loadPopup(row) {
+      try {
+                  
+        if (__$("popup") != undefined) {
+        
+          __$("popup").innerHTML = "";
+        
+          __$("popup").parentNode.removeChild(__$("popup"))
+        
+        }
+
+
+        if (__$("popup-header") != undefined) {
+
+          __$("popup-header").innerHTML = "";
+
+          __$("popup-header").parentNode.removeChild(__$("popup-header"))
+
+        }
+
+        if (__$("shield") != undefined) {
+        
+          __$("shield").innerHTML = "";
+        
+          __$("shield").parentNode.removeChild(__$("shield"))
+        
+          __$("shield") = null;
+        
+        }
+        
+      } catch (e) {}
+
+      var popup = document.createElement("div");
+
+      popup.id = "popup";
+
+      var nTuple = row.getAttribute("n-tuple");
+
+      var pTuple = row.getAttribute("p-tuple");
+
+      var aTuple = row.getAttribute("a-tuple");
+
+
+      popup.setAttribute("n-tuple", nTuple);
+
+      popup.setAttribute("p-tuple", pTuple);
+
+      popup.setAttribute("a-tuple", aTuple);
+
+      popup.setAttribute("row_id", row.id)
+
+
+      jQ(popup).css({
+
+        position: "absolute",
+
+        display: "none",
+
+        "min-width": 0.35 * screen.width + "px",
+
+        "min-height": 0.25 * screen.height + "px",
+
+        width: "auto",
+
+        height: "auto",
+
+        "z-index": 100,
+
+        left: 0.325 * screen.width + "px",
+
+        top: 0.18 * screen.height + "px",
+
+        border: "1px solid black",
+
+        background: "white",
+
+        "border-radius": "5px",
+
+        opacity: "1"
+
+      });
+
+
+      var popupHeader = document.createElement("div");
+
+      popupHeader.id = "popup-header";
+
+      popupHeader.innerHTML = current_popup;
+
+      jQ(popupHeader).css({
+
+        "width": "100%",
+
+        "height": 0.055 * screen.height + "px",
+
+        "font-size": "22px",
+
+        "font-weight": "bold",
+
+        "padding-top": "10px",
+
+        "text-align": "center",
+
+        border: "1px dotted white",
+
+        background: "#6D929B",
+
+        color: "white"
+
+      });
+
+
+      var shield = document.createElement("div");
+
+      shield.id = "shield";
+
+      shield.style.display = "none";
+
+      shield.style.position = "absolute";
+
+      shield.style.width = "100%";
+
+      shield.style.height = "100%";
+
+      shield.style.left = "0px";
+
+      shield.style.top = "0px";
+
+      shield.style.backgroundColor = "#333";
+
+      shield.style.opacity = "0.4";
+
+      shield.style.zIndex = 50;
+
+
+      __$("inputFrame" + tstCurrentPage).appendChild(shield);
+
+      popup.appendChild(popupHeader);
+
+      __$("inputFrame" + tstCurrentPage).appendChild(popup);
+
+    }
+
+
+    function loadPregnancy(n, type) {
+
+      var row1 = document.createElement("div");
+
+      row1.id = "preg_row_" + n;
+
+      row1.setAttribute("class", "preg-row");
+
+      if (type == "abortion") {
+
+        if ($$[n] == undefined) {
+
+          $$[n] = {};
+
+        }
+
+      }
+
+      var d1 = document.createElement("div");
+
+      d1.id = n;
+
+      d1.innerHTML = " <span style=' color: " + (type == "abortion" ? "red" : "black") + "'> " + "<img height='46' class = 'img-preg-cell' src='/public/touchscreentoolkit/lib/images/unchecked.jpg'>" +
+
+      n + (n == 1 ? "<sup>st</sup>" : ((n == 2 ? "<sup>nd</sup>" : (n == 3 ? "<sup>rd</sup>" : "<sup>th</sup>")))) + " " +
+
+      type + " </span>";
+
+      d1.setAttribute("class", "preg-cell");
+                
+      d1.setAttribute("selected", "false");
+
+      d1.onclick = function () {
+
+        if (this.getAttribute("selected") == "false") {
+
+          var nodes = document.getElementsByClassName("preg-cell");
+
+          for (var i = 0; i < nodes.length; i++) {
+
+            var sel = nodes[i].getAttribute("selected");
+                      
+            if (this != nodes[i] && sel != undefined && sel == "true") {
+                        
+              nodes[i].setAttribute("selected", "false");
+                        
+              var image = nodes[i].getElementsByTagName("img")[0];
+                        
+              if (image != undefined && image.src.length > 0) {
+                          
+                image.src = '/public/touchscreentoolkit/lib/images/unchecked.jpg';
+                        
+              }
+                      
+           }
+                    
           }
 
-          var width = __$("row_1").offsetWidth + "px";
-          headerHolder.style.width = width;
-          header.style.width = width;
-          updateInput(1, false);
+          var img = this.getElementsByTagName("img")[0];
+
+          if (img.src.match("unchecked")) {
+
+            img.src = '/public/touchscreentoolkit/lib/images/checked.jpg'
+
+          }
+
+          this.setAttribute("selected", "true");
+
+          populate(this.id, type)
+
         }
+
       }
 
-      function calculateAbortions() {
-        updateDeliveries();
-        if ($('gravida').value > 1) {
-          $('abortions').value = parseInt(__$('gravida').value) - parseInt(__$('para').value) - 1
-        }
+      row1.appendChild(d1);
+
+      if (c == 0 && $[n] != undefined && $[n]["condition"] == true) {
+                  
+        var img = d1.getElementsByTagName("img")[0];
+      
+        d1.setAttribute("selected", "true");
+      
+        img.src = '/public/touchscreentoolkit/lib/images/checked.jpg'
+      
+        populate(n, type);
+      
+        c += 1;
+      
       }
 
-      function updateDeliveries() {
-        deliveries = __$('para').value;
-      }
+      __$("pregs").appendChild(row1);
 
-      function loadInputWindow() {
-
-        var myModule = (function (jQ, $) {
-
-              function load() {
-
-                jQ("#touchscreenInput" + tstCurrentPage + ", #keyboard").css("display", "none");
-
-                __$("inputFrame" + tstCurrentPage).style.height = "80%"
-                __$("inputFrame" + tstCurrentPage).style.marginTop = 0.05 * screen.height + "px";
-                __$("inputFrame" + tstCurrentPage).style.background = "white";
-                __$("inputFrame" + tstCurrentPage).style.width = "98%"
-
-                var headerHolder = document.createElement("div");
-                headerHolder.id = "hheader"
-                headerHolder.style.height = "63px;";
-                headerHolder.style.width = "100%";
-                headerHolder.style.borderRadius = "10px";
-
-                var header = document.createElement("div");
-                header.id = "header";
-                header.style.width = "100%";
-                headerHolder.appendChild(header);
-
-                var t1 = document.createElement("div");
-                t1.innerHTML = "Pregnancy";
-                t1.style.width = "20%";
-                t1.setAttribute("class", "h-cell");
-                header.appendChild(t1);
-
-                var t2 = document.createElement("div");
-                t2.innerHTML = "Details";
-                t2.style.width = "80%";
-                t2.setAttribute("class", "h-cell");
-                header.appendChild(t2);
-
-                __$("inputFrame" + tstCurrentPage).appendChild(headerHolder);
-                __$("inputFrame" + tstCurrentPage).style.zIndex = 7;
-
-                var container = document.createElement("div");
-                container.style.height = 0.64 * screen.height + "px";
-                container.id = "container2";
-
-                var pTable = document.createElement("div");
-                pTable.style.display = "table";
-                pTable.style.width = "100%";
-                container.appendChild(pTable);
-
-                var pregRow = document.createElement("div");
-                pregRow.style.display = "table-row";
-                pregRow.style.width = "100%";
-                pTable.appendChild(pregRow);
-
-                var pcell = document.createElement("div");
-                pcell.innerHTML = "<div id ='pcell' style='width: 100%; overflow: auto;'><table style='width: 100%;' id = 'pregs'></table></div>";
-                pcell.style.display = "table-cell";
-                pcell.style.width = "20%";
-                pcell.style.overflow = "hidden";
-                pregRow.appendChild(pcell);
-
-                var dcell = document.createElement("div");
-                dcell.innerHTML = "<div id = 'dcell' style='width: 100%; overflow: auto;'><table style='width: 100%;' id = 'details'></table></div>";
-                dcell.style.display = "table-cell";
-                dcell.style.width = "80%";
-                dcell.style.borderLeft = "1px black solid";
-                dcell.style.overflow = "hidden";
-                pregRow.appendChild(dcell);
-
-                __$("inputFrame" + tstCurrentPage).appendChild(container);
-
-                var table = document.createElement("div");
-                table.style.display = "table";
-
-                container.appendChild(pTable);
-                jQ("#dcell").css("height", "464px");
-                jQ("#details").css("margin-top", "20px");
-                jQ("#pcell").css("height", "464px");
-                c = 0;
-
-                for (var pos in $) {
-
-                  if ($[pos]["condition"] == true) {
-                    loadPregnancy(pos, "delivery");
-                    details_available.push($[pos]["condition"]);
-                  }
-                }
-
-                for (var i = 1; i <= parseInt(__$("abortions").value); i++) {
-
-                  loadPregnancy(i, "abortion");
-                }
-
-                var width = (__$("details").parentNode.offsetWidth + __$("pregs").parentNode.offsetWidth - 2) + "px";
-                headerHolder.style.width = width;
-                header.style.width = width;
-              }
-
-              function loadPopup(row) {
-
-                try {
-                  if (__$("popup") != undefined) {
-                    __$("popup").innerHTML = "";
-                    __$("popup").parentNode.removeChild(__$("popup"))
-                  }
-
-                  if (__$("popup-header") != undefined) {
-                    __$("popup-header").innerHTML = "";
-                    __$("popup-header").parentNode.removeChild(__$("popup-header"))
-                  }
-
-                  if (__$("shield") != undefined) {
-                    __$("shield").innerHTML = "";
-                    __$("shield").parentNode.removeChild(__$("shield"))
-                    __$("shield") = null;
-                  }
-                } catch (e) {}
-
-                var popup = document.createElement("div");
-                popup.id = "popup";
-                var nTuple = row.getAttribute("n-tuple");
-                var pTuple = row.getAttribute("p-tuple");
-                var aTuple = row.getAttribute("a-tuple");
-
-                popup.setAttribute("n-tuple", nTuple);
-                popup.setAttribute("p-tuple", pTuple);
-                popup.setAttribute("a-tuple", aTuple);
-                popup.setAttribute("row_id", row.id)
-
-                jQ(popup).css({
-                  position: "absolute",
-                  display: "none",
-                  "min-width": 0.35 * screen.width + "px",
-                  "min-height": 0.25 * screen.height + "px",
-                  width: "auto",
-                  height: "auto",
-                  "z-index": 100,
-                  left: 0.325 * screen.width + "px",
-                  top: 0.18 * screen.height + "px",
-                  border: "1px solid black",
-                  background: "white",
-                  "border-radius": "5px",
-                  opacity: "1"
-                });
-
-                var popupHeader = document.createElement("div");
-                popupHeader.id = "popup-header";
-                popupHeader.innerHTML = current_popup;
-                jQ(popupHeader).css({
-                  "width": "100%",
-                  "height": 0.055 * screen.height + "px",
-                  "font-size": "22px",
-                  "font-weight": "bold",
-                  "padding-top": "10px",
-                  "text-align": "center",
-                  border: "1px dotted white",
-                  background: "#6D929B",
-                  color: "white"
-                });
-
-                var shield = document.createElement("div");
-                shield.id = "shield";
-                shield.style.display = "none";
-                shield.style.position = "absolute";
-                shield.style.width = "100%";
-                shield.style.height = "100%";
-                shield.style.left = "0px";
-                shield.style.top = "0px";
-                shield.style.backgroundColor = "#333";
-                shield.style.opacity = "0.4";
-                shield.style.zIndex = 50;
-
-                __$("inputFrame" + tstCurrentPage).appendChild(shield);
-
-                popup.appendChild(popupHeader);
-
-                __$("inputFrame" + tstCurrentPage).appendChild(popup);
-              }
-
-              function loadPregnancy(n, type) {
-
-                var row1 = document.createElement("div");
-                row1.id = "preg_row_" + n;
-                row1.setAttribute("class", "preg-row");
-
-                if (type == "abortion") {
-                  if ($$[n] == undefined) {
-                    $$[n] = {};
-                  }
-                }
-                var d1 = document.createElement("div");
-                d1.id = n;
-                d1.innerHTML = " <span style=' color: " + (type == "abortion" ? "red" : "black") + "'> " + "<img height='46' class = 'img-preg-cell' src='/public/touchscreentoolkit/lib/images/unchecked.jpg'>" +
-                  n + (n == 1 ? "<sup>st</sup>" : ((n == 2 ? "<sup>nd</sup>" : (n == 3 ? "<sup>rd</sup>" : "<sup>th</sup>")))) + " " +
-                  type + " </span>";
-                d1.setAttribute("class", "preg-cell");
-
-                d1.setAttribute("selected", "false");
-
-                d1.onclick = function () {
-
-                  if (this.getAttribute("selected") == "false") {
-
-                    var nodes = document.getElementsByClassName("preg-cell");
-
-                    for (var i = 0; i < nodes.length; i++) {
-
-                      var sel = nodes[i].getAttribute("selected");
-                      if (this != nodes[i] && sel != undefined && sel == "true") {
-                        nodes[i].setAttribute("selected", "false");
-                        var image = nodes[i].getElementsByTagName("img")[0];
-                        if (image != undefined && image.src.length > 0) {
-                          image.src = '/public/touchscreentoolkit/lib/images/unchecked.jpg';
-                        }
-                      }
-                    }
-
-                    var img = this.getElementsByTagName("img")[0];
-                    if (img.src.match("unchecked")) {
-                      img.src = '/public/touchscreentoolkit/lib/images/checked.jpg'
-                    }
-                    this.setAttribute("selected", "true");
-                    populate(this.id, type)
-                  }
-                }
-
-                row1.appendChild(d1);
-
-                if (c == 0 && $[n] != undefined && $[n]["condition"] == true) {
-
-                  var img = d1.getElementsByTagName("img")[0];
-                  d1.setAttribute("selected", "true");
-                  img.src = '/public/touchscreentoolkit/lib/images/checked.jpg'
-                  populate(n, type);
-                  c += 1;
-                }
-
-                __$("pregs").appendChild(row1);
-              }
+    }
 
               function populate(id, type) {
 
