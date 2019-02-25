@@ -233,8 +233,6 @@ function postObstetricObs(encounter){
 
         //for(k in $$[key]){
 
-          //console.log($$[key]);
-
           var gestation = $$[key]["Gestation (weeks)"];
 
           var place_of_abortion = $$[key]["Place of abortion"];
@@ -1060,797 +1058,1228 @@ function loadInputWindow() {
       __$("pregs").appendChild(row1);
 
     }
+    
+    function populate(id, type) {
 
-              function populate(id, type) {
+      if (type == "abortion") {
+        
+        populateAbortion(id);
+                  
+        return;
+                
+      }
+      
+      var table = __$("details");
 
-                if (type == "abortion") {
+      jQ(table).fadeOut(2);
+                
+      table.innerHTML = "";
 
-                  populateAbortion(id);
-                  return;
-                }
+      if ($[id] == undefined)
+                  
+        $[id] = {}
+                
+      for (var n = 1; n <= $[id]["count"]; n++) {
+                  
+        if ($[id][n] == undefined)
+                    
+          $[id][n] = {}
 
-                var table = __$("details");
+        for (var i = 0; i < fields.length; i++) {
 
-                jQ(table).fadeOut(2);
-                table.innerHTML = "";
+          if ($[id]["count"] > 1 && i == 0) {
 
-                if ($[id] == undefined)
-                  $[id] = {}
-                for (var n = 1; n <= $[id]["count"]; n++) {
-                  if ($[id][n] == undefined)
-                    $[id][n] = {}
+            var rowd = document.createElement("div");
+                      
+            rowd.setAttribute("class", "demarcation");
+                      
+            rowd.id = "p_" + n;
 
-                  for (var i = 0; i < fields.length; i++) {
+            var d = document.createElement("div");
+                      
+            d.innerHTML = "&nbsp"
+                      
+            d.setAttribute("class", "demarcation-td");
 
-                    if ($[id]["count"] > 1 && i == 0) {
+            rowd.appendChild(d);
 
-                      var rowd = document.createElement("div");
-                      rowd.setAttribute("class", "demarcation");
-                      rowd.id = "p_" + n;
-
-                      var d = document.createElement("div");
-                      d.innerHTML = "&nbsp"
-                      d.setAttribute("class", "demarcation-td");
-
-                      rowd.appendChild(d);
-
-                      var d = document.createElement("div");
-                      d.innerHTML = n + (n == 1 ? "<span><sup>st</sup>" : ((n == 2 ? "<sup>nd</sup>" : (n == 3 ? "<sup>rd</sup>" : "<sup>th</sup>")))) +
+            var d = document.createElement("div");
+                      
+            d.innerHTML = n + (n == 1 ? "<span><sup>st</sup>" : ((n == 2 ? "<sup>nd</sup>" : (n == 3 ? "<sup>rd</sup>" : "<sup>th</sup>")))) +
                         " born in " + id + (id == 1 ? "<sup>st</sup>" : ((id == 2 ? "<sup>nd</sup>" : (id == 3 ? "<sup>rd</sup>" : "<sup>th</sup>")))) + " pregnancy</span>";
-                      d.setAttribute("class", "demarcation-td");
-                      rowd.appendChild(d);
+                      
+            d.setAttribute("class", "demarcation-td");
+                      
+            rowd.appendChild(d);
 
-                      var dd = document.createElement("div");
-                      dd.innerHTML = "&nbsp";
-                      dd.setAttribute("class", "demarcation-td");
-                      rowd.appendChild(dd);
-                      table.appendChild(rowd);
-                    }
+            var dd = document.createElement("div");
+                      
+            dd.innerHTML = "&nbsp";
+                      
+            dd.setAttribute("class", "demarcation-td");
+                      
+            rowd.appendChild(dd);
+                      
+            table.appendChild(rowd);
+                    
+          }
+          
+          var row = document.createElement("div");
+                    
+          row.id = id + "_" + n + "_detail_row_" + i;
+                    
+          row.setAttribute("n-tuple", n);
+                    
+          row.setAttribute("p-tuple", id);
+                    
+          row.setAttribute("pos", i);
+                    
+          row.setAttribute("class", "detail-row");
 
-                    var row = document.createElement("div");
-                    row.id = id + "_" + n + "_detail_row_" + i;
-                    row.setAttribute("n-tuple", n);
-                    row.setAttribute("p-tuple", id);
-                    row.setAttribute("pos", i);
-                    row.setAttribute("class", "detail-row");
+          table.appendChild(row);
 
-                    table.appendChild(row);
-                    var td1 = document.createElement("div");
-                    td1.innerHTML = fields[i];
-                    td1.setAttribute("class", "detail-row-label");
-                    row.appendChild(td1);
-                    var label = "?";
+          var td1 = document.createElement("div");
 
-                    if ($[id][n] != undefined && $[id][n][fields[i]] != undefined) {
+          td1.innerHTML = fields[i];
 
-                      label = $[id][n][fields[i]];
-                    }
+          td1.setAttribute("class", "detail-row-label");
 
-                    var td2 = document.createElement("div");
-                    td2.innerHTML = "<div style='font-size: 22px;' class = 'display-space'> " + label + "</div>";
-                    td2.setAttribute("class", "detail-row-space");
-                    row.appendChild(td2);
+          row.appendChild(td1);
 
-                    var td3 = document.createElement("div");
-                    td3.innerHTML = "<div style='font-size: 22px;' class = 'input-button'> Edit</div>";
-                    td3.setAttribute("class", "detail-row-input");
-                    row.appendChild(td3);
+          var label = "?";
 
-                    var button = td3.getElementsByClassName("input-button")[0];
-                    var display = td2.getElementsByClassName("display-space")[0];
+          if ($[id][n] != undefined && $[id][n][fields[i]] != undefined) {
 
-                    var ni = fields.indexOf("Condition at birth");
+            label = $[id][n][fields[i]];
 
-                    var c_node = jQ("[id^=" + id + "_" + n + "_detail_row_" + ni + "]");
-                    var txt = "?";
+          }
 
-                    if (c_node.length == 1)
-                      txt = c_node[0].childNodes[1].childNodes[0].innerHTML;
+          var td2 = document.createElement("div");
 
-                    if (i > (ni + 1) && !txt.match(/Alive/i)) {
+          td2.innerHTML = "<div style='font-size: 22px;' class = 'display-space'> " + label + "</div>";
 
-                      if (!button.className.match("gray")) {
-                        button.className += " button_gray";
-                        display.innerHTML = "?";
-                      }
+          td2.setAttribute("class", "detail-row-space");
 
-                      button.onclick = function () {
+          row.appendChild(td2);
 
-                        var ni = fields.indexOf("Condition at birth");
-                        var p = this.parentNode.parentNode.getAttribute("p-tuple");
-                        var n = this.parentNode.parentNode.getAttribute("n-tuple");
+          var td3 = document.createElement("div");
 
-                        var c_node = jQ("[id^=" + p + "_" + n + "_detail_row_" + ni + "]");
-                        var text = "?";
-                        if (c_node.length == 1)
-                          text = c_node[0].childNodes[1].childNodes[0].innerHTML;
+          td3.innerHTML = "<div style='font-size: 22px;' class = 'input-button'> Edit</div>";
 
-                        if (text.trim() == "?") {
-                          alertMessage("Select condition at birth");
-                        } else if (text.toLowerCase().trim() == "still birth") {
-                          alertMessage("Baby was born dead");
-                        }
-                      }
-                    } else {
+          td3.setAttribute("class", "detail-row-input");
 
-                      if (button != undefined) {
-                        button.onclick = function () {
+          row.appendChild(td3);
 
-                          enterData(this.parentNode.parentNode);
-                        }
-                      }
-                    }
+          var button = td3.getElementsByClassName("input-button")[0];
 
-                  }
-                }
-                table.scrollTop = 0;
-                jQ(table).fadeIn(250);
-                var width = (__$("details").parentNode.offsetWidth + __$("pregs").parentNode.offsetWidth - 2) + "px";
-                __$("hheader").style.width = width;
-                __$("header").style.width = width;
+          var display = td2.getElementsByClassName("display-space")[0];
+
+          var ni = fields.indexOf("Condition at birth");
+
+          var c_node = jQ("[id^=" + id + "_" + n + "_detail_row_" + ni + "]");
+
+          var txt = "?";
+
+          if (c_node.length == 1)
+
+            txt = c_node[0].childNodes[1].childNodes[0].innerHTML;
+
+          if (i > (ni + 1) && !txt.match(/Alive/i)) {
+
+            if (!button.className.match("gray")) {
+
+              button.className += " button_gray";
+
+              display.innerHTML = "?";
+
+            }
+
+            button.onclick = function () {
+
+              var ni = fields.indexOf("Condition at birth");
+
+              var p = this.parentNode.parentNode.getAttribute("p-tuple");
+
+              var n = this.parentNode.parentNode.getAttribute("n-tuple");
+
+              var c_node = jQ("[id^=" + p + "_" + n + "_detail_row_" + ni + "]");
+
+              var text = "?";
+
+              if (c_node.length == 1)
+
+                text = c_node[0].childNodes[1].childNodes[0].innerHTML;
+
+              if (text.trim() == "?") {
+
+                alertMessage("Select condition at birth");
+
+              } else if (text.toLowerCase().trim() == "still birth") {
+
+                alertMessage("Baby was born dead");
+
               }
 
-              function populateAbortion(id) {
+            }
 
-                var table = __$("details");
+          } else {
 
-                jQ(table).fadeOut(2);
-                table.innerHTML = "";
+            if (button != undefined) {
 
-                if (id > 0 && id <= parseInt(__$("abortions").value)) {
-                  if ($$[id] == undefined) {
-                    $$[id] = {};
-                  }
+              button.onclick = function () {
 
-                  for (var i = 0; i < abortionFields.length; i++) {
+                enterData(this.parentNode.parentNode);
 
-                    var row = document.createElement("div");
-                    row.id = id + "_detail_row_" + i;
-                    row.setAttribute("a-tuple", id);
-                    row.setAttribute("pos", i);
-                    row.setAttribute("class", "detail-row");
-
-                    var td1 = document.createElement("div");
-                    td1.innerHTML = abortionFields[i];
-                    td1.setAttribute("class", "detail-row-label");
-                    row.appendChild(td1);
-                    var label = "?";
-
-                    if ($$[id] != undefined && $$[id][abortionFields[i]] != undefined) {
-
-                      label = $$[id][abortionFields[i]]
-                    }
-
-                    var td2 = document.createElement("div");
-                    td2.innerHTML = "<div style='font-size: 22px;' class = 'display-space'> " + label + "</div>";
-                    td2.setAttribute("class", "detail-row-space");
-                    row.appendChild(td2);
-
-                    var td3 = document.createElement("div");
-                    td3.innerHTML = "<div style='font-size: 22px;' class = 'input-button'>Edit</div>";
-                    td3.setAttribute("class", "detail-row-input");
-                    row.appendChild(td3);
-
-                    var button = td3.getElementsByClassName("input-button")[0];
-
-                    if (button != undefined) {
-                      button.onclick = function () {
-
-                        enterAbortionData(this.parentNode.parentNode);
-                      }
-                    }
-
-                    table.appendChild(row);
-                  }
-                }
-                table.scrollTop = 0;
-                jQ(table).fadeIn(250);
-                var width = (__$("details").parentNode.offsetWidth + __$("pregs").parentNode.offsetWidth - 2) + "px";
-                __$("hheader").style.width = width;
-                __$("header").style.width = width;
               }
 
-              function showNumber(id, global_control, min, max, abs_max, type) {
+            }
 
-                // abs_max = ((abs_max == undefined) ? max : abs_max);
+          }
 
-                jQ('#backButton, #nextButton').attr("disabled", true);
-                cn = 9;
-                this_id = global_control;
+        }
 
-                if (global_control.match(/_row_5/)) {
-                  m = "Unk"
-                } else {
-                  m = "0"
-                }
-                global_control = "";
-                var row1 = ["1", "2", "3"];
-                var row2 = ["4", "5", "6"];
-                var row3 = ["7", "8", "9"];
-                var row4 = ["Del", m, "."];
+      }
 
-                if (min == undefined) {
-                  min = 0
-                }
-                if (max == undefined) {
-                  max = (new Date()).getFullYear();
-                }
+      table.scrollTop = 0;
 
-                var cl = document.createElement("div");
-                cl.className = "button_red cancel";
-                cl.innerHTML = "Cancel";
-                cl.onclick = function () {
-                  jQ('#backButton, #nextButton').attr("disabled", false);
-                  jQ("#shield, #popup").css("display", "none");
-                };
+      jQ(table).fadeIn(250);
 
-                jQ(cl).css({
-                  "float": "left",
-                  "margin-top": "0px",
-                  "margin-left": "10px"
-                });
+      var width = (__$("details").parentNode.offsetWidth + __$("pregs").parentNode.offsetWidth - 2) + "px";
 
-                var ok = document.createElement('div');
-                ok.className = "button_green ok";
-                ok.innerHTML = "Ok";
-                jQ(ok).css({
-                  'margin-left': '360px',
-                  'margin-right': '2px'
-                });
+      __$("hheader").style.width = width;
 
-                ok.onclick = function () {
-                  var unit = "";
-                  if (__$("unit")) {
-                    unit = __$("unit").value
-                  }
-                  try {
-                    if (type && type.toLowerCase() == 'age') {
-                      var value = __$('input').innerHTML;
-                      var max_birth_months = parseInt(mother_age * 12);
-                      var max_birth_weeks = parseInt(max_birth_months * 4);
-                      var max_birth_days = parseInt(max_birth_weeks * 7);
-                      var max_birth_hours = parseInt(max_birth_days * 24);
+      __$("header").style.width = width;
 
-                      if (age_units == "years") {
-                        max = mother_age;
-                      } else if (age_units == "months") {
-                        max = max_birth_months;
-                      } else if (age_units == "weeks") {
-                        max = max_birth_weeks;
-                      } else if (age_units == "days") {
-                        max = max_birth_days;
-                      } else if (age_units == "hours") {
-                        max = max_birth_hours;
-                      }
+    }
 
-                    }
-                  } catch (e) {
-                    console.log(e)
-                  }
+    function populateAbortion(id) {
 
-                  var row = __$(__$("popup").getAttribute("row_id"));
-                  var name = row.getElementsByClassName("detail-row-label")[0].innerHTML;
+      var table = __$("details");
 
-                  if (global_control != undefined && (parseInt(global_control) > max || parseInt(global_control) < min)) {
+      jQ(table).fadeOut(2);
 
-                    alertMessage("Value out of bound (" + min + " - " + max + ")", false, false);
-                  } else if (global_control == "") {
-                    alertMessage("Please select a value!", false, false);
-                  } else if (global_control !== 'Unknown' && !(global_control.match(/^[0-9]+(\.[0-9])?$/))) {
-                    alertMessage("Please enter the collect value!", false, false);
-                  } else {
-                    if (parseInt(global_control) == abs_max && (name == 'Year of birth' || name == 'Gestation (weeks)')) {
-                      showMeMessage("The value is " + global_control + ". Are you sure about this value?", true, false);
-                    }
+      table.innerHTML = "";
 
-                    if (unit !== undefined && unit.length !== 0) {
-                      global_control += " " + unit;
-                    }
+      if (id > 0 && id <= parseInt(__$("abortions").value)) {
 
-                    global_control = global_control.trim();
-                    console.log(name);
+        if ($$[id] == undefined) {
 
-                    if (row) {
-                      var button = row.getElementsByClassName("input-button")[0];
-                      var display = row.getElementsByClassName("display-space")[0];
-                      var label = row.getElementsByClassName("detail-row-label")[0];
-                      var n = __$("popup").getAttribute("n-tuple");
-                      var p = __$("popup").getAttribute("p-tuple");
-                      var a = __$("popup").getAttribute("a-tuple");
+          $$[id] = {};
 
-                      if (global_control.match(/Unk/) && label.innerHTML == "Birth weight") {
-                        enterWeight(row);
-                      }
+        }
 
-                      display.innerHTML = global_control.match(/Unk/) ? '?' : global_control;
+        for (var i = 0; i < abortionFields.length; i++) {
 
-                      if (a != undefined && $$[a] != undefined) {
+          var row = document.createElement("div");
 
-                        $$[a][label.innerHTML] = global_control;
+          row.id = id + "_detail_row_" + i;
 
-                      } else {
+          row.setAttribute("a-tuple", id);
 
-                        if ($[p][n] == undefined) {
-                          $[p][n] = {};
-                        }
+          row.setAttribute("pos", i);
 
-                        $[p][n][label.innerHTML] = global_control;
-                      }
-                      if (parseInt(global_control) != abs_max) {
+          row.setAttribute("class", "detail-row");
 
-                        __$("input").innerHTML = "";
-                        __$("tblKeyboard").parentNode.removeChild(__$("tblKeyboard"));
-                        __$("input").parentNode.removeChild(__$("input"));
+          var td1 = document.createElement("div");
 
-                      }
+          td1.innerHTML = abortionFields[i];
 
-                    } else {
-                      alertMessage("Failed to update input!");
-                    }
-                    if (parseInt(global_control) != abs_max) {
+          td1.setAttribute("class", "detail-row-label");
 
-                      jQ("#shield, #popup").css("display", "none");
-                      jQ('#backButton, #nextButton').attr("disabled", false);
+          row.appendChild(td1);
 
-                    }
+          var label = "?";
 
-                  }
-                };
+          if ($$[id] != undefined && $$[id][abortionFields[i]] != undefined) {
 
-                var holder = document.createElement("div");
-                holder.innerHTML = "<table style='width: 100%;'><tr><td id = 'left' style='width: 35%; float: left;'></td><td id='right' style='width: 65%;' rowspan='2'></td></tr>" +
+            label = $$[id][abortionFields[i]]
+
+          }
+
+          var td2 = document.createElement("div");
+
+          td2.innerHTML = "<div style='font-size: 22px;' class = 'display-space'> " + label + "</div>";
+
+          td2.setAttribute("class", "detail-row-space");
+
+          row.appendChild(td2);
+
+          var td3 = document.createElement("div");
+
+          td3.innerHTML = "<div style='font-size: 22px;' class = 'input-button'>Edit</div>";
+
+          td3.setAttribute("class", "detail-row-input");
+
+          row.appendChild(td3);
+
+          var button = td3.getElementsByClassName("input-button")[0];
+
+          if (button != undefined) {
+
+            button.onclick = function () {
+
+              enterAbortionData(this.parentNode.parentNode);
+
+            }
+
+          }
+
+          table.appendChild(row);
+
+        }
+
+      }
+
+      table.scrollTop = 0;
+
+      jQ(table).fadeIn(250);
+
+      var width = (__$("details").parentNode.offsetWidth + __$("pregs").parentNode.offsetWidth - 2) + "px";
+
+      __$("hheader").style.width = width;
+
+      __$("header").style.width = width;
+
+    }
+
+    function showNumber(id, global_control, min, max, abs_max, type) {
+
+      jQ('#backButton, #nextButton').attr("disabled", true);
+
+      cn = 9;
+
+      this_id = global_control;
+
+      if (global_control.match(/_row_5/)) {
+
+        m = "Unk"
+
+      } else {
+
+        m = "0"
+
+      }
+
+      global_control = "";
+
+      var row1 = ["1", "2", "3"];
+
+      var row2 = ["4", "5", "6"];
+
+      var row3 = ["7", "8", "9"];
+
+      var row4 = ["Del", m, "."];
+
+      if (min == undefined) {
+
+        min = 0
+
+      }
+
+      if (max == undefined) {
+
+        max = (new Date()).getFullYear();
+
+      }
+
+      var cl = document.createElement("div");
+
+      cl.className = "button_red cancel";
+
+      cl.innerHTML = "Cancel";
+
+      cl.onclick = function () {
+
+        jQ('#backButton, #nextButton').attr("disabled", false);
+
+        jQ("#shield, #popup").css("display", "none");
+
+      };
+
+      jQ(cl).css({
+
+        "float": "left",
+
+        "margin-top": "0px",
+
+        "margin-left": "10px"
+
+      });
+
+      var ok = document.createElement('div');
+
+      ok.className = "button_green ok";
+
+      ok.innerHTML = "Ok";
+
+      jQ(ok).css({
+
+        'margin-left': '360px',
+
+        'margin-right': '2px'
+
+      });
+
+      ok.onclick = function () {
+
+        var unit = "";
+
+        if (__$("unit")) {
+
+          unit = __$("unit").value
+
+        }
+
+        try {
+
+          if (type && type.toLowerCase() == 'age') {
+
+            var value = __$('input').innerHTML;
+
+            var max_birth_months = parseInt(mother_age * 12);
+
+            var max_birth_weeks = parseInt(max_birth_months * 4);
+
+            var max_birth_days = parseInt(max_birth_weeks * 7);
+
+            var max_birth_hours = parseInt(max_birth_days * 24);
+
+            if (age_units == "years") {
+           
+              max = mother_age;
+           
+            } else if (age_units == "months") {
+           
+              max = max_birth_months;
+           
+            } else if (age_units == "weeks") {
+           
+              max = max_birth_weeks;
+           
+            } else if (age_units == "days") {
+           
+              max = max_birth_days;
+           
+            } else if (age_units == "hours") {
+           
+              max = max_birth_hours;
+           
+            }
+             
+          }
+          
+        } catch (e) {
+        
+          console.log(e)
+        
+        }
+
+        var row = __$(__$("popup").getAttribute("row_id"));
+
+        var name = row.getElementsByClassName("detail-row-label")[0].innerHTML;
+
+        if (global_control != undefined && (parseInt(global_control) > max || parseInt(global_control) < min)) {
+
+          alertMessage("Value out of bound (" + min + " - " + max + ")", false, false);
+
+        } else if (global_control == "") {
+
+          alertMessage("Please select a value!", false, false);
+
+        } else if (global_control !== 'Unknown' && !(global_control.match(/^[0-9]+(\.[0-9])?$/))) {
+
+          alertMessage("Please enter the collect value!", false, false);
+
+        } else {
+
+          if (parseInt(global_control) == abs_max && (name == 'Year of birth' || name == 'Gestation (weeks)')) {
+
+            showMeMessage("The value is " + global_control + ". Are you sure about this value?", true, false);
+
+          }
+
+          if (unit !== undefined && unit.length !== 0) {
+
+            global_control += " " + unit;
+
+          }
+
+          global_control = global_control.trim();
+
+          if (row) {
+
+            var button = row.getElementsByClassName("input-button")[0];
+
+            var display = row.getElementsByClassName("display-space")[0];
+
+            var label = row.getElementsByClassName("detail-row-label")[0];
+
+            var n = __$("popup").getAttribute("n-tuple");
+
+            var p = __$("popup").getAttribute("p-tuple");
+
+            var a = __$("popup").getAttribute("a-tuple");
+
+            if (global_control.match(/Unk/) && label.innerHTML == "Birth weight") {
+
+              enterWeight(row);
+
+            }
+
+            display.innerHTML = global_control.match(/Unk/) ? '?' : global_control;
+
+            if (a != undefined && $$[a] != undefined) {
+
+              $$[a][label.innerHTML] = global_control;
+
+            } else {
+
+              if ($[p][n] == undefined) {
+
+                $[p][n] = {};
+
+              }
+
+              $[p][n][label.innerHTML] = global_control;
+
+            }
+
+            if (parseInt(global_control) != abs_max) {
+
+              __$("input").innerHTML = "";
+
+              __$("tblKeyboard").parentNode.removeChild(__$("tblKeyboard"));
+
+              __$("input").parentNode.removeChild(__$("input"));
+
+            }
+
+          } else {
+
+            alertMessage("Failed to update input!");
+
+          }
+
+          if (parseInt(global_control) != abs_max) {
+
+            jQ("#shield, #popup").css("display", "none");
+
+            jQ('#backButton, #nextButton').attr("disabled", false);
+
+          }
+
+        }
+
+      };
+
+      var holder = document.createElement("div");
+
+      holder.innerHTML = "<table style='width: 100%;'><tr><td id = 'left' style='width: 35%; float: left;'></td><td id='right' style='width: 65%;' rowspan='2'></td></tr>" +
                   "<tr><td id = ''></td></tr><tr><td id='btns' colspan='2' style='padding-top: 8px; padding-bottom: 3px;border-top:1px solid black; background-color: black;'>" +
                   "</td></tr></table>"
-                jQ(holder).css({
-                  "width": "100%",
-                  "border": "hidden"
-                });
 
-                var tbl = document.createElement("table");
-                tbl.className = "keyBoardTable";
-                tbl.cellSpacing = 0;
-                tbl.cellPadding = 3;
-                tbl.id = "tblKeyboard";
-                tbl.style.minWidth = 0.20 * screen.width + "px";
-                jQ(tbl).css({
-                  "border-left": "1.5px dotted black"
-                });
-                tbl.style.margin = "auto";
+      jQ(holder).css({
 
-                var tr1 = document.createElement("tr");
+        "width": "100%",
 
-                for (var i = 0; i < row1.length; i++) {
-                  var td1 = document.createElement("td");
-                  td1.align = "center";
-                  td1.vAlign = "middle";
-                  td1.style.cursor = "pointer";
-                  td1.bgColor = "#ffffff";
-                  td1.width = "30px";
+        "border": "hidden"
 
-                  tr1.appendChild(td1);
+      });
 
-                  var btn = document.createElement("div");
-                  btn.className = "button_blue keyboard_button";
-                  btn.innerHTML = "<span>" + row1[i] + "</span>";
-                  btn.onmousedown = function () {
-                    if (!this.innerHTML.match(/^__$/)) {
+      var tbl = document.createElement("table");
 
-                      if (global_control == 'Unknown') {
-                        global_control = this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      } else {
-                        global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      }
-                      if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
-                        __$("input").innerHTML = global_control;
-                      } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+      tbl.className = "keyBoardTable";
 
-                        var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
-                        __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
-                      }
-                    }
-                  }
-                  td1.appendChild(btn);
+      tbl.cellSpacing = 0;
 
-                }
+      tbl.cellPadding = 3;
 
-                tbl.appendChild(tr1);
+      tbl.id = "tblKeyboard";
 
-                var tr2 = document.createElement("tr");
+      tbl.style.minWidth = 0.20 * screen.width + "px";
 
-                for (var i = 0; i < row2.length; i++) {
-                  var td2 = document.createElement("td");
-                  td2.align = "center";
-                  td2.vAlign = "middle";
-                  td2.style.cursor = "pointer";
-                  td2.bgColor = "#ffffff";
-                  td2.width = "30px";
+      jQ(tbl).css({
 
-                  tr2.appendChild(td2);
+        "border-left": "1.5px dotted black"
 
-                  var btn = document.createElement("div");
-                  btn.className = "button_blue keyboard_button";
-                  btn.innerHTML = "<span>" + row2[i] + "</span>";
-                  btn.onmousedown = function () {
-                    if (!this.innerHTML.match(/^$/)) {
+      });
 
-                      if (global_control == 'Unknown') {
-                        global_control = this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      } else {
-                        global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      }
-                      global_control = global_control.replace(/^0+/, "");
-                      global_control = global_control.replace(/^\.+/, "");
-                      if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
-                        __$("input").innerHTML = global_control;
-                      } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+      tbl.style.margin = "auto";
 
-                        var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
-                        __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
-                      }
-                    }
-                  }
+      var tr1 = document.createElement("tr");
 
-                  td2.appendChild(btn);
+      for (var i = 0; i < row1.length; i++) {
 
-                }
+        var td1 = document.createElement("td");
 
-                tbl.appendChild(tr2);
+        td1.align = "center";
 
-                var tr3 = document.createElement("tr");
+        td1.vAlign = "middle";
 
-                for (var i = 0; i < row3.length; i++) {
-                  var td3 = document.createElement("td");
-                  td3.align = "center";
-                  td3.vAlign = "middle";
-                  td3.style.cursor = "pointer";
-                  td3.bgColor = "#ffffff";
-                  td3.width = "30px";
+        td1.style.cursor = "pointer";
 
-                  tr3.appendChild(td3);
+        td1.bgColor = "#ffffff";
 
-                  var btn = document.createElement("div");
-                  btn.className = "button_blue keyboard_button";
-                  btn.innerHTML = "<span>" + row3[i] + "</span>";
-                  btn.onmousedown = function () {
-                    if (!this.innerHTML.match(/^__$/)) {
-                      // console.log(this.innerHTML);
-                      if (global_control == 'Unknown') {
-                        global_control = this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      } else {
-                        global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      }
+        td1.width = "30px";
 
-                      global_control = global_control.replace(/^0+/, "");
-                      global_control = global_control.replace(/^\.+/, "");
-                      if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
-                        __$("input").innerHTML = global_control;
-                      } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+        tr1.appendChild(td1);
 
-                        var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
-                        __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
-                      }
-                    }
-                  }
+        var btn = document.createElement("div");
 
-                  td3.appendChild(btn);
+        btn.className = "button_blue keyboard_button";
 
-                }
+        btn.innerHTML = "<span>" + row1[i] + "</span>";
 
-                tbl.appendChild(tr3);
+        btn.onmousedown = function () {
 
-                var tr4 = document.createElement("tr");
+          if (!this.innerHTML.match(/^__$/)) {
 
-                for (var i = 0; i < row4.length; i++) {
-                  var td4 = document.createElement("td");
-                  td4.align = "center";
-                  td4.vAlign = "middle";
-                  td4.style.cursor = "pointer";
-                  td4.bgColor = "#ffffff";
-                  td4.width = "30px";
+            if (global_control == 'Unknown') {
 
-                  tr4.appendChild(td4);
+              global_control = this.innerHTML.match(/<span>(.+)<\/span>/)[1];
 
-                  var btn = document.createElement("div");
-                  btn.innerHTML = "<span>" + row4[i] + "</span>";
-                  btn.className = "button_blue keyboard_button";
-                  // if (i == 1){
-                  //     btn.className = "button_blue keyboard_button";
-                  // }else if (i == 0){
-                  //     btn.className = "button_red keyboard_button";
-                  // }else if (i == 2){
-                  //     btn.className = "button_green keyboard_button";
-                  // }
-                  btn.onmousedown = function () {
-                    if (this.innerHTML.match(/<span>(.+)<\/span>/)[1] == "Del") {
-                      console.log(global_control);
-                      if (global_control.length == 1 || global_control == "Unknown") {
-                        global_control = "";
-                        __$("input").innerHTML = ""
-                      } else {
-                        global_control = global_control.split(" ")[0];
-                        global_control = global_control.substring(0, global_control.length - 1);
-                        global_control = global_control.replace(/^0+/, "");
-                        global_control = global_control.replace(/^\.+/, "");
-                        if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
-                          __$("input").innerHTML = global_control;
-                        } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+            } else {
 
-                          var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
-                          __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
-                        }
-                      }
-                    } else if (this.innerHTML.match(/<span>Unk<\/span>/)) {
-                      global_control = 'Unknown';
-                      __$("input").innerHTML = 'Unknown';
-                    } else if (!this.innerHTML.match(/^$/)) {
+              global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
 
-                      global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-                      global_control = global_control.replace(/^0+/, "");
-                      global_control = global_control.replace(/^\.+/, "");
-                      if (global_control != undefined && (parseInt(global_control) <= abs_max || parseInt(global_control) <= max) && parseInt(global_control) >= min) {
-                        __$("input").innerHTML = global_control;
-                      } else if (global_control != undefined && (parseInt(global_control) > abs_max || parseInt(global_control) > max) || parseInt(global_control) < min) {
+            }
 
-                        var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
-                        __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
-                      }
-                    }
-                  }
+            if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
 
-                  td4.appendChild(btn);
+              __$("input").innerHTML = global_control;
 
-                }
+            } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
 
-                tbl.appendChild(tr4);
+              var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
 
-                var input = document.createElement("div");
-                input.id = "input";
-                input.innerHTML = "";
-                jQ(input).css({
-                  "font-size": "28px",
-                  "font-style": "italic",
-                  "float": "left",
-                  "height": "50px",
-                  "padding-top": "13%",
-                  "padding-left": "2%"
-                })
-                __$(id).appendChild(holder);
-                __$("left").appendChild(input);
-                __$("right").appendChild(tbl);
-                __$("btns").appendChild(cl);
-                __$("btns").appendChild(ok);
-                __$("popup-header").innerHTML = current_popup;
+              __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
 
-                if (type && type == "age") {
+            }
 
-                  var unit = document.createElement("select");
-                  unit.id = "unit";
-                  var options = ["Hours", "Days", "Weeks", "Months", "years"]
+          }
 
-                  unit.className = "button_blue";
-                  unit.innerHTML = "Months";
-                  jQ(unit).css({
-                    "position": "absolute",
-                    "font-style": "italic",
-                    "font-size": "22px",
-                    "height": "47px",
-                    "width": "154px",
-                    "max-width": "154px",
-                    "top": "126px",
-                    "left": "6px",
-                    "padding-top": "8px",
-                    "-webkit-appearance": "none",
-                    "-moz-appearance": "none",
-                    "text-indent": "1px",
-                    "border": "none",
-                    "text-overflow": ''
-                  });
+        }
 
-                  __$("left").appendChild(unit);
+        td1.appendChild(btn);
 
-                  for (var i in options) {
-                    var option = document.createElement("option");
-                    option.value = options[i];
-                    option.innerHTML = options[i];
-                    unit.appendChild(option);
-                  }
-                }
+      }
 
-                __$("input").style.minWidth = (parseInt(__$("popup").style.minWidth.replace("px", "")) - parseInt(__$("tblKeyboard").style.minWidth.replace("px", ""))) + "px";
-                jQ("#shield, #popup").css("display", "block");
+      tbl.appendChild(tr1);
+
+      var tr2 = document.createElement("tr");
+
+      for (var i = 0; i < row2.length; i++) {
+
+        var td2 = document.createElement("td");
+
+        td2.align = "center";
+
+        td2.vAlign = "middle";
+
+        td2.style.cursor = "pointer";
+
+        td2.bgColor = "#ffffff";
+
+        td2.width = "30px";
+
+        tr2.appendChild(td2);
+
+        var btn = document.createElement("div");
+
+        btn.className = "button_blue keyboard_button";
+
+        btn.innerHTML = "<span>" + row2[i] + "</span>";
+
+        btn.onmousedown = function () {
+
+          if (!this.innerHTML.match(/^$/)) {
+
+            if (global_control == 'Unknown') {
+
+              global_control = this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+            } else {
+
+              global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+            }
+
+            global_control = global_control.replace(/^0+/, "");
+
+            global_control = global_control.replace(/^\.+/, "");
+
+            if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
+
+              __$("input").innerHTML = global_control;
+            
+            } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+
+              var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
+
+              __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
+
+            }
+
+          }
+
+        }
+
+        td2.appendChild(btn);
+
+      }
+
+      tbl.appendChild(tr2);
+
+      var tr3 = document.createElement("tr");
+
+      for (var i = 0; i < row3.length; i++) {
+
+        var td3 = document.createElement("td");
+
+        td3.align = "center";
+
+        td3.vAlign = "middle";
+
+        td3.style.cursor = "pointer";
+
+        td3.bgColor = "#ffffff";
+
+        td3.width = "30px";
+
+        tr3.appendChild(td3);
+
+        var btn = document.createElement("div");
+
+        btn.className = "button_blue keyboard_button";
+
+        btn.innerHTML = "<span>" + row3[i] + "</span>";
+
+        btn.onmousedown = function () {
+
+          if (!this.innerHTML.match(/^__$/)) {
+
+            if (global_control == 'Unknown') {
+
+              global_control = this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+            } else {
+
+              global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+            }
+
+            global_control = global_control.replace(/^0+/, "");
+
+            global_control = global_control.replace(/^\.+/, "");
+
+            if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
+
+              __$("input").innerHTML = global_control;
+
+            } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+
+              var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
+
+              __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
+
+            }
+
+          }
+
+        }
+
+        td3.appendChild(btn);
+
+      }
+
+      tbl.appendChild(tr3);
+
+      var tr4 = document.createElement("tr");
+
+      for (var i = 0; i < row4.length; i++) {
+
+        var td4 = document.createElement("td");
+
+        td4.align = "center";
+
+        td4.vAlign = "middle";
+
+        td4.style.cursor = "pointer";
+
+        td4.bgColor = "#ffffff";
+
+        td4.width = "30px";
+
+        tr4.appendChild(td4);
+
+        var btn = document.createElement("div");
+
+        btn.innerHTML = "<span>" + row4[i] + "</span>";
+
+        btn.className = "button_blue keyboard_button";
+
+        btn.onmousedown = function () {
+
+          if (this.innerHTML.match(/<span>(.+)<\/span>/)[1] == "Del") {
+
+            if (global_control.length == 1 || global_control == "Unknown") {
+
+              global_control = "";
+
+              __$("input").innerHTML = ""
+
+            } else {
+
+              global_control = global_control.split(" ")[0];
+
+              global_control = global_control.substring(0, global_control.length - 1);
+
+              global_control = global_control.replace(/^0+/, "");
+
+              global_control = global_control.replace(/^\.+/, "");
+
+              if (global_control != undefined && parseInt(global_control) <= max && parseInt(global_control) >= min) {
+
+                __$("input").innerHTML = global_control;
+
+              } else if (global_control != undefined && parseInt(global_control) > max || parseInt(global_control) < min) {
+
+                var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
+
+                __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
+
               }
 
-              function showList(id, data) {
-                jQ('#backButton, #nextButton').attr("disabled", true);
-                if (data.length > 1) {
+            }
 
-                  var ul = document.createElement("ul");
-                  ul.style.width = __$("popup").style.width;
-                  ul.id = "listing";
-                  ul.className = "listing";
+          } else if (this.innerHTML.match(/<span>Unk<\/span>/)) {
 
-                  var row = __$(__$("popup").getAttribute("row_id"));
-                  var button = row.getElementsByClassName("input-button")[0];
+            global_control = 'Unknown';
 
-                  var value = "?";
-                  if (button != undefined && button.getAttribute("value") != null) {
-                    value = button.getAttribute("value");
+            __$("input").innerHTML = 'Unknown';
+
+          } else if (!this.innerHTML.match(/^$/)) {
+
+            global_control += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+            global_control = global_control.replace(/^0+/, "");
+
+            global_control = global_control.replace(/^\.+/, "");
+
+            if (global_control != undefined && (parseInt(global_control) <= abs_max || parseInt(global_control) <= max) && parseInt(global_control) >= min) {
+
+              __$("input").innerHTML = global_control;
+
+            } else if (global_control != undefined && (parseInt(global_control) > abs_max || parseInt(global_control) > max) || parseInt(global_control) < min) {
+
+              var str = global_control.length > cn ? (global_control.substring(0, cn - 2) + "..." + global_control.substring(global_control.length - 2, global_control.length)) : (global_control)
+
+              __$("input").innerHTML = str + "<div style='color: red; font-size: 24px; padding-top: 0px;'><br />&nbsp<br />" + " Out of range</div>";
+
+            }
+
+          }
+
+        }
+
+        td4.appendChild(btn);
+
+      }
+
+      tbl.appendChild(tr4);
+
+      var input = document.createElement("div");
+
+      input.id = "input";
+
+      input.innerHTML = "";
+
+      jQ(input).css({
+
+        "font-size": "28px",
+
+        "font-style": "italic",
+
+        "float": "left",
+
+        "height": "50px",
+
+        "padding-top": "13%",
+
+        "padding-left": "2%"
+
+      })
+
+      __$(id).appendChild(holder);
+
+      __$("left").appendChild(input);
+
+      __$("right").appendChild(tbl);
+
+      __$("btns").appendChild(cl);
+
+      __$("btns").appendChild(ok);
+
+      __$("popup-header").innerHTML = current_popup;
+
+      if (type && type == "age") {
+
+        var unit = document.createElement("select");
+        
+        unit.id = "unit";
+        
+        var options = ["Hours", "Days", "Weeks", "Months", "years"]
+
+        unit.className = "button_blue";
+        
+        unit.innerHTML = "Months";
+        
+        jQ(unit).css({
+        
+          "position": "absolute",
+        
+          "font-style": "italic",
+        
+          "font-size": "22px",
+        
+          "height": "47px",
+        
+          "width": "154px",
+        
+          "max-width": "154px",
+        
+          "top": "126px",
+        
+          "left": "6px",
+        
+          "padding-top": "8px",
+        
+          "-webkit-appearance": "none",
+        
+          "-moz-appearance": "none",
+        
+          "text-indent": "1px",
+        
+          "border": "none",
+        
+          "text-overflow": ''
+        
+        });
+
+        __$("left").appendChild(unit);
+
+        for (var i in options) {
+
+          var option = document.createElement("option");
+
+          option.value = options[i];
+
+          option.innerHTML = options[i];
+
+          unit.appendChild(option);
+
+        }
+
+      }
+
+      __$("input").style.minWidth = (parseInt(__$("popup").style.minWidth.replace("px", "")) - parseInt(__$("tblKeyboard").style.minWidth.replace("px", ""))) + "px";
+
+      jQ("#shield, #popup").css("display", "block");
+
+    }
+
+    function showList(id, data) {
+
+      jQ('#backButton, #nextButton').attr("disabled", true);
+
+      if (data.length > 1) {
+
+        var ul = document.createElement("ul");
+
+        ul.style.width = __$("popup").style.width;
+
+        ul.id = "listing";
+
+        ul.className = "listing";
+
+        var row = __$(__$("popup").getAttribute("row_id"));
+
+        var button = row.getElementsByClassName("input-button")[0];
+
+        var value = "?";
+
+        if (button != undefined && button.getAttribute("value") != null) {
+
+          value = button.getAttribute("value");
+
+        }
+
+        var color = "";
+
+        for (var i in data) {
+
+          if (data[i] != "list") {
+
+            var li = document.createElement("li");
+
+            li.innerHTML = data[i];
+
+            li.setAttribute("class", "select-li");
+
+            if (value.trim() == li.innerHTML) {
+
+              li.style.backgroundColor = "lightblue";
+
+              color = "button_blue keyboard_button ok";
+
+            } else {
+
+              li.style.backgroundColor = (i % 2 != 0 ? "#f8f7ec" : "#fff");
+
+            }
+
+            li.onclick = function () {
+
+              var nodes = document.getElementsByClassName("select-li")
+
+              for (var k = 0; k < nodes.length; k++) {
+
+                nodes[k].style.backgroundColor = (k % 2 != 0 ? "#f8f7ec" : "#fff");
+
+              }
+
+              this.style.backgroundColor = "lightblue";
+
+              __$("ok").setAttribute("class", "button_blue keyboard_button ok");
+
+              __$("ok").setAttribute("value", this.innerHTML)
+
+            };
+
+            ul.appendChild(li);
+
+          }
+
+        }
+
+        __$(id).appendChild(ul);
+
+        var footer = document.createElement("div");
+
+        footer.id = "footer";
+
+        footer.setAttribute("class", "footer")
+
+        footer.innerHTML = "<table style='width: 100%;'><tr><td><div class='button_red keyboard_button cancel' id = 'cancel'>Cancel</div></td> <td><div class='button_gray keyboard_button ok' id = 'ok'>OK</div></td></tr></table>";
+
+        footer.style.width = "100%";
+
+        footer.style.marginBottom = "10px";
+
+        __$(id).appendChild(footer);
+
+        if (color != "") {
+
+          __$("ok").setAttribute("class", color + " nosave");
+
+        }
+
+        __$("ok").onclick = function () {
+
+          var value = this.getAttribute("value");
+
+          var row = __$(__$("popup").getAttribute("row_id"));
+
+          var n = __$("popup").getAttribute("n-tuple");
+
+          var p = __$("popup").getAttribute("p-tuple");
+
+          var a = __$("popup").getAttribute("a-tuple");
+
+          var label = row.getElementsByClassName("detail-row-label")[0];
+
+          if (__$("ok").className.match(/button\_blue/)) {
+
+            if (row) {
+
+              if (!__$("ok").className.match(/nosave/)) {
+
+                var button = row.getElementsByClassName("input-button")[0];
+
+                var display = row.getElementsByClassName("display-space")[0];
+
+                var label = row.getElementsByClassName("detail-row-label")[0];
+                          
+                if (a != undefined && $$[a] != undefined) {
+
+                  display.innerHTML = value;
+
+                  $$[a][label.innerHTML] = value;
+
+                } else {
+
+                  display.innerHTML = value;
+
+                  if ($[p][n] == undefined) {
+
+                    $[p][n] = {};
+
                   }
-                  var color = "";
-                  for (var i in data) {
-                    if (data[i] != "list") {
-                      var li = document.createElement("li");
-                      li.innerHTML = data[i];
-                      li.setAttribute("class", "select-li");
 
-                      if (value.trim() == li.innerHTML) {
-                        li.style.backgroundColor = "lightblue";
-                        color = "button_blue keyboard_button ok";
-                      } else {
-                        li.style.backgroundColor = (i % 2 != 0 ? "#f8f7ec" : "#fff");
-                      }
-                      li.onclick = function () {
+                  $[p][n][label.innerHTML] = value;
 
-                        var nodes = document.getElementsByClassName("select-li")
-                        for (var k = 0; k < nodes.length; k++) {
-                          nodes[k].style.backgroundColor = (k % 2 != 0 ? "#f8f7ec" : "#fff");
+                  var ni = fields.indexOf("Condition at birth");
+
+                  var pi = __$("popup").getAttribute("row_id").trim().match(/\d+$/)[0];
+
+                  var leng = fields.length;
+
+                  if (parseInt(ni) == parseInt(pi)) {
+
+                    for (var m = (parseInt(pi) + 2); m < leng; m++) {
+
+                      var baby_rows = jQ("[id^=" + p + "_" + n + "]"); //matches only single baby rows
+
+                      var lbl = baby_rows[m].getElementsByClassName("detail-row-label")[0];
+
+                      var but = baby_rows[m].childNodes[2].childNodes[0];
+
+                      var inputdisplay = baby_rows[m].childNodes[1].childNodes[0];
+
+                      if (but.parentNode.parentNode.innerHTML.match(/birth weight/i)) {
+
+                        but.className = but.className.replace(/gray/, "blue").trim();
+
+                        but.onclick = function () {
+
+                          enterData(this.parentNode.parentNode);
+
                         }
-                        this.style.backgroundColor = "lightblue";
-                        __$("ok").setAttribute("class", "button_blue keyboard_button ok");
-                        __$("ok").setAttribute("value", this.innerHTML)
-                      };
-                      ul.appendChild(li);
-                    }
-                  }
-                  __$(id).appendChild(ul);
 
-                  var footer = document.createElement("div");
-                  footer.id = "footer";
-                  footer.setAttribute("class", "footer")
-                  footer.innerHTML = "<table style='width: 100%;'><tr><td><div class='button_red keyboard_button cancel' id = 'cancel'>Cancel</div></td> <td><div class='button_gray keyboard_button ok' id = 'ok'>OK</div></td></tr></table>";
-                  footer.style.width = "100%";
-                  footer.style.marginBottom = "10px";
-                  __$(id).appendChild(footer);
-                  if (color != "") {
-                    __$("ok").setAttribute("class", color + " nosave");
-                  }
-                  __$("ok").onclick = function () {
+                      }
 
-                    var value = this.getAttribute("value");
+                      if (display.innerHTML.match(/Still birth/i)) {
 
-                    var row = __$(__$("popup").getAttribute("row_id"));
-                    var n = __$("popup").getAttribute("n-tuple");
-                    var p = __$("popup").getAttribute("p-tuple");
-                    var a = __$("popup").getAttribute("a-tuple");
-                    var label = row.getElementsByClassName("detail-row-label")[0];
+                        if (!but.className.match(/gray/))
 
-                    if (__$("ok").className.match(/button\_blue/)) {
+                        but.className += " button_gray";
 
-                      if (row) {
+                        $[p][n][lbl.innerHTML] = "?";
 
-                        if (!__$("ok").className.match(/nosave/)) {
+                        inputdisplay.innerHTML = "?"
 
-                          var button = row.getElementsByClassName("input-button")[0];
-                          var display = row.getElementsByClassName("display-space")[0];
-                          var label = row.getElementsByClassName("detail-row-label")[0];
+                        but.onclick = function () {
 
-                          if (a != undefined && $$[a] != undefined) {
+                          alertMessage("Baby was born dead");
 
-                            display.innerHTML = value;
-                            $$[a][label.innerHTML] = value;
+                        }
 
-                          } else {
+                      } else {
 
-                            display.innerHTML = value;
+                        if (but.className.match(/gray/) && m < (fields.length - 1)) {
 
-                            if ($[p][n] == undefined) {
-                              $[p][n] = {};
-                            }
+                          but.className = "input-button";
+                                    
+                          but.onclick = function () {
 
-                            $[p][n][label.innerHTML] = value;
-
-                            var ni = fields.indexOf("Condition at birth");
-                            var pi = __$("popup").getAttribute("row_id").trim().match(/\d+$/)[0];
-
-                            var leng = fields.length;
-
-                            if (parseInt(ni) == parseInt(pi)) {
-
-                              for (var m = (parseInt(pi) + 2); m < leng; m++) {
-
-                                var baby_rows = jQ("[id^=" + p + "_" + n + "]"); //matches only single baby rows
-                                var lbl = baby_rows[m].getElementsByClassName("detail-row-label")[0];
-                                var but = baby_rows[m].childNodes[2].childNodes[0];
-                                var inputdisplay = baby_rows[m].childNodes[1].childNodes[0];
-
-                                if (but.parentNode.parentNode.innerHTML.match(/birth weight/i)) {
-
-                                  but.className = but.className.replace(/gray/, "blue").trim();
-                                  but.onclick = function () {
-                                    enterData(this.parentNode.parentNode);
-                                  }
-                                }
-
-                                if (display.innerHTML.match(/Still birth/i)) {
-
-                                  if (!but.className.match(/gray/))
-                                    but.className += " button_gray";
-                                  $[p][n][lbl.innerHTML] = "?";
-                                  inputdisplay.innerHTML = "?"
-                                  but.onclick = function () {
-
-                                    alertMessage("Baby was born dead");
-                                  }
-                                } else {
-
-                                  if (but.className.match(/gray/) && m < (fields.length - 1)) {
-                                    but.className = "input-button";
-
-                                    but.onclick = function () {
-
-                                      enterData(this.parentNode.parentNode);
-                                    }
-                                  } else {
-
-                                    but.onclick = function () {
-                                      alertMessage("Select if baby is alive now");
-                                    }
-                                  }
-                                }
-                              }
-
-                            }
-
-                            if (label.innerHTML == "Alive Now") {
-
-                              var brows = jQ("[id^=" + p + "_" + n + "]"); //matches only single baby rows
-                              var bbut = brows[fields.length - 1].childNodes[2].childNodes[0];
-                              var blbl = brows[fields.length - 1].getElementsByClassName("detail-row-label")[0];
-                              var binputdisplay = brows[fields.length - 1].childNodes[1].childNodes[0];
-
-                              if ($[p][n][label.innerHTML].trim() == "No") {
-
-                                bbut.className = "input-button";
-                                bbut.onclick = function () {
-
-                                  enterData(this.parentNode.parentNode);
-                                }
-                              } else if ($[p][n][label.innerHTML].trim() == "Yes") {
-
-                                bbut.className = "input-button button_gray";
-                                binputdisplay.innerHTML = "?";
-                                $[p][n][blbl.innerHTML] = "?";
-                                bbut.onclick = function () {
-
-                                  alertMessage("Baby is still alive");
-                                }
-                              }
-                            }
+                            enterData(this.parentNode.parentNode);
 
                           }
+
+                        } else {
+
+                          but.onclick = function () {
+
+                            alertMessage("Select if baby is alive now");
+
+                          }
+
                         }
-                      } else {
-                        alertMessage("Failed to update input");
+
                       }
-                      jQ("#shield, #popup").css("display", "none");
-                      jQ('#backButton, #nextButton').attr("disabled", false);
-                    } else {
-                      alertMessage("Please select a value");
+
                     }
+
                   }
 
-                  __$("cancel").onclick = function () {
-                    jQ('#backButton, #nextButton').attr("disabled", false);
-                    jQ("#shield, #popup").css("display", "none");
+                  if (label.innerHTML == "Alive Now") {
+
+                    var brows = jQ("[id^=" + p + "_" + n + "]"); //matches only single baby rows
+
+                    var bbut = brows[fields.length - 1].childNodes[2].childNodes[0];
+
+                    var blbl = brows[fields.length - 1].getElementsByClassName("detail-row-label")[0];
+
+                    var binputdisplay = brows[fields.length - 1].childNodes[1].childNodes[0];
+
+                    if ($[p][n][label.innerHTML].trim() == "No") {
+
+                      bbut.className = "input-button";
+
+                      bbut.onclick = function () {
+
+                        enterData(this.parentNode.parentNode);
+
+                      }
+
+                    } else if ($[p][n][label.innerHTML].trim() == "Yes") {
+
+                      bbut.className = "input-button button_gray";
+
+                      binputdisplay.innerHTML = "?";
+
+                      $[p][n][blbl.innerHTML] = "?";
+
+                      bbut.onclick = function () {
+
+                        alertMessage("Baby is still alive");
+
+                      }
+
+                    }
+
                   }
 
-                  __$("popup-header").innerHTML = current_popup.replace("Alive Now", "Alive Now?");
-                  jQ("#shield, #popup").css("display", "block");
                 }
+
               }
 
+            } else {
+
+              alertMessage("Failed to update input");
+
+            }
+
+            jQ("#shield, #popup").css("display", "none");
+
+            jQ('#backButton, #nextButton').attr("disabled", false);
+
+          } else {
+
+            alertMessage("Please select a value");
+
+          }
+
+        }
+
+        __$("cancel").onclick = function () {
+
+          jQ('#backButton, #nextButton').attr("disabled", false);
+
+          jQ("#shield, #popup").css("display", "none");
+
+        }
+
+        __$("popup-header").innerHTML = current_popup.replace("Alive Now", "Alive Now?");
+
+        jQ("#shield, #popup").css("display", "block");
+
+      }
+
+    }
+
     function enterData(row) {
-      console.log(row);
+
       if (row != undefined) {
 
         var fields = {
@@ -1866,62 +2295,101 @@ function loadInputWindow() {
         };
 
         var field_names = Object.keys(fields);
+
         var pos = row.getAttribute("pos");
 
         var type = fields[field_names[pos]][0]
+
         current_popup = field_names[pos];
 
         loadPopup(row);
+
         if (type == "number") {
 
           if (row.childNodes[0].innerHTML.match(/Year of birth/i)) {
+
             var min = validateMin(row, fields[field_names[pos]][1]);
+
             var max = validateMax(row, fields[field_names[pos]][2]);
+
             var ab_max = validateMax(row, fields[field_names[pos]][3]);
+
           } else if (row.childNodes[0].innerHTML.match(/Gestation/i)) {
+
             var min = validateGestation(row, fields[field_names[pos]][1]);
+
             var max = validateGestation(row, fields[field_names[pos]][2]);
+
             var ab_max = validateGestation(row, fields[field_names[pos]][3]);
+
           } else {
+
             var min = fields[field_names[pos]][1];
+
             var max = fields[field_names[pos]][2];
+
           }
+
           showNumber("popup", row.id, min, max, ab_max);
+
         } else if (type == "list") {
+
           var listItems = fields[field_names[pos]];
+
           showList("popup", listItems);
+
         } else if (type == "age") {
+
           showNumber("popup", row.id, 1, 40, undefined, "age");
+
         }
+
       }
+
     }
 
     function validateGestation(r, v) {
 
       global_value = v;
+
       var p = parseInt(r.id.match(/^\d+/)[0]);
+
       var n = parseInt(r.getAttribute("n-tuple"))
+
       var label = r.childNodes[0].innerHTML;
+
       if (parseInt($[p]["count"]) > 1) {
+
         for (var i = 1; i <= parseInt($[p]["count"]); i++) {
+
           if (i != n && $[p][i] != undefined && $[p][i][label] != undefined) {
+
             global_value = $[p][i][label];
+
             break;
+
           }
+
         }
+
       }
 
       return global_value;
+
     }
 
     function validateMin(r, v, p, label) {
 
       global_value = "";
+      
       skipNext = false;
 
       if (r != undefined) {
+        
         var p = parseInt(r.id.match(/^\d+/)[0]);
+        
         var n = parseInt(r.getAttribute("n-tuple"))
+        
         var label = r.childNodes[0].innerHTML;
 
         if (n >= 1 && parseInt($[p]["count"]) > 1) {
@@ -1929,46 +2397,69 @@ function loadInputWindow() {
           var firstY = $[p][1] != undefined ? $[p][1][label] : undefined;
 
           if (firstY == undefined && parseInt($[p]["count"]) > n && 2 < n) {
+
             firstY = $[p][2] != undefined ? $[p][2][label] : undefined;
+
           }
 
           if (firstY == undefined && parseInt($[p]["count"]) > n && 3 < n) {
+
             firstY = $[p][3] != undefined ? $[p][3][label] : undefined;
+
           }
 
           if (firstY == undefined && parseInt($[p]["count"]) > n && 4 < n) {
+
             firstY = $[p][4] != undefined ? $[p][4][label] : undefined;
+
           }
 
           if (firstY != undefined && parseInt(firstY) > 1950) {
+
             global_value = parseInt(firstY);
+
             skipNext = true;
+
           } else {
 
             var lastY = undefined;
+
             if (lastY == undefined && (n + 4) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 4] != undefined ? $[p][n + 4][label] : undefined;
+
             }
 
             if (lastY == undefined && (n + 3) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 3] != undefined ? $[p][n + 3][label] : undefined;
+
             }
 
             if (lastY == undefined && (n + 2) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 2] != undefined ? $[p][n + 2][label] : undefined;
+
             }
 
             if (lastY == undefined && (n + 1) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 1] != undefined ? $[p][n + 1][label] : undefined;
+
             }
 
             if (lastY != undefined && parseInt(lastY) > 1950) {
+
               global_value = parseInt(lastY) - 1;
+
               skipNext = true;
+
             }
+
           }
 
         }
+
       }
 
       if (!skipNext && $[p - 1] != undefined) {
@@ -1978,12 +2469,17 @@ function loadInputWindow() {
         if (maxN > 0) {
 
           var value = undefined;
+
           if ($[p - 1][maxN] != undefined) {
 
             for (var i = 1; i <= maxN; i++) {
+
               if ($[p - 1][i][label] != undefined)
-                value = parseInt($[p - 1][i][label]);
+
+              value = parseInt($[p - 1][i][label]);
+
             }
+
           }
 
           if (value != undefined && value.toString().match(/^\d+/) && parseInt(v) < parseInt(value)) {
@@ -1993,22 +2489,31 @@ function loadInputWindow() {
           } else if (value == undefined) {
 
             if (p > 1)
-              validateMin(undefined, v, (p - 1), label)
+
+            validateMin(undefined, v, (p - 1), label)
+
           }
+
         }
+
       }
 
       return (global_value == "") ? v : global_value;
+    
     }
 
     function validateMax(r, v, p, label) {
 
       global_value = "";
+      
       skipNext = false;
 
       if (r != undefined) {
+
         var p = parseInt(r.id.match(/^\d+/)[0]);
+
         var n = parseInt(r.getAttribute("n-tuple"));
+
         var label = r.childNodes[0].innerHTML;
 
         if (n >= 1 && parseInt($[p]["count"]) > 1) {
@@ -2016,43 +2521,63 @@ function loadInputWindow() {
           var firstY = $[p][1] != undefined ? $[p][1][label] : undefined;
 
           if (firstY == undefined && parseInt($[p]["count"]) > n && 2 < n) {
+
             firstY = $[p][2] != undefined ? $[p][2][label] : undefined;
+
           }
 
           if (firstY == undefined && parseInt($[p]["count"]) > n && 3 < n) {
+
             firstY = $[p][3] != undefined ? $[p][3][label] : undefined;
+
           }
 
           if (firstY == undefined && parseInt($[p]["count"]) > n && 4 < n) {
+
             firstY = $[p][4] != undefined ? $[p][4][label] : undefined;
+
           }
 
           if (firstY != undefined && parseInt(firstY) > 1950) {
+
             global_value = parseInt(firstY) + 1;
+
             skipNext = true;
+
           } else {
 
             var lastY = $[p][n + 1] != undefined ? $[p][n + 1][label] : undefined;
 
             if (lastY == undefined && (n + 2) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 2] != undefined ? $[p][n + 2][label] : undefined;
+
             }
 
             if (lastY == undefined && (n + 3) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 3] != undefined ? $[p][n + 3][label] : undefined;
+
             }
 
             if (lastY == undefined && (n + 4) <= parseInt($[p]["count"])) {
+
               lastY = $[p][n + 4] != undefined ? $[p][n + 4][label] : undefined;
+
             }
 
             if (lastY != undefined && parseInt(lastY) > 1950) {
+
               global_value = parseInt(lastY);
+
               skipNext = true;
+
             }
+
           }
 
         }
+
       }
 
       if (!skipNext && $[p + 1] != undefined) {
@@ -2062,12 +2587,17 @@ function loadInputWindow() {
         if (maxN > 0) {
 
           var value = undefined;
+
           if ($[p + 1][maxN] != undefined) {
 
             for (var i = maxN; i > 0; i--) {
+
               if ($[p + 1][i][label] != undefined)
-                value = parseInt($[p + 1][i][label]);
+
+              value = parseInt($[p + 1][i][label]);
+
             }
+
           }
 
           if (value != undefined && value.toString().match(/^\d+/) && parseInt(v) > parseInt(value)) {
@@ -2077,11 +2607,15 @@ function loadInputWindow() {
           } else if (value == undefined) {
 
             validateMax(undefined, v, (p + 1), label)
+
           }
+
         }
+
       }
 
       return (global_value == "") ? v : global_value;
+
     }
 
     function enterAbortionData(row) {
@@ -2098,19 +2632,29 @@ function loadInputWindow() {
         };
 
         var field_names = Object.keys(fields);
+
         var pos = row.getAttribute("pos");
 
         var type = fields[field_names[pos]][0];
+
         current_popup = field_names[pos];
 
         loadPopup(row);
+
         if (type == "number") {
+
           showNumber("popup", row.id, fields[field_names[pos]][1], fields[field_names[pos]][2]);
+
         } else if (type == "list") {
+
           var listItems = fields[field_names[pos]];
+
           showList("popup", listItems);
+
         }
+
       }
+
     }
 
     function enterWeight(row) {
@@ -2118,70 +2662,110 @@ function loadInputWindow() {
       if (row != undefined) {
 
         var fields = {
+
           "Birth weight": ["list", "Big baby", "Normal", "Small baby"]
+
         };
 
         var field_names = Object.keys(fields);
 
         var pos = row.getAttribute("pos");
-        // console.log(pos);
+
         var type = fields[field_names[0]][0]
+
         current_popup = field_names[0];
 
         loadPopup(row);
+
         if (type == "number") {
 
           if (row.childNodes[0].innerHTML.match(/Year of birth/i)) {
+
             var min = validateMin(row, fields[field_names[0]][1]);
+
             var max = validateMax(row, fields[field_names[0]][2]);
+
           } else if (row.childNodes[0].innerHTML.match(/Gestation/i)) {
+
             var min = validateGestation(row, fields[field_names[0]][1]);
+
             var max = validateGestation(row, fields[field_names[0]][2]);
+
           } else {
+
             var min = fields[field_names[0]][1];
+
             var max = fields[field_names[0]][2];
+
           }
+
           showNumber("popup", row.id, min, max);
+
         } else if (type == "list") {
+
           var listItems = fields[field_names[0]];
+
           showList("popup", listItems);
+
         } else if (type == "age") {
+
           showNumber("popup", row.id, 1, 40, "age");
+
         }
+
       }
+
     }
 
     function showMeMessage(aMessage, withCancel, timed) {
+
       __$('popup').style.display = 'none';
+
       if (typeof (tstMessageBar) == "undefined") {
+
         __$("content").innerHTML += "<div id='messageBar' class='messageBar'></div>";
 
+
         tstMessageBar = __$('messageBar');
+      
       }
 
       var messageBar = tstMessageBar;
+
       messageBar.innerHTML = aMessage +
         "<br />" + (typeof (withCancel) != "undefined" ? (withCancel == true ?
           "<button onmousedown=\"tstMessageBar.style.display = 'none'; __$('popup').style.display = 'block'; " +
           "clearTimeout(tstTimerHandle);\"><span>Cancel</span></button>" : "") : "") +
         "<button style='width: 200px;' onmousedown=\"__$('popup').style.display = 'none';__$('shield').style.display = 'none';tstMessageBar.style.display = 'none';\"><span>OK</span></button>";
+
       if (aMessage.length > 0) {
+      
         messageBar.style.display = 'block'
+
         if ((typeof (timed) == "undefined" ? true : timed) == true) {
+
           window.setTimeout("hideMessage()", 3000)
+
         }
+
       }
+
     }
 
     function alertMessage(aMessage, withCancel, timed) {
+
       __$('popup').style.display = 'none';
+
       if (typeof (tstMessageBar) == "undefined") {
+
         __$("content").innerHTML += "<div id='messageBar' class='messageBar'></div>";
 
         tstMessageBar = __$('messageBar');
+
       }
 
       var messageBar = tstMessageBar;
+
       messageBar.innerHTML = aMessage +
         "<br />" + (typeof (withCancel) != "undefined" ? (withCancel == true ?
           "<button onmousedown='tstMessageBar.style.display = \"none\"; " +
@@ -2189,375 +2773,532 @@ function loadInputWindow() {
         "<button style='width: 200px;' onmousedown='tstMessageBar.style.display = \"none\"; " +
         "clearTimeout(tstTimerHandle); eval(tstTimerFunctionCall);__$(\"popup\").style.display = \"block\";'>" +
         "<span>OK</span></button>";
+
       if (aMessage.length > 0) {
+
         messageBar.style.display = 'block'
+
         if ((typeof (timed) == "undefined" ? true : timed) == true) {
+
           window.setTimeout("hideMessage()", 3000)
+
         }
+
       }
+
     }
 
     function hideMessage() {
+
       tstMessageBar.style.display = 'none'
+
     }
 
     return {
+
       load: load()
+
     };
 
-    })(jQuery, data);
+  })(jQuery, data);
 
     //myModule.load();
+}
+
+function test_code() {
+      
+  result = details_available.length;
+  
+  details_available = []
+  
+  return result;
+  
+}
+
+function buildParams() {
+
+  var keys = Object.keys(data)
+
+  for (var i = 0; i < keys.length; i++) {
+
+    var count = data[keys[i]]["count"];
+
+    for (var c = 1; c <= count; c++) {
+          
+      if (data[keys[i]] == undefined)
+      
+      data[keys[i]] = {};
+      
+      if (data[keys[i]][c] == undefined)
+      
+      data[keys[i]][c] = {};
+      
+    }
+    
+  }
+
+  var abortions = parseInt(__$("abortions").value);
+      
+  if (abortions > 0) {
+        
+    for (var i = 1; i <= abortions; i++) {
+    
+      if ($$[i] == undefined)
+    
+      $$[i] = {};
+    
+    }
+    
+  }
+
+
+  // update various fields
+
+  __$("data_obj").value = JSON.stringify(data);
+
+  __$("abortion_obj").value = JSON.stringify($$);
+
+
+  var str = __$("data_obj").value.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s+]/g, ' ')
+
+
+  if (str.match(/caesarean section/i)) {
+
+    __$("ever_had_c_sections").value = "Yes";
+
+  } else {
+
+    __$("ever_had_c_sections").value = "No";
+
+  }
+
+
+  if (str.match(/vacuum extraction delivery/i)) {
+
+    __$("ever_had_a_vacuum_extraction").value = "Yes";
+
+  } else {
+
+    __$("ever_had_a_vacuum_extraction").value = "No";
+
+  }
+
+
+  if (str.match(/still birth/i)) {
+
+    __$("ever_had_still_births").value = "Yes";
+
+  } else {
+
+    __$("ever_had_still_births").value = "No";
+
+  }
+
+}
+
+function loadSplitSelections() {
+
+  //array format [url, input_id, helpText]
+
+  var arr = [
+
+    ["/encounters/yes_no_options", "ever_had_episiotomy"],
+
+    ["/encounters/hemorrhage_options", "hemorrhage"],
+
+    ["/encounters/yes_no_options", "pre_eclampsia"],
+
+    ["/encounters/yes_no_options", "eclampsia"]
+
+  ];
+
+  var count = arr.length;
+
+  var n = Math.floor(Math.sqrt(count));
+
+  var v_count = Math.ceil(count / n);
+
+  var h_count = Math.ceil(count / n);
+
+  var e_count = count % n;
+
+
+  __$("keyboard").style.display = "none";
+
+  __$("touchscreenInput" + tstCurrentPage).style.display = "none";
+
+  __$("inputFrame" + tstCurrentPage).style.height = (0.72 * screen.height) + "px";
+
+  __$("inputFrame" + tstCurrentPage).style.marginTop = (0.05 * screen.height) + "px";
+
+  //__$("inputFrame" + tstCurrentPage).style.background = "lightblue";
+
+  if (count > 0) {
+        
+    var n = 0;
+    
+    var holder = document.createElement("div");
+    
+    holder.id = 'holder';
+    
+    holder.style.height = (0.72 * screen.height) + "px";
+    
+    holder.style.width = "100%";
+    
+    holder.style.display = "none";
+    
+    holder.setAttribute("class", "options");
+    
+    holder.style.borderRadius = "5px";
+    
+    holder.style.background = "white";
+    
+    __$("inputFrame" + tstCurrentPage).appendChild(holder);
+        
+    for (var r = 1; r <= v_count; r++) {
+          
+      var row = document.createElement("div");
+      
+      row.id = r;
+      
+      row.style.display = "table-row";
+      
+      row.setAttribute("class", "row");
+      
+      holder.appendChild(row);
+          
+      for (var c = 1; c <= h_count; c++) {
+            
+        var cell = document.createElement("div");
+        
+        cell.id = r + "_" + c;
+        
+        cell.style.display = "table-cell";
+        
+        cell.setAttribute("class", "cell");
+        
+        cell.style.background = "white";
+
+        var helpText = __$(arr[n][1]).getAttribute("helpText");
+        
+        var heada = document.createElement("div");
+        
+        heada.style.height = "40px";
+        
+        heada.innerHTML = helpText;
+        
+        heada.style.marginTop = "5px";
+        
+        heada.style.background = "#CFE4CD";
+        
+        heada.style.borderRadius = "3px";
+        
+        heada.style.border = "2px gray solid";
+        
+        heada.style.fontSize = "28px";
+        
+        heada.style.marginLeft = "5px";
+        
+        heada.style.marginRight = "5px";
+        
+        cell.appendChild(heada);
+            
+        if (c != 1) {
+        
+          cell.style.borderLeft = "1px solid";
+        
+        }
+            
+        if (r != 1) {
+        
+          cell.style.borderTop = "1px solid";
+        
+        }
+         
+        cell.style.height = ((72 / v_count) - 2) * 0.001 * screen.height + "px";
+        
+        cell.style.width = ((100 / h_count)) + "%";
+        
+        row.appendChild(cell);
+            
+        n++;
+        
+        if (n != arr.length - 1) {
+              
+          ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
+          
+        } else {
+              
+          ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
+          
+        }
+
+      }
+      
     }
 
-    function test_code() {
-      result = details_available.length;
-      details_available = []
-      return result;
+    __$("2_2").style.display = "none";
+
+    __$("1_2").style.borderBottom = "1px solid";
+
+    __$("2_1").style.borderRight = "1px solid";
+
+  }
+  
+}
+
+function ajaxCustomRequest(aUrl, id, n, dom_id) {
+
+  var httpRequest = new XMLHttpRequest();
+
+  httpRequest.onreadystatechange = function () {
+
+    handleCustomResult(httpRequest, id, n, dom_id);
+
+  };
+  //try {
+  
+  httpRequest.open('GET', aUrl, true);
+  
+  httpRequest.send(null);
+  
+  //} catch (e) {
+  
+  //console.log(e);
+  
+  //}
+  
+}
+
+function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
+
+  if (!aXMLHttpRequest) return;
+
+  if (aXMLHttpRequest.status == 404) {
+
+    if (id == "hemorrhage"){
+
+      var result = "No|APH|PPH";
+
+      var data = result.split("|");
+
+    }else{
+
+      var result = "Yes|No";
+
+      var data = result.split("|");
+
     }
 
-    function buildParams() {
-      var keys = Object.keys(data)
-      for (var i = 0; i < keys.length; i++) {
+    if (x.includes(id))
 
-        var count = data[keys[i]]["count"];
-        for (var c = 1; c <= count; c++) {
+    return
 
-          if (data[keys[i]] == undefined)
-            data[keys[i]] = {};
-          if (data[keys[i]][c] == undefined)
-            data[keys[i]][c] = {};
+    x.push(id);
+
+    var ul = document.createElement("ul");
+
+    ul.id = id + "_ul"
+
+    ul.style.paddingLeft = "5px";
+
+    ul.style.paddingRight = "5px";
+
+    __$(dom_id).appendChild(ul);
+
+    var items = [];
+
+    for (var i = 0; i < data.length; i++) {
+
+      var li = document.createElement("li");
+
+      li.setAttribute("class", "cell-data");
+
+      li.setAttribute("target", id);
+
+      li.value = data[i];
+
+      ul.appendChild(li);
+
+      li.setAttribute("value", data[i]);
+
+      li.innerHTML = "<img height=34 style='margin-right: 10px; margin-bottom: -5px;' src='/public/touchscreentoolkit/lib/images/unchecked.png' />" + data[i];
+
+      items.push(li)
+
+      li.onmousedown = function () {
+
+        __$(this.getAttribute("target")).value = this.getAttribute("value");
+
+        observations.push({
+
+          concept_id: concepts_hash[this.getAttribute("target")],
+
+          value_coded: concepts_hash[this.getAttribute("value")]
+
+        });
+
+        if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/Yes/i)) {
+
+          __$("2_2").style.display = "table-cell";
+
+          __$("2_2").style.opacity = 1;
+
+          __$("1_2").style.borderBottom = "hidden";
+
+          __$("2_1").style.borderRight = "hidden";
+
+        } else if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/No/i)) {
+
+          __$("eclampsia").value = "";
+
+          __$("1_2").style.borderBottom = "1px solid";
+
+          __$("2_1").style.borderRight = "1px solid";
+
+          hideMsg("2_2");
+
         }
+
+        updateTouchscreenInput(this);
+
+        var target = this.getAttribute("target")
+
+        var nodes = jQuery("[target=" + target + "]");
+
+        for (var i = 0; i < nodes.length; i++) {
+
+          nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
+
+        }
+
+        this.getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
+
       }
 
-      var abortions = parseInt(__$("abortions").value);
+      if (i % 2 == 0) {
 
-      if (abortions > 0) {
+        li.className = "even";
 
-        for (var i = 1; i <= abortions; i++) {
-          if ($$[i] == undefined)
-            $$[i] = {};
-        }
-      }
+        li.setAttribute("group", "even");
 
-      // update various fields
-      __$("data_obj").value = JSON.stringify(data);
-
-      __$("abortion_obj").value = JSON.stringify($$);
-
-      var str = __$("data_obj").value.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s+]/g, ' ')
-
-      if (str.match(/caesarean section/i)) {
-        __$("ever_had_c_sections").value = "Yes";
       } else {
-        __$("ever_had_c_sections").value = "No";
+
+        li.className = "odd";
+
+        li.setAttribute("group", "odd");
+
       }
 
-      if (str.match(/vacuum extraction delivery/i)) {
-        __$("ever_had_a_vacuum_extraction").value = "Yes";
-      } else {
-        __$("ever_had_a_vacuum_extraction").value = "No";
-      }
-
-      if (str.match(/still birth/i)) {
-        __$("ever_had_still_births").value = "Yes";
-      } else {
-        __$("ever_had_still_births").value = "No";
-      }
     }
 
-    function loadSplitSelections() {
-      //array format [url, input_id, helpText]
-      var arr = [
-        ["/encounters/yes_no_options", "ever_had_episiotomy"],
-        ["/encounters/hemorrhage_options", "hemorrhage"],
-        ["/encounters/yes_no_options", "pre_eclampsia"],
-        ["/encounters/yes_no_options", "eclampsia"]
-      ];
+    for (var j = 0; j < items.length; j++) {
 
-      var count = arr.length;
-      var n = Math.floor(Math.sqrt(count));
-      var v_count = Math.ceil(count / n);
-      var h_count = Math.ceil(count / n);
-      var e_count = count % n;
+      if (__$(id).value && __$(id).value == items[j].getAttribute("value")) {
 
-      __$("keyboard").style.display = "none";
-      __$("touchscreenInput" + tstCurrentPage).style.display = "none";
-      __$("inputFrame" + tstCurrentPage).style.height = (0.72 * screen.height) + "px";
-      __$("inputFrame" + tstCurrentPage).style.marginTop = (0.05 * screen.height) + "px";
-      //__$("inputFrame" + tstCurrentPage).style.background = "lightblue";
+        updateTouchscreenInput(items[j]);
 
-      if (count > 0) {
+        __$(items[j].getAttribute("target")).value = items[j].getAttribute("value");
 
-        var n = 0;
-        var holder = document.createElement("div");
-        holder.id = 'holder';
-        holder.style.height = (0.72 * screen.height) + "px";
-        holder.style.width = "100%";
-        holder.style.display = "none";
-        holder.setAttribute("class", "options");
-        holder.style.borderRadius = "5px";
-        holder.style.background = "white";
-        __$("inputFrame" + tstCurrentPage).appendChild(holder);
+        var nodes = jQuery("[target=" + id + "]");
 
-        for (var r = 1; r <= v_count; r++) {
+        for (var i = 0; i < nodes.length; i++) {
 
-          var row = document.createElement("div");
-          row.id = r;
-          row.style.display = "table-row";
-          row.setAttribute("class", "row");
-          holder.appendChild(row);
-
-          for (var c = 1; c <= h_count; c++) {
-
-            var cell = document.createElement("div");
-            cell.id = r + "_" + c;
-            cell.style.display = "table-cell";
-            cell.setAttribute("class", "cell");
-            cell.style.background = "white";
-
-            var helpText = __$(arr[n][1]).getAttribute("helpText");
-            var heada = document.createElement("div");
-            heada.style.height = "40px";
-            heada.innerHTML = helpText;
-            heada.style.marginTop = "5px";
-            heada.style.background = "#CFE4CD";
-            heada.style.borderRadius = "3px";
-            heada.style.border = "2px gray solid";
-            heada.style.fontSize = "28px";
-            heada.style.marginLeft = "5px";
-            heada.style.marginRight = "5px";
-            cell.appendChild(heada);
-
-            if (c != 1) {
-              cell.style.borderLeft = "1px solid";
-            }
-
-            if (r != 1) {
-              cell.style.borderTop = "1px solid";
-            }
-
-            cell.style.height = ((72 / v_count) - 2) * 0.001 * screen.height + "px";
-            cell.style.width = ((100 / h_count)) + "%";
-            row.appendChild(cell);
-
-            n++;
-            if (n != arr.length - 1) {
-
-              ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
-            } else {
-
-              ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
-            }
-
-          }
-        }
-
-        __$("2_2").style.display = "none";
-        __$("1_2").style.borderBottom = "1px solid";
-        __$("2_1").style.borderRight = "1px solid";
-
-      }
-    }
-
-    function ajaxCustomRequest(aUrl, id, n, dom_id) {
-
-      var httpRequest = new XMLHttpRequest();
-      httpRequest.onreadystatechange = function () {
-        handleCustomResult(httpRequest, id, n, dom_id);
-      };
-      //try {
-        httpRequest.open('GET', aUrl, true);
-        httpRequest.send(null);
-      //} catch (e) {
-        //console.log(e);
-      //}
-    }
-
-    function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
-      console.log(id);
-
-      if (!aXMLHttpRequest) return;
-
-      if (aXMLHttpRequest.status == 404) {
-
-        if (id == "hemorrhage"){
-          var result = "No|APH|PPH";
-          var data = result.split("|");
-        }else{
-          var result = "Yes|No";
-          var data = result.split("|");
-        }
-        if (x.includes(id))
-          return
-        x.push(id);
-
-        console.log(data);
-
-        var ul = document.createElement("ul");
-        ul.id = id + "_ul"
-        ul.style.paddingLeft = "5px";
-        ul.style.paddingRight = "5px";
-        __$(dom_id).appendChild(ul);
-        var items = [];
-
-        for (var i = 0; i < data.length; i++) {
-
-          var li = document.createElement("li");
-          li.setAttribute("class", "cell-data");
-          li.setAttribute("target", id);
-          li.value = data[i];
-          ul.appendChild(li);
-          li.setAttribute("value", data[i]);
-          li.innerHTML = "<img height=34 style='margin-right: 10px; margin-bottom: -5px;' src='/public/touchscreentoolkit/lib/images/unchecked.png' />" + data[i];
-          items.push(li)
-
-          li.onmousedown = function () {
-            __$(this.getAttribute("target")).value = this.getAttribute("value");
-            console.log(this.getAttribute("value"));
-            observations.push({
-              concept_id: concepts_hash[this.getAttribute("target")],
-              value_coded: concepts_hash[this.getAttribute("value")]
-            })
-
-            if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/Yes/i)) {
-
-              __$("2_2").style.display = "table-cell";
-              __$("2_2").style.opacity = 1;
-              __$("1_2").style.borderBottom = "hidden";
-              __$("2_1").style.borderRight = "hidden";
-            } else if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/No/i)) {
-
-              __$("eclampsia").value = "";
-              __$("1_2").style.borderBottom = "1px solid";
-              __$("2_1").style.borderRight = "1px solid";
-              hideMsg("2_2");
-            }
-
-            updateTouchscreenInput(this);
-
-            var target = this.getAttribute("target")
-            var nodes = jQuery("[target=" + target + "]");
-
-            for (var i = 0; i < nodes.length; i++) {
-
-              nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
-            }
-
-            this.getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
-          }
-
-          if (i % 2 == 0) {
-
-            li.className = "even";
-            li.setAttribute("group", "even");
-
-          } else {
-
-            li.className = "odd";
-            li.setAttribute("group", "odd");
-          }
+          nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
 
         }
 
-        for (var j = 0; j < items.length; j++) {
+        items[j].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
 
-          if (__$(id).value && __$(id).value == items[j].getAttribute("value")) {
+        if (items[j].getAttribute("target") == "pre_eclampsia" && __$("pre_eclampsia").value == "Yes") {
 
-            updateTouchscreenInput(items[j]);
-            __$(items[j].getAttribute("target")).value = items[j].getAttribute("value");
-            var nodes = jQuery("[target=" + id + "]");
-            for (var i = 0; i < nodes.length; i++) {
-              nodes[i].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/unchecked.png';
-            }
-            items[j].getElementsByTagName("img")[0].src = '/public/touchscreentoolkit/lib/images/checked.png';
-            if (items[j].getAttribute("target") == "pre_eclampsia" && __$("pre_eclampsia").value == "Yes") {
-              __$("pre_eclampsia").value = "";
-              __$("2_2").style.display = "block";
-              items[j].onmousedown.apply(items[j]);
-            }
-          }
+          __$("pre_eclampsia").value = "";
+
+          __$("2_2").style.display = "block";
+
+          items[j].onmousedown.apply(items[j]);
+
         }
 
-        if (n == "table")
-          setTimeout(function () {
-            __$('holder').style.display = n;
-          }, 150);
       }
+
     }
 
-    function fade(div, opacity) {
+    if (n == "table")
 
-      __$(div).style.opacity = opacity;
-      if (opacity >= 0) {
-        opacity = opacity - 0.01;
-        setTimeout(function () {
-          fade(div, opacity)
-        }, 1)
-      } else {
-        __$(div).style.display = "none";
-      }
-    }
+    setTimeout(function () {
 
-    function fadeOut(div, opacity) {
+      __$('holder').style.display = n;
 
-      __$(div).style.opacity = opacity;
-      if (opacity <= 1) {
-        opacity = opacity + 0.01;
-        setTimeout(function () {
-          fade(div, opacity)
-        }, 5)
-      }
-    }
+    }, 150);
 
-    function hideMsg(div) {
-      //addValidationInterval();
-      //__$(div).style.display = "none"
-    }
+  }
 
-    function showMsg(div) {
-      setTimeout(function () {
-        fadeOut(div, 0);
-      }, 1);
-    }
-    /**
-    function addValidationInterval(){
+}
 
-    __$("nextButton").onmousedown = function(){
-        if (this.innerHTML.match(/Finish/i)){
-            var arr = ["ever_had_episiotomy", "hemorrhage", "pre_eclampsia"];
-            try{
-                if (__$("2_2") != undefined && __$("2_2").style.display != "none"){
-                    arr.push("eclampsia");
-                }
-            }catch(x){}
+function fade(div, opacity) {
 
-            var check = 0;
-            for (var i = 0; i < arr.length; i ++){
+  __$(div).style.opacity = opacity;
 
-                var node = __$(arr[i]);
-                if (node != undefined && (node.value == "" || node.value == undefined || node.value.length < 2)){
-                    check = check + 1;
-                }
-            }
-       
-            if (check > 0){
-                alertMessage("Select all fields to proceed");
-            }else{
-                gotoNextPage();
-            }
-        }else{
-            gotoNextPage();
-        }
-    }
-    }
-    */
-    // function to update age_units value
-    setInterval(function () {
-      try {
-        age_units = __$('unit').value.toLowerCase();
-      } catch (error) {
-        //console.error(error);
-      }
-      //console.log(mother_age);
-    }, 200)
+  if (opacity >= 0) {
+
+    opacity = opacity - 0.01;
+
+    setTimeout(function () {
+
+      fade(div, opacity)
+
+    }, 1)
+
+  } else {
+
+    __$(div).style.display = "none";
+
+  }
+
+}
+
+function fadeOut(div, opacity) {
+
+  __$(div).style.opacity = opacity;
+
+  if (opacity <= 1) {
+
+    opacity = opacity + 0.01;
+
+    setTimeout(function () {
+
+      fade(div, opacity)
+
+    }, 5)
+
+  }
+
+}
+function showMsg(div) {
+
+  setTimeout(function () {
+
+    fadeOut(div, 0);
+
+  }, 1);
+
+}
+
+// function to update age_units value
+
+setInterval(function () {
+
+  try {
+
+    age_units = __$('unit').value.toLowerCase();
+
+  } catch (error) {
+
+    //console.error(error);
+
+  }
+
+  //console.log(mother_age);
+
+}, 200);
