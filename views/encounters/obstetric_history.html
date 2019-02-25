@@ -15,37 +15,7 @@
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/obstetric_history.js"></script>
-    <script type="text/javascript">
-
-      function gotoNextRoute(){
-        try{
-          var gravida = $('touchscreenInput'+tstCurrentPage).value;
-          if (gravida == "" || gravida == null){
-            showMessage("You must enter a value to continue");
-          }
-          if (gravida == 1){
-            $('gravida').value = gravida;
-            submitObstetricEncounter();
-          }else if(gravida > 1 && gravida <= 19){
-            gotoNextPage();
-          }else if(gravida > 19){
-            showMessage("Value out of range: 1 - 19");
-            return;
-          }
-        }catch(e){
-          console.log(e);
-        }
-      }
-
-      function submitButton(){
-        var nextButton = document.getElementById('nextButton');
-        nextButton.onmousedown = function(){
-          gotoNextRoute();
-        }
-      }
-    </script>
-
-    </head>
+  </head>
 
   <body id="mateme">
     <div id="container">

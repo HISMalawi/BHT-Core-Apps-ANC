@@ -1,132 +1,256 @@
-tstUsername = "admin";
-      var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
-      var apiProtocol = sessionStorage.apiProtocol;
-      var apiURL = sessionStorage.apiURL;
-      var apiPort = sessionStorage.apiPort;
-      var patientID = sessionStorage.patientID;
-      var programID = sessionStorage.programID;
+var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
 
-      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
-      var $$ = {};
-      var data = {};
-      var counts = {};
-      var deliveries = 0;
-      var max_delivered = 1;
-      var parity;
-      var parsedConceptName;
-      var x = [];
-      var observations = [];
+var apiProtocol = sessionStorage.apiProtocol;
 
-      concepts_hash = {
-        'Yes': 1066,
-        'No': 1065,
-        'pre_eclampsia': 7941,
-        'hemorrhage': 7977,
-        'eclampsia': 7156,
-        'ever_had_episiotomy' : 8758,
-        'PPH' : 230,
-        'APH' : 228
-      }
+var apiURL = sessionStorage.apiURL;
 
-      var anc_visits = [];
-      var last_visit = "";
-      var birth_year = "1990";
-      var max_birth_year = "2000";
-      var min_birth_year = "2018";
-      var abs_max_birth_year = "2019";
-      var current_popup = "Enter Value";
+var apiPort = sessionStorage.apiPort;
 
-      var hash = {
-        "TBA" : "T.B.A",
-        "Spontaneous vaginal delivery" : "S.V.D",
-        "Caesarean Section" : "C.S",
-        "Vacuum Extraction Delivery" : "V.E.D",
-        "Big Baby (Above 4kg)" : "> 4kg",
-        "Small Baby (Less than 2.5kg)" : "< 2.5kg"
-      }
+var patientID = sessionStorage.patientID;
 
-      var fields = ["Year of birth", "Place of birth",
-        "Gestation (weeks)", "Method of delivery",
-        "Condition at birth", "Birth weight",
-        "Alive Now", "Age at Death"];
+var patientDOB = sessionStorage.patientDOB;
 
-      var abortionHash = {
-        "Incomplete abortion" : "Incomplete",
-        "Complete abortion" : "Complete",
-        "Manual Vacuum Aspiration (MVA)" : "M.V.A"
-      }
+var patientAge = sessionStorage.patientAge;
 
-      var abortionFields = ["Year of abortion", "Place of abortion",
-        "Type of abortion", "Procedure done", "Gestation (weeks)"
-      ];
+var programID = sessionStorage.programID;
 
-      var $$ = {};
-      var data = {};
-      var counts = {};
-      anc_visits.push("zero");
-      var parsedConceptName = "Visit Number";
+var sessionDate = sessionStorage.sessionDate;
 
-      function changeSubmitFunction(){
-        var nextButton = document.getElementById('nextButton');
-        nextButton.setAttribute('onmousedown', 'submitObstetricEncounter()');
-      }
+var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
-      function submitObstetricEncounter(){
-        var currentTime = moment().format(' HH:mm:ss');
-        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
-        encounter_datetime += currentTime;
+var $$ = {};
+      
+var data = {};
+      
+var counts = {};
+      
+var deliveries = 0;
+      
+var max_delivered = 1;
+      
+var parity;
+      
+var parsedConceptName;
+      
+var x = [];
+      
+var observations = [];
 
-        var encounter = {
-          encounter_type_name: 'OBSTETRIC HISTORY',
-          encounter_type_id:  82,
-          patient_id: patientID,
-          encounter_datetime: encounter_datetime
-        }
+concepts_hash = {
+    'Yes': 1066,
+    'No': 1065,
+    'pre_eclampsia': 7941,
+    'hemorrhage': 7977,
+    'eclampsia': 7156,
+    'ever_had_episiotomy' : 8758,
+    'PPH' : 230,
+    'APH' : 228
+  
+  }
+  
+var last_visit = "";
+
+var birth_date = new Date(patientDOB);
+
+var current_date =  new Date(sessionDate);
+
+var this_year = current_date.getFullYear();
+      
+var birth_year = birth_date.getFullYear();
+
+var mother_age = parseInt(patientAge) - 10;
+
+// Minimum birth year of a child = mother birth year plus 13 more years.
+
+var min_birth_year = (parseInt(birth_year) + 13).toString(); 
+
+// Max birth year of a child = previous year.
+      
+var max_birth_year = birth_year;
+
+// Absolute max for birth of a child = this year.
+      
+var abs_max_birth_year = this_year;
+      
+var current_popup = "Enter Value";
+
+var hash = {
+    "TBA" : "T.B.A",
+    "Spontaneous vaginal delivery" : "S.V.D",
+    "Caesarean Section" : "C.S",
+    "Vacuum Extraction Delivery" : "V.E.D",
+    "Big Baby (Above 4kg)" : "> 4kg",
+    "Small Baby (Less than 2.5kg)" : "< 2.5kg"
+  }
+  
+var fields = ["Year of birth", "Place of birth",
+      "Gestation (weeks)", "Method of delivery",
+      "Condition at birth", "Birth weight",
+      "Alive Now", "Age at Death"];
+
+var abortionHash = {
+      "Incomplete abortion" : "Incomplete",
+      "Complete abortion" : "Complete",
+      "Manual Vacuum Aspiration (MVA)" : "M.V.A"
+    }
     
-        submitParameters(encounter, "/encounters", "postObstetricObs");
-      }
+var abortionFields = ["Year of abortion", "Place of abortion",
+      "Type of abortion", "Procedure done", "Gestation (weeks)"];
 
-      function postObstetricObs(encounter){
+var $$ = {};
+      
+var data = {};
+      
+var counts = {};
+      
+function changeSubmitFunction(){
+  
+  var nextButton = document.getElementById('nextButton');
+  
+  nextButton.setAttribute('onmousedown', 'submitObstetricEncounter()');
+
+}
+
+function submitObstetricEncounter(){
         
-        var obs = {
-            encounter_id: encounter.encounter_id,
-            observations: [
-                {concept_id: 1755, value_numeric: parseInt($('gravida').value)}
-            ]
+  var currentTime = moment().format(' HH:mm:ss');
+        
+  var encounter_datetime = moment(sessionDate).format('YYYY-MM-DD'); 
+        
+  encounter_datetime += currentTime;
+
+  var encounter = {
+      encounter_type_name: 'OBSTETRIC HISTORY',
+      encounter_type_id:  82,
+      patient_id: patientID,
+      encounter_datetime: encounter_datetime
+    }
+    
+  submitParameters(encounter, "/encounters", "postObstetricObs");
+      
+}
+
+function postObstetricObs(encounter){
+  
+  var obs = {
+      encounter_id: encounter.encounter_id,
+      observations: [
+          {concept_id: 1755, value_numeric: parseInt($('gravida').value)}
+        ]
+      };
+      
+  try{
+    
+    if ($('para').value !== ""){
+      
+      obs.observations.push(
+            {concept_id: 1053, value_numeric: parseInt($('para').value)}
+          );
+
+      for(key in data){
+
+        var year_of_birth = data[key][1]["Year of birth"];
+        
+        var place_of_birth = data[key][1]["Place of birth"];
+        
+        var gestation = data[key][1]["Gestation (weeks)"];
+
+        var mode_of_delivery = data[key][1]["Method of delivery"];
+        
+        var condition_at_birth = data[key][1]["Condition at birth"];
+
+        var birth_weight = data[key][1]["Birth weight"];
+        
+        var alive_now = data[key][1]["Alive Now"];
+
+        var age_at_death = data[key][1]["Age at Death"];
+
+
+        if (year_of_birth !== undefined && year_of_birth !== "?"){
+      
+          obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_birth)});
+
         }
 
-        try{
-          if ($('para').value !== ""){
-            obs.observations.push(
-                {concept_id: 1053, value_numeric: parseInt($('para').value)}
-            );
-          }
+        if (place_of_birth !== undefined && place_of_birth !== "?"){
+      
+          obs.observations.push({concept_id: 2997, value_text: place_of_birth});
+
+        }
+
+        if (gestation !== undefined && gestation !== "?"){
+      
+          obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
+
+        }
+
+        if (mode_of_delivery !== undefined && mode_of_delivery !== "?"){
+
+          obs.observations.push({concept_id: 5630, value_text: mode_of_delivery});
+
+        }
+
+        if (condition_at_birth !== undefined && condition_at_birth !== "?") {
+      
+          obs.observations.push({concept_id: 1053, value_text: condition_at_birth});
+
+        }
+
+        if (birth_weight !== undefined && birth_weight !== "?"){
+      
+          obs.observations.push({concept_id: 5916, value_text: birth_weight});
+
+        }
+
+        if (alive_now !== undefined && alive_now !== "?"){
+      
+          obs.observations.push({concept_id: 2895, value_text: alive_now});
+
+        }
+
+        if (age_at_death !== undefined && age_at_death !== "?"){
+      
+          obs.observations.push({concept_id: 7999, value_text: age_at_death});
+
+        }
+
+      }
+        
+    }
+        
+    if ($('abortions').value !== ""){
+            
+      obs.observations.push(
+            {concept_id: 7942, value_numeric: parseInt($('abortions').value)}
+          );
+        
+    }
+    
+    if (observations.length > 0){
+
+      for(var i = 0; i < observations.length; i++){
+              
+        obs.observations.push(observations[i]);
+            
+      }
+
+    }
+  
+  }catch(e){
           
-          if ($('abortions').value !== ""){
-            obs.observations.push(
-                {concept_id: 7942, value_numeric: parseInt($('abortions').value)}
-            );
-          }
+    console.log(e);
+        
+  }
+  
+  submitParameters(obs, "/observations", "nextPage");
 
-          if (observations.length > 0){
-            for(var i = 0; i < observations.length; i++){
-              obs.observations.push(observations[i]);
-            }
+}
 
-          }
-
-        }catch(e){
-          console.log(e);
-        }
-
-
-        console.log(obs);
-        submitParameters(obs, "/observations", "nextPage");
-      }
-
-      function nextPage(){
-        nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-      }
+function nextPage(){
+        
+  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+      
+}
 
 
       function increment(pos) {
@@ -352,20 +476,6 @@ tstUsername = "admin";
 
       function updateDeliveries() {
         deliveries = __$('para').value;
-      }
-
-      function disablePastVisits() {
-        if (last_visit < 7) {
-          for (var i = 0; i < anc_visits.length; i++) {
-            if (__$(anc_visits[i])) {
-              __$(anc_visits[i]).className = "keyboardButton gray";
-              __$(anc_visits[i]).onmousedown = function () {}
-            }
-          }
-        } else {
-          __$(anc_visits[anc_visits.length - 1]).className = "keyboardButton gray";
-          __$(anc_visits[anc_visits.length - 1]).onmousedown = function () {}
-        }
       }
 
       function loadInputWindow() {
