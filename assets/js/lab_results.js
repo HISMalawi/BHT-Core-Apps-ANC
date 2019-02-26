@@ -58,8 +58,6 @@ function getPatientHIVStatus(){
       art_status = obj['art_status']
     
       art_num = obj['arv_number']
-            
-      console.log(obj);
           
     }
         
@@ -191,25 +189,43 @@ function removeHIVOption(){
   
   var hiv_option = $('hiv');
   
-  var prev_hiv_test_res = ""
+  var prev_hiv_test_res = "";
 
-  var hiv_test_date = ""
-        
+  var hiv_test_date = "";
+
+  var compare_dates = false;
+
+  three_months_ago = moment(sessionStorage.sessionDate).subtract(90, "day").format("DD-MM-YYYY");
+
   if ($('prev_hiv_test_result')){
     
     prev_hiv_test_res = $('prev_hiv_test_result').value
   
   }
 
-  
   try{
     
     prev_test_done = yesNo_Hash["Lab Results"]["Previous HIV test done"];
+
+    if (prev_hiv_test_res !== ""){
+
+      var hiv_test_date = $('prev_hiv_test_date').value.toString().split("-").reverse().join("-");
+
+      three_months_ago = three_months_ago.toString().split("-").reverse().join("-");
+
+      compare_dates = (new Date(hiv_test_date) <= new Date(three_months_ago));
+
+    }
     
-    if ((prev_test_done.toLowerCase() === 'yes' && prev_hiv_test_res.toLowerCase() === 'positive') || 
-        hiv_status.toLowerCase() === 'positive'){
+    if ((prev_test_done !== undefined && prev_test_done.toLowerCase() === 'yes' && 
+      prev_hiv_test_res.toLowerCase() === 'positive') || compare_dates || 
+      hiv_status.toLowerCase() === 'positive'){
+
+      if (lab_test_list.length >= 6){
 
         lab_test_list.options[hiv_option.index] = null;
+
+      }
 
     }
   

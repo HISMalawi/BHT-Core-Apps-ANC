@@ -41,8 +41,8 @@
 
           <input type="text" name="lab-results"
             tt_onLoad="__$('keyboard').style.display = 'none'; 
-              addYesNoToLabTests(); addHIVOption();"
-            optional="true" tt_onUnload="updatePreviousHIVTestDoneResponse();"
+              addYesNoToLabTests(); addHIVOption();" optional="true" 
+            tt_onUnload="updatePreviousHIVTestDoneResponse(); removeHIVOption();"
             tt_pageStyleClass= "NoControls" helpText="Lab Results" />
 
           <select tt_onLoad="" condition="checkPreviousHIVTest();" 
