@@ -213,7 +213,7 @@ function removeHIVOption(){
 
       three_months_ago = three_months_ago.toString().split("-").reverse().join("-");
 
-      compare_dates = (new Date(hiv_test_date) <= new Date(three_months_ago));
+      compare_dates = (new Date(hiv_test_date) > new Date(three_months_ago));
 
     }
     
@@ -221,11 +221,19 @@ function removeHIVOption(){
       prev_hiv_test_res.toLowerCase() === 'positive') || compare_dates || 
       hiv_status.toLowerCase() === 'positive'){
 
-      if (lab_test_list.length >= 6){
+      x = tt_currentUnorderedListOptions.firstChild.attributes["tstvalue"].value;
+
+      if (x !== undefined && x === "hiv_status") {
+
+        tt_currentUnorderedListOptions.firstChild.remove();
+
+      }
+
+      /** if (lab_test_list.length >= 6){
 
         lab_test_list.options[hiv_option.index] = null;
 
-      }
+      }*/
 
     }
   
@@ -328,6 +336,14 @@ function postLabResultsObs(encounter) {
         { concept_id: 9655, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Previous HIV test done']] }
       ]
     };
+    
+  if(hiv_status.toLowerCase() === 'positive'){
+
+    obs.observations.push(
+        {concept_id: 9656, value_coded: concept_map[hiv_status.toLowerCase()] },
+      );
+
+  }
     
   // Getting previous HIV test Results
         

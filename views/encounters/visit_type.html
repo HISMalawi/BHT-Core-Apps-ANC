@@ -4,56 +4,6 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title>ANC Visit type</title>
-
-    <style type="text/css">
-      #tab {
-        height:312px;
-      }
-      #barcode {
-        background:transparent none repeat scroll 0 0;
-        border-color:-moz-use-text-color -moz-use-text-color silver;
-        border-style:none none solid;
-        border-width:medium medium 1px;
-        font-family:"Nimbus Sans L","Arial Narrow",sans-serif;
-        font-size:2.2em;
-        padding-left:5px;
-        width:400px;
-      }
-      #header div {
-        font-weight:normal;
-        float:none;
-        clear:both;
-      }
-      .summary{
-        position:relative;
-        float:center;
-        width:100%;
-        padding-left:10px;
-        padding-right:10px;
-      }
-      .summary td , th{
-        border-style:solid;
-        border-width:thin;
-        padding:5px;
-      }
-      .summary tbody{
-        position:relative;
-        height:500px;
-        overflow:auto;
-        overflow-x: hidden;
-      }
-      .summary>tbody tr {
-        position:relative;
-        height:12px;
-      }
-      .summary>thead tr {
-        position:relative;
-        height:12px;
-      }
-        .NoKeyboard .options {
-            height: 591px !important;
-        }
-    </style>
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
@@ -62,112 +12,21 @@
     <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
-
-    <script type="text/javascript">
-      tstUsername = "admin";
-      var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+    <script type="text/javascript" src="/apps/ANC/assets/js/visit_type.js"></script>
       
-      var apiProtocol = sessionStorage.apiProtocol;
-      var apiURL = sessionStorage.apiURL;
-      var apiPort = sessionStorage.apiPort;
-      var patientID = sessionStorage.patientID;
-      var programID = sessionStorage.programID;
-      var past_visits = {}
-
-      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
-
-      function getAncVisitNumber() {
-        var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
-        url += '/programs/'+programID+'/patients/'+patientID+'/anc_visit';
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function(){
-
-          if (this.readyState == 4) {
-            if (this.status == 200) {
-              var results = JSON.parse(this.responseText);
-                past_visits = JSON.stringify(results);
-                console.log(past_visits);
-            }else {
-              past_visits = {};
-            }
-          }
-        };
-        try {
-          req.open('GET', url, true);
-          req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-          req.send(null);
-        } catch (e) {
-    
-        }
-
-      }
-
-      function disablePastVisits(){
-        for(var i = 0; i < past_visits.length; i++){
-          if(__$(past_visits[i])){
-            __$(past_visits[i]).className = "keyboardButton gray";
-            __$(past_visits[i]).onmousedown = function(){}
-          }
-        }
-      }
-
-      getAncVisitNumber();
-
-      function submitVisitTypeEncounter(){
-        if ($('touchscreenInput'+tstCurrentPage).value === ""){
-          showMessage("Please enter value");
-          return;
-        }
-        var currentTime = moment().format(' HH:mm:ss');
-        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
-        encounter_datetime += currentTime;
-                        	
-        var encounter = {
-          encounter_type_name: 'ANC VISIT TYPE',
-          encounter_type_id:  107,
-          patient_id: patientID,
-          encounter_datetime: encounter_datetime
-        }
-          submitParameters(encounter, "/encounters", "postVisitTypeObs");
-        }
-
-        function postVisitTypeObs(encounter){
-          var anc_visit_number = $('touchscreenInput'+tstCurrentPage).value
-          var obs = {
-            encounter_id: encounter.encounter_id,
-            observations: [
-              { concept_id: 6189, value_numeric: anc_visit_number }
-            ]
-          };
-          submitParameters(obs, "/observations", "nextPage")
-        }
-
-      function submitFunction() {
-        var nextButton = document.getElementById('nextButton');
-        nextButton.innerHTML = '<span>Finish</span>';
-        nextButton.setAttribute('onmousedown', 'submitVisitTypeEncounter()');
-      }
-
-      function nextPage(){
-        nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-      }
-
-  </script>
-        
-    </head>
-
-    <body id="mateme">
-      <div id="container">
-        <div id="content">
-          <form>
-            <input field_type="number" helpText="ANC Visit Number" 
-              id="anc visit number" name="anc_visit_number" 
-              tt_onLoad="__$('zero').style.display = 'none'; 
-                submitFunction(); disablePastVisits();" 
-              tt_pageStyleClass="NumbersOnly" optional=false 
-              type="text" />
-          </form>
-        </div>
+  </head>
+  <body id="mateme">
+    <div id="container">
+      <div id="content">
+        <form>
+          <input field_type="number" helpText="ANC Visit Number" 
+            id="anc visit number" name="anc_visit_number" 
+            tt_onLoad="__$('zero').style.display = 'none'; 
+              submitFunction(); disablePastVisits();" 
+            tt_pageStyleClass="NumbersOnly" optional=false 
+            type="text" />
+        </form>
       </div>
-    </body>
+    </div>
+  </body>
 </html>
