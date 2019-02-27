@@ -103,6 +103,34 @@ var $$ = {};
 var data = {};
       
 var counts = {};
+
+var gravida_value = "";
+
+function submitButton(){
+  
+  var nextButton = document.getElementById('nextButton');
+  
+  nextButton.setAttribute('onmousedown', 'nextRoute()');
+
+}
+
+function nextRoute(){
+
+  var gravida = $('touchscreenInput'+tstCurrentPage).value;
+
+  gravida_value = gravida;
+
+  if (gravida !== "" && parseInt(gravida) === 1){
+
+    submitObstetricEncounter();
+
+  }else{
+
+    gotoNextPage();
+
+  }
+
+}
       
 function changeSubmitFunction(){
   
@@ -133,10 +161,12 @@ function submitObstetricEncounter(){
 
 function postObstetricObs(encounter){
   
+  pushed = [];
+  
   var obs = {
       encounter_id: encounter.encounter_id,
       observations: [
-          {concept_id: 1755, value_numeric: parseInt($('gravida').value)}
+          {concept_id: 1755, value_numeric: parseInt(gravida_value)}
         ]
       };
       
@@ -287,8 +317,11 @@ function postObstetricObs(encounter){
     
     if (observations.length > 0){
 
+
       for(var i = 0; i < observations.length; i++){
-              
+
+        pushed.push(observations[i]["concept_id"]);
+
         obs.observations.push(observations[i]);
             
       }
@@ -3282,6 +3315,66 @@ function showMsg(div) {
     fadeOut(div, 0);
 
   }, 1);
+
+}
+
+function hideMsg(div){
+    
+  addValidationInterval
+    
+  __$(div).style.display = "none"
+
+}
+
+function addValidationInterval(){
+  
+  __$("nextButton").onmousedown = function(){
+        
+    if (this.innerHTML.match(/Finish/i)){
+            
+      var arr = ["ever_had_episiotomy", "hemorrhage", "pre_eclampsia"];
+            
+      try{
+                
+        if (__$("2_2") != undefined && __$("2_2").style.display != "none"){
+                    
+          arr.push("eclampsia");
+                
+        }
+            
+      }catch(x){}
+
+      var check = 0;
+            
+      for (var i = 0; i < arr.length; i ++){
+        
+        var node = __$(arr[i]);
+                
+        if (node != undefined && (node.value == "" || node.value == undefined || node.value.length < 2)){
+                    
+          check = check + 1;
+                
+        }
+            
+      }
+       
+      if (check > 0){
+                
+        alertMessage("Select all fields to proceed");
+            
+      }else{
+        
+        gotoNextPage();
+            
+      }
+        
+    }else{
+            
+      gotoNextPage();
+       
+    }
+    
+  }
 
 }
 

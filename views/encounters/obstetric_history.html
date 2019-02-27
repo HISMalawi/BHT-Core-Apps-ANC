@@ -31,7 +31,11 @@
               tt_onLoad="submitButton();
                 __$('zero').style.display = 'none';
                 showCategory2('Obstetric history');" 
-              tt_pageStyleClass="NumbersOnly" 
+              tt_pageStyleClass="NumbersOnly"
+              absoluteMin="1" max="9" absoluteMax="19"
+              validationRule="^[0-9]+$"
+              validationMessage="Enter the valid number."
+              tt_onUnload="__$('gravida').value == __$('touchscreenInput'+tstCurrentPage).value"
             />
 
             <input field_type="number" type="text"
