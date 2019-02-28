@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Cohort report</title>
+    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
+    <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+    <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
+
+    <script type="text/javascript">
+      tt_cancel_destination = "/";
+
+      function setAbsoluteMaxYear(){
+        
+        var element = document.getElementById('touchscreenInput' + tstCurrentPage);
+        
+        element.setAttribute("absoluteMax", (new Date().getFullYear()));
+        
+        element.setAttribute("min", (new Date().getFullYear() - 100)); 
+        
+        element.setAttribute("absoluteMin", (new Date().getFullYear() - 120)); 
+
+      }
+
+      function validateMonth() {
+
+        var nextBtn =  __$("nextButton");
+        
+        nextBtn.setAttribute('onmousedown',"validateYearMonth();");
+        
+        nextBtn.setAttribute('onclick',"");
+      
+      }
+
+      function validateYearMonth() {
+        
+        var year_id = document.getElementById('year');
+        
+        setYear = parseInt(year_id.value);
+        
+        if(setYear == (new Date().getFullYear())){
+        
+          var element = document.getElementById('touchscreenInput' + tstCurrentPage);
+        
+          var selectedMonth = parseInt(element.getAttribute('tstValue'));
+        
+          var currMonth     = parseInt(new Date().getMonth() + 1);
+        
+          if(selectedMonth > currMonth){
+        
+            showMessage("Selected month is greater than current month");
+        
+            return;
+        
+          }
+        
+        }
+
+        window.location.href = "/apps/ANC/views/reports/cohort_report.html?year=2019&months=2";
+      }
+
+    </script>
+  </head>
+  <body id="mateme">
+    <div id="container">
+      <div id="content">
+        <form>
+
+          <input type="text" name="year" id="year" 
+            helpText="Reporting year" field_type="number" 
+            absoluteMin="1900" min="1900" tt_onLoad="setAbsoluteMaxYear()" 
+            tt_pageStyleClass="Numeric NumbersOnly" />
+
+          <select id="months" name="months"
+            helpText="Select reporting month"
+            tt_pageStyleClass="NoKeyboard NoInput small"
+            tt_onLoad="validateMonth();">
+
+            <option></option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          
+          </select>
+
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--script>
+  tt_cancel_destination = "/?active_tab=tab2";
+</script>
+
+<style>
+  #Unknown {
+      display: none;
+  }
+</style>
+<form action="/reports/list_appointments" method='post'>
+
+
+yearString = []
+# set minimum and maximum year for select options.
+min = 2008
+today = session[:datetime].to_date rescue Date.today
+max = today.strftime("%Y").to_i
+
+# Populate year array with values from min to max plus 2.
+(min..(max + 2)).each{|yr| yearString << yr}
+
+%>
+
+<select id="year" name="year" helpText="Select Year" tt_pageStyleClass="NoKeyboard NoInput small">
+<option></option>
+<% yearString.reverse.each do |y| %>
+  <option><%= y %></option>
+<% end %>
+</select>
+
+<select id="month" name="month" helpText="Select Month" tt_pageStyleClass="NoKeyboard NoInput small">
+<option></option>
+<% monthString.each do |m| %>
+  <option><%= m %></option>
+<% end %>
+</select>
+
+< !--select id="selMonth" name="selMonth" helpText="Select Month:">
+    select>
+
+< %= (touch_select_tag "year", '', options_for_select(yearString),{
+  :id => "year",
+  :helpText => "Select Year",
+  :tt_pageStyleClass => "NoKeyboard NoInput small"  }).html_safe %>
+
+< %= (touch_select_tag "month", '', options_for_select(optionsString),
+      {:id => "month",
+       :helpText => "Select Month",
+       :tt_pageStyleClass => "NoKeyboard NoInput small"  }).html_safe %>
+</form -->
+
