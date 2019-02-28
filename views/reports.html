@@ -69,11 +69,25 @@
 function reportGrouping(group) {
   if(group == 'main'){
     return [
-      ['MoH','/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png','#'],
-      ["Clinic", "","#"],
-      ["PEPFAR","/assets/images/login-logos/PEPFAR.png","/report/missed_appointment_duration?type=disaggregated"]
+      ['MoH','/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png','MoH', 'function'],
+      ["Clinic", "","Clinic",'function'],
+      ["PEPFAR","/assets/images/login-logos/PEPFAR.png","#",'link']
     ];
-  }else{
+  }else if(group == 'MoH'){
+    return [
+      ['Cohort','','/apps/ANC/views/reports/cohort_duration.html', 'link'],
+      ["Monthly", "","#",'link'],
+    ];
+  }else if(group == 'Clinic'){
+    return [
+      ['Appointments','','/apps/ART/views/reports/clinic/appointments.html', 'link'],
+      ["Defaulter list","","/apps/ART/views/reports/clinic/report_dates.html?report=defaulter_list",'link'],
+      ["Incomplete visits","","#",'link']
+    ];
+  }else if(group === 'PEPFAR'){
+    return [
+      ['Disaggregated','','#', 'link']
+    ];
   }  
 }	
 
@@ -81,6 +95,7 @@ function buildReportLinks(group) {
   var counter = 0;
   var row = null;
   var reportContainer = document.getElementById("reports-container");
+  reportContainer.innerHTML = null;
 
   var reports = reportGrouping(group);
 
@@ -109,7 +124,13 @@ function buildReportLinks(group) {
 
     var td = document.createElement("td");
     td.setAttribute("id", i.toString());
-    td.addEventListener("click", _testFunc);
+    if(reports[i][3] == 'link'){
+      if(reports[i][2] != '#')
+        cell.setAttribute("onmousedown", "window.top.location='" + reports[i][2] + "'");
+    
+    }else{
+      cell.setAttribute("onmousedown", "buildReportLinks('" + reports[i][2] + "');");
+    }
     td.innerHTML = reports[i][0];
     tr.appendChild(td);
 
