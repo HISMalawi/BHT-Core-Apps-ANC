@@ -71,12 +71,12 @@ function reportGrouping(group) {
     return [
       ['MoH','/assets/images/login-logos/Malawi-Coat_of_arms_of_arms.png','MoH', 'function'],
       ["Clinic", "","Clinic",'function'],
-      ["PEPFAR","/assets/images/login-logos/PEPFAR.png","#",'link']
+      ["PEPFAR","/assets/images/login-logos/PEPFAR.png","PEPFAR",'function']
     ];
   }else if(group == 'MoH'){
     return [
-      ['Cohort','','/apps/ANC/views/reports/cohort_duration.html', 'link'],
-      ["Monthly", "","#",'link'],
+      ['Cohort','','/apps/ANC/views/reports/cohort_duration.html?type=cohort', 'link'],
+      ["Monthly", "","/apps/ANC/views/reports/cohort_duration.html?type=monthly",'link'],
     ];
   }else if(group == 'Clinic'){
     return [
@@ -86,7 +86,7 @@ function reportGrouping(group) {
     ];
   }else if(group === 'PEPFAR'){
     return [
-      ['Disaggregated','','#', 'link']
+      ['Disaggregated','','/apps/ANC/views/reports/pepfar/disaggregated_duration.html', 'link']
     ];
   }  
 }	
