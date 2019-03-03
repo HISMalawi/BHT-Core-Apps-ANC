@@ -12,6 +12,7 @@
     <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
 
     <script type="text/javascript">
       tt_cancel_destination = "/";
@@ -65,95 +66,22 @@
         params = getUrlParams();
 
         type = params['type'];
+        
+        year = $('year').value;
+        
+        month = $('months').value;
 
         if (type.toLowerCase() === "cohort"){
-        
-          window.location.href = "/apps/ANC/views/reports/cohort_report.html?year=2019&months=2";
+
+          window.location.href = "/apps/ANC/views/reports/cohort_report.html?year="+year+"&months="+month;
 
         }else if (type.toLowerCase() === "monthly"){
         
-          window.location.href = "/apps/ANC/views/reports/monthly_report.html?year=2019&months=2";
+          window.location.href = "/apps/ANC/views/reports/monthly_report.html?year="+year+"&months="+month;
 
         }
 
       }
-
-      function getUrlParams() {
-    
-    // get query string from url (optional) or window
-    var queryString = window.location.search.slice(1);
-
-    // we'll store the parameters here
-    var obj = {};
-
-    // if query string exists
-    if (queryString) {
-
-    // stuff after # is not part of query string, so get rid of it
-    queryString = queryString.split('#')[0];
-
-    // split our query string into its component parts
-    var arr = queryString.split('&');
-
-    for (var i=0; i<arr.length; i++) {
-
-      // separate the keys and the values
-      var a = arr[i].split('=');
-
-      // in case params look like: list[]=thing1&list[]=thing2
-      var paramNum = undefined;
-      
-      var paramName = a[0].replace(/\[\d*\]/, function(v) {
-              
-        paramNum = v.slice(1,-1);
-              
-        return '';
-            
-      });
-
-      // set parameter value (use 'true' if empty)
-      var paramValue = typeof(a[1])==='undefined' ? true : a[1];
-
-      // (optional) keep case consistent
-      paramName = paramName.toLowerCase();
-      
-      paramValue = paramValue.toLowerCase();
-
-      // if parameter name already exists
-      if (obj[paramName]) {
-        
-        // convert value to array (if still string)
-        if (typeof obj[paramName] === 'string') {
-          
-          obj[paramName] = [obj[paramName]];
-              
-        }
-        
-        // if no array index number specified...
-        if (typeof paramNum === 'undefined') {
-               
-          // put the value on the end of the array
-          obj[paramName].push(paramValue);
-              
-        }else {
-          // put the value at that index number
-          obj[paramName][paramNum] = paramValue;
-          
-        }
-            
-      }else {
-              
-        obj[paramName] = paramValue;
-            
-      }
-          
-    }
-        
-  }
-
-  return obj;
-      
-}
 
     </script>
   </head>
@@ -173,15 +101,15 @@
             tt_onLoad="validateMonth();">
 
             <option></option>
-            <option value="1">January</option>
-            <option value="2">February</option>
-            <option value="3">March</option>
-            <option value="4">April</option>
-            <option value="5">May</option>
-            <option value="6">June</option>
-            <option value="7">July</option>
-            <option value="8">August</option>
-            <option value="9">September</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
             <option value="10">October</option>
             <option value="11">November</option>
             <option value="12">December</option>

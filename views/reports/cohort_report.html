@@ -1,9 +1,14 @@
 <html class="gr__localhost"><head>
-    <title>Report</title>
+<title>Report</title>
 <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
 <link rel="stylesheet" href="/assets/css/custom.css">
-    <link href="/stylesheets/dashboard.css" media="screen" rel="stylesheet" type="text/css">
+<link href="/stylesheets/dashboard.css" media="screen" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+<script type="text/javascript" src="/apps/ANC/assets/js/cohort_report.js"></script>
     <script type="text/javascript" language="javascript">
       tt_cancel_destination = '/reports/select';
       tt_show = '/clinic';
@@ -120,7 +125,7 @@
                 ANC C<span style="font-size: 0.8em">LINIC</span> -
                 F<span style="font-size: 0.8em">ACILITY</span> M<span style="font-size: 0.8em">ONTHLY</span>
                 R<span style="font-size: 0.8em">EPORT</span>
-                - VERSION 5, JANUARY 2019
+                - VERSION 5, <span id="date"></span>
               </th>
             <!-- %end% -->
           </tr>
@@ -134,7 +139,7 @@
                   </td>
                   <td colspan="3" style="border-left: 1px solid #999;
                       border-bottom: 1px solid #999; font-style: italic;">
-                    Martin Preuss Centre&nbsp;
+                    <span id="site-name"></span>
                   </td>
                 </tr>
                 <tr>
@@ -144,14 +149,14 @@
                   </td>
                   <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;
                       font-style: italic;">
-                    2019&nbsp;
+                      <span id="r-year"></span>
                   </td>
                   <td style="width: 25%; border-left: 1px solid #999; border-bottom: 1px solid #999;" align="right">
                     Reporting Month
                   </td>
                   <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;
                       font-style: italic;">
-                    January&nbsp;
+                      <span id="r-month"></span>
                   </td>
                 </tr>
                 <tr>
@@ -205,7 +210,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('new_reg').submit()">
-                                  9
+                                  <span id="new-reg"></span>
                                 </a>
                               </td>
                             </tr>
@@ -232,7 +237,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('pregnancy_test_done_yes').submit()">
-                                  7
+                                  <span id="preg-test-yes"></span>
                                 </a>
                               </td>
                             </tr>
@@ -250,8 +255,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
                                 <a href="javascript:document.getElementById('pregnancy_test_done_no').submit()">
-                                  <span style="color:gray">
-                                    2
+                                  <span style="color:gray" id="preg-test-no">
                                   </span>
                                 </a>
                               </td>
@@ -279,7 +283,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('pregnancy_test_in_first_trim_yes').submit()">
-                                  5
+                                  <span id="preg-test-done-first-trim"></span>
                                 </a>
                               </td>
                             </tr>
@@ -297,8 +301,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
                                 <a href="javascript:document.getElementById('pregnancy_in_first_trim_no').submit()">
-                                  <span style="color:gray">
-                                  2
+                                  <span style="color:gray" id="preg-test-not-done-first-trim">
                                   </span>
                                 </a>
                               </td>
@@ -327,7 +330,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('week_of_first_visit_1').submit()">
-                                  6
+                                  <span id="week-0-12-of-visit"></span>
                                 </a>
                               </td>
                             </tr>
@@ -345,7 +348,8 @@
                               </td>
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
                                 <a href="javascript:document.getElementById('week_of_first_visit_2').submit()">
-                                  <span style="color:gray">3</span>
+                                  <span style="color:gray" id="week-13-of-visit">
+                                  </span>
                                 </a>
                               </td>
                             </tr>
@@ -371,7 +375,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('hiv_test_result_prev_neg').submit()">
-                                  2
+                                  <span id="m-prev-negative"></span>
                                 </a>
                               </td>
                             </tr>
@@ -388,7 +392,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px">
                                 <a href="javascript:document.getElementById('hiv_test_result_prev_pos').submit()">
-                                  5
+                                  <span id="m-prev-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -405,7 +409,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px">
                                 <a href="javascript:document.getElementById('hiv_test_result_neg').submit()">
-                                  1
+                                  <span id="m-new-negative"></span>
                                 </a>
                               </td>
                             </tr>
@@ -422,7 +426,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px">
                                 <a href="javascript:document.getElementById('hiv_test_result_pos').submit()">
-                                  0
+                                  <span id="m-new-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -439,7 +443,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('hiv_test_result_unk').submit()">
-                                  1
+                                  <span id="m-hiv-test-not-done"></span>
                                 </a>
                               </td>
                             </tr>
@@ -453,7 +457,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('total_hiv_positive').submit()">
-                                  5
+                                  <span id="m-total-hiv-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -477,7 +481,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('not_on_art').submit()">
-                                  4
+                                  <span id="m-not-on-art"></span>
                                 </a>
                               </td>
                             </tr>
@@ -493,7 +497,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px">
                                 <a href="javascript:document.getElementById('on_art_before').submit()">
-                                  1
+                                  <span id="m-on-art-before-visit"></span>
                                 </a>
                               </td>
                             </tr>
@@ -509,7 +513,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('on_art_zero_to_27').submit()">
-                                  0
+                                  <span id="m-art-0-27-weeks"></span>
                                 </a>
                               </td>
                             </tr>
@@ -525,7 +529,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('on_art_28_plus').submit()">
-                                  0
+                                  <span id="m-art-28-weeks"></span>
                                 </a>
                               </td>
                             </tr>
@@ -562,7 +566,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('visits_1').submit()">
-                                  0
+                                  <span id="total-1-visit"></span>
                                 </a>
                               </td>
                             </tr>
@@ -578,7 +582,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px">
                                 <a href="javascript:document.getElementById('visits_2').submit()">
-                                  0
+                                  <span id="total-2-visits"></span>
                                 </a>
                               </td>
                             </tr>
@@ -594,7 +598,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px">
                                 <a href="javascript:document.getElementById('visits_3').submit()">
-                                  0
+                                  <span id="total-3-visits"></span>
                                 </a>
                               </td>
                             </tr>
@@ -610,7 +614,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('visits_4').submit()">
-                                  0
+                                  <span id="total-4-visits"></span>
                                 </a>
                               </td>
                             </tr>
@@ -626,7 +630,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px; border-bottom:0px;">
                                 <a href="javascript:document.getElementById('visits_5').submit()">
-                                  0
+                                  <span id="total-5-visits"></span>
                                 </a>
                               </td>
                             </tr>
@@ -638,7 +642,7 @@
                                 Total women in cohort
                               </td>
                               <td class="valueCell">
-                                0&nbsp;
+                                <span id="total-women-in-cohort"></span>
                               </td>
                             </tr>
                             
@@ -667,7 +671,7 @@
                               <td style="border-left: 1px solid #999; border-top: 1px solid #999;
                                   border-bottom: 0px solid #999; border-right: 1px solid #999;">
                                 <a href="javascript:document.getElementById('pre_eclampsia_no').submit()">
-                                  <span style="color: gray">0</span>
+                                  <span style="color: gray" id="patients-with-pre-eclampsia"></span>
                                 </a>
                               </td>
                             </tr>
@@ -683,7 +687,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('pre_eclampsia_1').submit()">
-                                  0
+                                  <span id="patients-without-pre-eclampsia"></span>
                                 </a>
                               </td>
                             </tr>
@@ -707,7 +711,7 @@
                               </td>
                               <td style="border: 1px solid #999;border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('ttv__total_previous_doses_1').submit()">
-                                  <span style="color:gray;">0</span>
+                                  <span style="color:gray;" id="patients-given-less-than-2-ttv-doses">0</span>
                                 </a>
                               </td>
                             </tr>
@@ -723,7 +727,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('ttv__total_previous_doses_2').submit()">
-                                  0
+                                  <span id="patients-given-more-than-1-ttv-doses"></span> 
                                 </a>
                               </td>
                             </tr>
@@ -747,7 +751,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('sp_doses_given_zero_to_two').submit()">
-                                  0
+                                  <span id="patients-given-0-2-sp-doses"></span>
                                 </a>
                               </td>
                             </tr>
@@ -758,12 +762,12 @@
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="sp_doses_given_more_than_three" method="post" action="decompose">
                                   <input type="hidden" value="" name="patients">
-                                  ≥ 3 tabs
+                                  &#8805;3 doses
                                 </form>
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('sp_doses_given_more_than_three').submit()">
-                                  0
+                                  <span id="patients-given-3-sp-doses"></span>
                                 </a>
                               </td>
                             </tr>
@@ -789,7 +793,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('fefo__number_of_tablets_given_1').submit()">
-                                  <span style="color: gray"> 0 </span>
+                                  <span style="color: gray" id="patients-given-less-than-120-fefol-tabs"> 0 </span>
                                 </a>
                               </td>
                             </tr>
@@ -807,7 +811,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('fefo__number_of_tablets_given_2').submit()">
-                                  0
+                                  <span id="patients-given-at-least-120-fefol-tabs"></span>
                                 </a>
                               </td>
                             </tr>
@@ -834,7 +838,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('albendazole_none').submit()">
-                                  <span style="color: gray">0</span>
+                                  <span style="color: gray" id="patients-not-given-albendazole"></span>
                                 </a>
                               </td>
                             </tr>
@@ -852,7 +856,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('albendazole').submit()">
-                                  1
+                                  <span id="patients-given-one-albendazole-dose"></span>
                                 </a>
                               </td>
                             </tr>
@@ -880,7 +884,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('no_bed_net').submit()">
-                                  <span style="color: gray">0</span>
+                                  <span style="color: gray" id="patients-not-given-bed-net"></span>
                                 </a>
                               </td>
                             </tr>
@@ -898,7 +902,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('bed_net').submit()">
-                                  0
+                                  <span id="patients-given-bed-net"></span>
                                 </a>
                               </td>
                             </tr>
@@ -923,7 +927,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('hb_less_than_seven').submit()">
-                                  0
+                                  <span id="patients-with-hb-less-than-7"></span>
                                 </a>
                               </td>
                             </tr>
@@ -939,7 +943,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hb_greater_or_equal_to_seven').submit()">
-                                  0
+                                  <span id="patients-with-hb-at-least-7"></span>
                                 </a>
                               </td>
                             </tr>
@@ -955,7 +959,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hb_not_done').submit()">
-                                  0
+                                  <span id="patients-with-hb-not-done"></span>
                                 </a>
                               </td>
                             </tr>
@@ -980,7 +984,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('syphilis_result_neg').submit()">
-                                  0
+                                  <span id="patients-with-syphilis-negative"></span>
                                 </a>
                               </td>
                             </tr>
@@ -996,7 +1000,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('syphilis_result_pos').submit()">
-                                  0
+                                  <span id="patients-with-syphilis-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1012,7 +1016,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('syphilis_result_unk').submit()">
-                                  0
+                                  <span id="patients-with-syphilis-unknown"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1041,7 +1045,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('hiv_final_test_result_prev_neg').submit()">
-                                  0
+                                  <span id="c-prev-negative"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1057,7 +1061,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hiv_final_test_result_prev_pos').submit()">
-                                  0
+                                  <span id="c-prev-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1073,7 +1077,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hiv_final_test_result_neg').submit()">
-                                  0
+                                  <span id="c-new-negative"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1089,7 +1093,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hiv_final_test_result_pos').submit()">
-                                  0
+                                  <span id="c-new-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1106,7 +1110,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hiv_final_test_result_unk').submit()">
-                                  0
+                                  <span id="c-hiv-test-not-done"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1120,7 +1124,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('total_final_hiv_positive').submit()">
-                                  0
+                                  <span id="c-total-hiv-positive"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1146,7 +1150,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('no_cpt__1').submit()">
-                                  0
+                                  <span id="not-on-cpt"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1164,7 +1168,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('on_cpt__1').submit()">
-                                  0
+                                  <span id="on-cpt"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1191,7 +1195,7 @@
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
                                 <a href="javascript:document.getElementById('no_nvp_baby__1').submit()">
-                                  0
+                                  <span id="nvp-not-given"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1209,7 +1213,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('nvp_baby__1').submit()">
-                                  0
+                                  <span id="nvp-given"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1234,7 +1238,7 @@
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('final_not_on_art').submit()">
-                                  0
+                                  <span id="c-not-on-art"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1250,7 +1254,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('on_art_before').submit()">
-                                  0
+                                  <span id="c-on-art-before-visit"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1266,7 +1270,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('on_art_zero_to_27').submit()">
-                                  0
+                                  <span id="c-art-0-27-weeks"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1282,7 +1286,7 @@
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('on_art_28_plus').submit()">
-                                  0
+                                  <span id="c-art-28-weeks"></span>
                                 </a>
                               </td>
                             </tr>
@@ -1296,7 +1300,7 @@
                                 Date
                               </td>
                               <td class="valueCell" style="width: 70%;">
-                                28/Feb/2019
+                                <span id="date-filled"></span>
                               </td>
                             </tr>
                             <tr>
@@ -1304,7 +1308,7 @@
                                 Name
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                ANC v3.2.6-1-g8da919c
+                                ANC EMR
                               </td>
                             </tr>
                             <tr>
