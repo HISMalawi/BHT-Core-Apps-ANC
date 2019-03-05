@@ -119,8 +119,8 @@
     url = new URL(url);
     var report = url.searchParams.get("report");
 
-    url = '/apps/ART/views/reports/clinic/';
-    url += report + ".html?start_date=" + start_date;
+    url = '/apps/ANC/views/reports/pepfar/';
+    url += "pepfar_report.html?start_date=" + start_date;
     url += '&end_date=' + end_date;
     document.location = url;
   }
