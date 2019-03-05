@@ -42,7 +42,7 @@
           <input type="text" name="lab-results"
             tt_onLoad="__$('keyboard').style.display = 'none'; 
               addYesNoToLabTests(); addHIVOption();" optional="true" 
-            tt_onUnload="updatePreviousHIVTestDoneResponse(); removeHIVOption();"
+            tt_onUnload="updatePreviousHIVTestDoneResponse();"
             tt_pageStyleClass= "NoControls" helpText="Lab Results" />
 
           <select tt_onLoad="" condition="checkPreviousHIVTest();" 
@@ -59,7 +59,7 @@
           </select>
 
           <input tt_onLoad="setAbsoluteMaxYear();submitButton();
-            __$('today').style.display='none';" tt_onUnLoad="removeHIVOption();" 
+            __$('today').style.display='none';" tt_onUnLoad="" 
             condition="$('prev_hiv_test_result').value !== '';" 
             field_type="date" helpText="Previous HIV test date"
             id="prev_hiv_test_date" name="previous hiv test date"
@@ -84,7 +84,7 @@
           <select condition="" multiple="multiple" 
             helpText="Available Lab Tests" optional="true" 
             id="available_test_results" name="available_test_results" 
-            tt_onLoad="showCategory2('Lab results');changeSubmitFunction();" 
+            tt_onLoad="showCategory2('Lab results');changeSubmitFunction();removeHIVOption();" 
             tt_pageStyleClass="NoKeyboard">
 
               <option value="hiv_status" id="hiv">HIV</option>
