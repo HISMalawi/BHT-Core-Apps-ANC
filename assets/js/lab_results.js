@@ -337,7 +337,7 @@ function postLabResultsObs(encounter) {
       ]
     };
     
-  if(hiv_status.toLowerCase() === 'positive'){
+  if(hiv_status !== null && hiv_status.toLowerCase() === 'positive'){
 
     obs.observations.push(
         {concept_id: 9656, value_coded: concept_map[hiv_status.toLowerCase()] },

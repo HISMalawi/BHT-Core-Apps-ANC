@@ -16,114 +16,6 @@
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/examination.js"></script>
 
-    <script type="text/javascript">
-      tstUsername = "admin";
-      var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
-      var apiProtocol = sessionStorage.apiProtocol;
-      var apiURL = sessionStorage.apiURL;
-      var apiPort = sessionStorage.apiPort;
-      var patient_id = sessionStorage.patientID;
-      var programID = sessionStorage.programID;
-
-      var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patient_id;
-
-      var timedEvent;
-      var diagnosis_obs = []
-      var YesNoConcepts = {
-        "yes" : 1065,
-        "no" : 1066
-      };
-      
-      function submitExaminationsEncounter(){
-        var currentTime = moment().format(' HH:mm:ss');
-        var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
-        encounter_datetime += currentTime;
-                        	
-        var encounter = {
-          encounter_type_name: 'ANC EXAMINATION',
-          encounter_type_id:  98,
-          patient_id: patient_id,
-          encounter_datetime: encounter_datetime
-        }
-    
-        submitParameters(encounter, "/encounters", "postExaminationObs");
-      }
-
-      function postExaminationObs(encounter){
-        var obs = {
-          encounter_id: encounter.encounter_id,
-          observations: [
-            { concept_id: 6686, value_coded: YesNoConcepts[$('ultrasound').value] },
-            { concept_id: 7433, value_text: values_hash['region'] },
-            { concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value) },
-            { concept_id: 7979, value_text: $('fetal_heart_beat').value },
-            { concept_id: 9637, value_coded: YesNoConcepts[$('enter_fetal_movement').value] },
-            { concept_id: 9562, value_coded: YesNoConcepts[$('fetal_movement_felt').value] },
-            { concept_id: 9563, value_numeric: parseInt($('last_fmf').value) }
-          ]
-        }
-
-        if(values_hash['district'] !== '') {
-          obs.observations.push(
-            { concept_id: 7837, value_text: values_hash['district'] }
-          );
-        }
-
-        if ($('ultrasound').value === 'yes') {
-            obs.observations.push(
-              { concept_id: 7142, value_text: $('multiple_gestation').value },
-              { concept_id: 7919, value_text: $('liquor').value },
-              { concept_id: 7836, value_text: $('lie').value },
-              { concept_id: 9654, value_coded: YesNoConcepts[($('fetal_heart_movement_seen').value)] },
-            )
-        }
-
-        if ($('fetal_heart_beat').value == 'Heard'){
-          obs.observations.push(
-            { concept_id: 7839, value_numeric: parseInt($('fetal_heart_rate').value) },
-          )
-        }
-        if(diagnosis_obs.length > 0){
-          for(var i = 0; i < diagnosis_obs.length; i++){
-            obs.observations.push(diagnosis_obs[i]);
-          }
-        }
-        submitParameters(obs, "/observations", "nextPage")
-      }
-
-      function changeSubmitFunction(){
-        var nextButton = document.getElementById('nextButton');
-        nextButton.setAttribute('onmousedown', 'getDiagnosisObs()');
-      }
-  
-      function nextPage(obs){
-        nextEncounter(sessionStorage.patientID, sessionStorage.programID);
-      }
-
-      function getDiagnosisObs(){
-        diagnosis_obs = []
-        var nodes = __$("diagnosis").children;
-
-        for (var i = 0; i < nodes.length; i ++){
-      
-          if (nodes[i].value != "none" && nodes[i] && nodes[i].innerHTML != ""){
-        
-            var id = nodes[i].value;
-            var hash = {"concept_id": "", value_coded: ""}
-
-            if (id && !__$('img' + (i-1)).src.match("unticked")){
-              hash["concept_id"] = parseInt(id)
-              hash["value_coded"] = 1065
-              diagnosis_obs.push(hash);
-            }
-          }
-        }
-        submitExaminationsEncounter();
-      }
-      //setInterval(getDiagnosis(), 50);
-
-    
-    </script>
     <style type="text/css">
       #tab {
         height:312px;
@@ -309,7 +201,7 @@
 
               <input field_type="number" type="text"
                 id="enter_fundal_height" 
-                tt_onLoad="showCategory2('Examination'); //validateFundalHeight();"
+                tt_onLoad="showCategory2('Examination'); validateFundalHeight();"
                 helpText="Fundal height (cm)" name="fundal_height"
                 tt_pageStyleClass="NumbersOnlyWithUnknown"
                 absoluteMax="45" absoluteMin="10"/>
@@ -355,16 +247,16 @@
               </select>
 
               <input name="LAST FETAL MOVEMENT FELT" id="last_fmf"
-                tt_onLoad="showCategory2('Examination');"
-                helpText="Last fetal movement felt" type="text"
+                tt_onLoad="showCategory2('Examination'); addAbsoluteMax();"
+                helpText="Last fetal movement felt (in Weeks)" type="text"
                 condition="$('fetal_movement_felt').value !== '' ||
                   $('fetal_movement_felt').value !== 'Unknown'"
                 field_type="number" tt_pageStyleClass="NumbersOnlyWithUnknown" />
 
               <select id="diagnosis" name="diagnosis"
                 helpText="Diagnosis" allowFreeText='true'
-                textCase="upper" multiple='true'
-                selectAll="selectAll" tt_pageStyleClass="NoKeyboard"
+                textCase="upper" selectAll="selectAll" multiple="multiple"
+                tt_pageStyleClass="longSelectList"
                 tt_onLoad="changeUnknownToNone(); showCategory2('Examination');
                   changeSubmitFunction();">
                 

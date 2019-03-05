@@ -25,7 +25,7 @@
 </head>
 <body>
 
-    <div class="demo-header-cell demo-left" style="">
+    <div class="demo-header-cell demo-left">
     <div class="addresses"><span class="headers"><b><u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current Pregnancy Details&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u></b></span></div>
       <div class="birthdates">
         <span class="headers">
@@ -55,7 +55,6 @@
           if (this.readyState == 4) {
             if (this.status == 200) {
               var results = JSON.parse(this.responseText);
-              console.log(this);
               document.getElementById("date-lmp").innerHTML = ((results.date_of_lnmp !== "") ? results.date_of_lnmp : "No LMP Date Available");
               document.getElementById("fundus-by-lmp").innerHTML = ((results.fundus !== "") ? results.fundus : "")  
               document.getElementById("anc-visits").innerHTML = ((results.anc_visits !== "") ? results.anc_visits : "No ANC visit Number Available");
