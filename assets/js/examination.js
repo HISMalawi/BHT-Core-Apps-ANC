@@ -1102,7 +1102,7 @@ function validateFundalHeight(){
   
   }
 
-  fundal_input.setAttribute("absoluteMax", max_value)
+  fundal_input.setAttribute("max", max_value)
   
 }
 

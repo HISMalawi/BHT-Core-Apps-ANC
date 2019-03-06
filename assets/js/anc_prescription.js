@@ -1,583 +1,1297 @@
 var ticks = 0;
+
 var prevLen = 0;
+
 var clicksChecker;
 
 var selectedSets = {};
+
 var selectedDrugs = {};
+
 var drug_sets = {} //<%= @drug_sets.to_json.html_safe %>
 
 var imgvoid = 'data:image/png;base64,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';
+
+var apiProtocol = sessionStorage.apiProtocol;
+
+var apiURL = sessionStorage.apiURL;
+
+var apiPort = sessionStorage.apiPort;
+
+var patientID = sessionStorage.patientID;
+
+var programID = sessionStorage.programID;
+
+var authToken = sessionStorage.authorization;
+
+var fetchedPrescriptions = {};
+
+var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+
+var drugs = [];
+
+var strengths = [];
+
+var units = [];
+
+var drug_ids = [];	
+
+var set_names = {} //<%= @set_names.to_json.html_safe %>
+
+var set_descriptions = {} //<%= @set_descriptions.to_json.html_safe %>
+
+var drug_set_name_display = [];
+
+var drug_set_name = [];
+
+var drug_set_dose = [];
+
+var drug_set_unit = [];
+
+var drug_set_frequency = [];
+
+var drug_set_duration = [];		
+
+var drug_quantity_hash = {};
+
+function getDrugs(){
+
+  var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs"
+
+  apiPath += "?page_size=50";
+
+  GET({
+
+    url: apiPath,
+
+    async: true,
+
+    headers: {
+
+      'Authorization': authToken
+
+    }
+
+  }, 
+  {}, 
+  function (data) {
+
+    for(var i = 0; i < data.length; i++){
+  
+      drugs.push(data[i]['name']);
+  
+      strengths.push(data[i]['dose_strength']);
+  
+      units.push(data[i]['units']);
+  
+      drug_ids.push(data[i]['drug_id']);
+  
+    }
+  
+  },
+  function (error) {
+  
+    console.log(error);
+  
+  });
+  
+}
+
+function getDrugSets(){
+
+  var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drug_sets"
+
+  GET({
+
+    url: apiPath,
+
+    async: true,
+
+    headers: {
+
+        'Authorization': authToken
+
+    }
+
+  }, 
+  {}, 
+  function (data) {
+    
+    drug_sets = data['drug_sets'];
+    
+    set_names = data['set_names'];
+   
+    set_descriptions = data['set_descriptions'];
+    
+  }, 
+  function (error) {
+    
+    console.log(error);
+    
+  });
+    
+}
+  
+getDrugs();
+  
+getDrugSets();
+  
+listAllDrugs();
+
+function submitTreatmentEncounter(){
+        
+  var currentTime = moment().format(' HH:mm:ss');
+  
+  var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+  encounter_datetime += currentTime;
+  
+  var encounter = {
+  
+    encounter_type_name: 'TREATMENT',
+  
+    encounter_type_id:  25,
+  
+    patient_id: patientID,
+  
+    encounter_datetime: encounter_datetime
+  
+  }
+  
+  submitParameters(encounter, "/encounters", "postDrugOrders");
+  
+}
+
+function postDrugOrders(encounter){
+
+  var drug_orders_params = {encounter_id: encounter.encounter_id, 
+
+    drug_orders: []
+
+  }
+  
+  var orders = [];
+  
+  for (selected_drug in selectedDrugs){
+  
+    var drug_id = selected_drug.match(/\d+/)[0];
+  
+    drug_name = __$("row_"+selected_drug).getAttribute("d-name"); 
+  
+    var frequency = __$("row_frequency_" + selected_drug).innerHTML;
+  
+    var duration = parseInt(__$("row_duration_" + selected_drug).innerHTML);
+  
+    dose = __$("row_" + selected_drug).getAttribute("dose");
+  
+    units = __$("row_" + selected_drug).getAttribute("units"); //to be edited.
+  
+    var instructions = "";
+
+    var start_date = new Date(sessionStorage.sessionDate);
+
+    var start_date_formated = getFormattedDate(start_date);
+
+    var auto_expire_date = start_date.setDate(start_date.getDate() + duration);
+
+    var auto_expire_date_formated = getFormattedDate(new Date(auto_expire_date));
+
+    var eq_daily_dose = parseFloat(dose) * dosesPerDay(frequency)
+
+    if (frequency.toUpperCase() == "VARIABLE") {
+
+      if (instructions == "") {
+
+        instructions = drug.name+":";
+
+        if (dose[0] !== "" && parseFloat(dose[0]) == 0){
+
+          instructions += " IN THE MORNING (QAM):"+dose[0]+" "+units;
+
+        }else if (dose[1] !== "" && parseFloat(dose[1]) == 0){
+
+          instructions += " ONCE A DAY AT NOON (QNOON):"+dose[1]+" "+units;
+
+        }else if (dose[2] !== "" && parseFloat(dose[2]) == 0){
+
+          instructions += " IN THE EVENING (QPM):"+dose[2]+" "+units;
+
+        }else if (does[3] !== "" && parseFloat(dose[3]) == 0){
+
+          instructions += " ONCE A DAY AT NIGHT (QHS):"+dose[3]+" "+units;
+
+        }
+
+        instructions += " for "+duration+" days";
+
+      }
+
+      if (Array.isArray(dose)){
+
+        total_dose = dose.reduce((a, b) => a + b, 0);
+
+        dose = total_dose;
+
+      }
+  
+      eq_daily_dose = dose || eq_daily_dose;
+  
+    }else {
+  
+      if (instructions === ""){
+  
+        instructions = drug_name+": "+dose+" "+units+" "+frequency+" for "+duration+" days";
+  
+      }
+    
+    }
+    
+    quantity = eq_daily_dose * dose;
+    
+    drug_order = {
+    
+      drug_inventory_id: drug_id,
+    
+      dose: dose,
+    
+      equivalent_daily_dose: eq_daily_dose,
+    
+      frequency: frequency,
+    
+      start_date: start_date_formated,
+    
+      auto_expire_date: auto_expire_date_formated,
+    
+      instructions: instructions,
+    
+      units: units
+    
+    }
+
+    drug_orders_params.drug_orders.push(drug_order);
+
+    drug_quantity_hash[drug_id] = {concept_id: 2834, order_id: "", value_numeric: quantity, person_id: patientID}
+
+  }
+  
+  submitParameters(drug_orders_params, "/drug_orders", "submitDispenseEncounter");
+  
+}
+
+function submitDispenseEncounter(drugOrders){
+
+  var currentTime = moment().format(' HH:mm:ss');
+
+  var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
+  encounter_datetime += currentTime;
+
+  var encounter = {
+
+    encounter_type_name: 'DISPENSE',
+
+    encounter_type_id:  54,
+
+    patient_id: patientID,
+
+    encounter_datetime: encounter_datetime
+
+  }
+
+  for (var i = 0; i < drugOrders.length; i++) {
+
+    drug_quantity_hash[drugOrders[i].drug_inventory_id]["order_id"] = drugOrders[i].order_id;
+
+  }
+  
+  submitParameters(encounter, "/encounters", "updateDrugOrder");
+  
+}
+
+function postDispensationObs(encounter){
+
+  var obs = {
+
+    encounter_id: encounter.encounter_id,
+
+    observations: []
+
+  }
+  
+  for (var key in drug_quantity_hash) {
+  
+    obs.observations.push(drug_quantity_hash[key]);
+  
+  }
+  
+  submitParameters(obs, "/observations", "updateDrugOrder");
+  
+}
+
+function updateDrugOrder(){
+
+  var drug_order = {
+
+    dispensations: []
+
+  }
+  
+  for(var key in drug_quantity_hash){
+  
+    drug_order.dispensations.push({date: sessionStorage.sessionDate, 
+  
+      drug_order_id: drug_quantity_hash[key]['order_id'], 
+  
+      quantity: drug_quantity_hash[key]['value_numeric']}
+  
+      );
+  
+  }
+    
+  submitParameters(drug_order, "/dispensations", "nextPage");
+    
+}
+
+function getFormattedDate(set_date) {
+
+  var month = (set_date.getMonth() + 1);
+
+  if (month < 10)
+
+    month = "0" + month;
+  
+  var day = (set_date.getDate());
+  
+  if (day < 10)
+          
+    day = "0" + day;
+
+  var year = (set_date.getFullYear());
+
+  return year + "-" + month + "-" + day;
+
+}
+
+function dosesPerDay(frequency){
+
+  var frequency = frequency.toUpperCase();
+
+  if (frequency == "ONCE A DAY (OD)"){
+
+    return 1;
+
+  }else if (frequency == "TWICE A DAY (BD)"){
+  
+    return 2;
+  
+  }else if (frequency == "THREE A DAY (TDS)"){
+  
+    return 3;
+  
+  }else if (frequency == "FOUR TIMES A DAY (QID)"){
+  
+    return 4;
+  
+  }else if(frequency == "FIVE TIMES A DAY (5X/D)"){
+  
+    return 5;
+  
+  }else if (frequency == "SIX TIMES A DAY (Q4HRS)"){
+  
+    return 6;
+   
+  }else if (frequency == "IN THE MORNING (QAM)"){
+  
+    return 1;
+  
+  }else if (frequency == "ONCE A DAY AT NOON (QNOON)"){
+  
+    return 1;
+  
+  }else if (frequency == "IN THE EVENING (QPM)"){
+  
+    return 1;
+  
+  }else if (frequency == "ONCE A DAY AT NIGHT (QHS)"){
+  
+    return 1;
+  
+  }else if (frequency.upcase == "EVERY OTHER DAY (QOD)"){
+  
+    return 0.5;
+  
+  }else if(frequency == "ONCE A WEEK (QWK)"){
+  
+    return parseFloat(1 / 7);
+  
+  }else if (frequency == "ONCE A MONTH"){
+  
+    return parseInt(1 / 28);
+  
+  }else if (frequency == "TWICE A MONTH"){
+  
+    return parseInt(1 / 14);
+  
+  } 
+  
+}
+
+function getPrescriptions() {
+
+  var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+
+  url += "/api/v1/drug_orders?patient_id=" + patientID;
+  url += "&date=" + sessionStorage.sessionDate;
+
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function () {
+
+    if (this.readyState == 4 && this.status == 200) {
+
+      var obj = JSON.parse(this.responseText);
+
+      fetchedPrescriptions = {}
+
+    }
+
+  };
+
+  xhttp.open("GET", url, true);
+ 
+  xhttp.setRequestHeader('Authorization', authToken);
+ 
+  xhttp.setRequestHeader('Content-type', "application/json");
+ 
+  xhttp.send();
+ 
+}
+
+getPrescriptions();
+
+function nextPage(obs){
+
+  nextEncounter(sessionStorage.patientID, programID);
+
+}
             
 function checkClicks(){
-    if(ticks > 10){
-        __$("searchbox").style.display = "none";
+
+  if(ticks > 10){
+        
+    __$("searchbox").style.display = "none";
     
-        __$("search").value = "";
+    __$("search").value = "";
     
-        prevLen = 0;
-        ticks = 0;
-    }
+    prevLen = 0;
+    
+    ticks = 0;
+    
+  }
   
-    ticks++;
+  ticks++;
   
-    if(__$("search").value.trim().length != prevLen){
-        __$('searchbox').style.display = 'block';
-        ticks = 0;
-    }
+  if(__$("search").value.trim().length != prevLen){
+       
+    __$('searchbox').style.display = 'block';
+    
+    ticks = 0;
+    
+  }
   
-    prevLen = __$("search").value.length;
+  prevLen = __$("search").value.length;
   
-    clicksChecker = setTimeout("checkClicks()", 1000);
+  clicksChecker = setTimeout("checkClicks()", 1000);
+
 }
 
 function resize(){
-    __$('container').style.height = (window.innerHeight - 25) + 'px';
+    
+  __$('container').style.height = (window.innerHeight - 25) + 'px';
   
-    if(__$("selections")){
-        if(__$("keying")){
+  if(__$("selections")){
     
-            __$("selections").style.height = (__$('container').offsetHeight - __$("keying").offsetHeight - __$("cummulative").offsetHeight - 35) + "px";
-                
-        } else {
+    if(__$("keying")){
     
-            __$("selections").style.height = (__$('container').offsetHeight - __$("cummulative").offsetHeight - 55) + "px";
+      __$("selections").style.height = (__$('container').offsetHeight - __$("keying").offsetHeight - __$("cummulative").offsetHeight - 35) + "px";
+        
+    } else {
     
-        }
+      __$("selections").style.height = (__$('container').offsetHeight - __$("cummulative").offsetHeight - 55) + "px";
+    
     }
+    
+  }
+  
+  scroll(__$("scroll_me"));
 
-    scroll(__$("scroll_me"));
 }
       
 function __$(id){
-    return document.getElementById(id);
+    
+  return document.getElementById(id);
+
 }
       
 /*
  * We create a custom keyboard for the interface to fit on the available space
  */
 function showFixedKeyboard(ctrl, global_control, abc){
-    var full_keyboard = "full";
     
-    var qwerty = (typeof(abc) != "undefined" ? abc : true);
+  var full_keyboard = "full";
     
-    var div = document.createElement("div");
-    div.id = "divMenu";
-    div.style.top = "0px";
-    div.style.left = "0px";
-    div.style.margin = "5px";
+  var qwerty = (typeof(abc) != "undefined" ? abc : true);
+    
+  var div = document.createElement("div");
+    
+  div.id = "divMenu";
+  
+  div.style.top = "0px";
+  
+  div.style.left = "0px";
+  
+  div.style.margin = "5px";
 
-    var row1 = (qwerty ? ["Q","W","E","R","T","Y","U","I","O","P"] : ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]);
-    var row2 = (qwerty ? ["", "A","S","D","F","G","H","J","K","L"] : ["", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]);
-    var row3 = (qwerty ? ["", "Z","X","C","V","B","N","M","&larr;"] : ["", "T", "U", "V", "W", "X", "Y", "Z", "&larr;"]);
+  var row1 = (qwerty ? ["Q","W","E","R","T","Y","U","I","O","P"] : ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]);
 
-    var tbl = document.createElement("div");
-    tbl.bgColor = "#fff";
-    tbl.id = "tblKeyboard";
-    tbl.className = "table";
-    tbl.style.margin = "auto";
+  var row2 = (qwerty ? ["", "A","S","D","F","G","H","J","K","L"] : ["", "K", "L", "M", "N", "O", "P", "Q", "R", "S"]);
 
-    var tr1 = document.createElement("div");
-    tr1.className = "row";
+  var row3 = (qwerty ? ["", "Z","X","C","V","B","N","M","&larr;"] : ["", "T", "U", "V", "W", "X", "Y", "Z", "&larr;"]);
 
-    tbl.appendChild(tr1);
+  var tbl = document.createElement("div");
 
-    var tr2 = document.createElement("div");
-    tr2.className = "row";
+  tbl.bgColor = "#fff";
 
-    tbl.appendChild(tr2);
+  tbl.id = "tblKeyboard";
 
-    var tr3 = document.createElement("div");
-    tr3.className = "row";
+  tbl.className = "table";
 
-    tbl.appendChild(tr3);
+  tbl.style.margin = "auto";
 
-    div.appendChild(tbl);
-    ctrl.appendChild(div);
+  var tr1 = document.createElement("div");
 
-    var cell1 = document.createElement("div");
-    cell1.className = "cell";
-    cell1.style.textAlign = "center";
+  tr1.className = "row";
 
-    tr1.appendChild(cell1);
+  tbl.appendChild(tr1);
 
-    var cell2 = document.createElement("div");
-    cell2.className = "cell";
-    cell1.style.textAlign = "center";
+  var tr2 = document.createElement("div");
 
-    tr2.appendChild(cell2);
+  tr2.className = "row";
 
-    var cell3 = document.createElement("div");
-    cell3.className = "cell";
-    cell1.style.textAlign = "center";
+  tbl.appendChild(tr2);
 
-    tr3.appendChild(cell3);
+  var tr3 = document.createElement("div");
 
-    for(var i = 0; i < row1.length; i++){
-        var td1 = document.createElement("button");
-        td1.className = "button_blue keyboard_button";
-        td1.innerHTML = row1[i];
+  tr3.className = "row";
 
-        td1.onclick = function(){
-            if(!this.innerHTML.match(/^$/)){
-                __$(global_control).value += this.innerHTML.toProperCase();
-                __$(global_control).value = __$(global_control).value.toProperCase();
-                searchDrug();
-            }
-        }
+  tbl.appendChild(tr3);
 
-        cell1.appendChild(td1);
+  div.appendChild(tbl);
+
+  ctrl.appendChild(div);
+
+  var cell1 = document.createElement("div");
+
+  cell1.className = "cell";
+
+  cell1.style.textAlign = "center";
+
+  tr1.appendChild(cell1);
+
+  var cell2 = document.createElement("div");
+
+  cell2.className = "cell";
+
+  cell1.style.textAlign = "center";
+
+  tr2.appendChild(cell2);
+
+  var cell3 = document.createElement("div");
+
+  cell3.className = "cell";
+
+  cell1.style.textAlign = "center";
+
+  tr3.appendChild(cell3);
+
+  for(var i = 0; i < row1.length; i++){
+
+    var td1 = document.createElement("button");
+
+    td1.className = "button_blue keyboard_button";
+
+    td1.innerHTML = row1[i];
+
+    td1.onclick = function(){
+
+      if(!this.innerHTML.match(/^$/)){
+
+        __$(global_control).value += this.innerHTML.toProperCase();
+
+        __$(global_control).value = __$(global_control).value.toProperCase();
+
+        searchDrug();
+
+      }
+  
     }
 
-    for(var i = 0; i < row2.length; i++){
-        var td2 = document.createElement("button");
-        td2.innerHTML = row2[i];
+    cell1.appendChild(td1);
 
-        td2.onclick = function(){
-            if(!this.innerHTML.match(/^$/)){
-                __$(global_control).value += this.innerHTML.toProperCase();
-                __$(global_control).value = __$(global_control).value.toProperCase();
-                searchDrug();
-            }
-        }
+  }
 
-        if(!row2[i].trim().match(/^$/)){
-            td2.className = "button_blue keyboard_button";
-            cell2.appendChild(td2);
-        }
+  for(var i = 0; i < row2.length; i++){
+  
+    var td2 = document.createElement("button");
+  
+    td2.innerHTML = row2[i];
+
+    td2.onclick = function(){
+
+      if(!this.innerHTML.match(/^$/)){
+
+        __$(global_control).value += this.innerHTML.toProperCase();
+
+        __$(global_control).value = __$(global_control).value.toProperCase();
+
+        searchDrug();
+
+      }
+  
+    }
+
+    if(!row2[i].trim().match(/^$/)){
+
+      td2.className = "button_blue keyboard_button";
+
+      cell2.appendChild(td2);
 
     }
 
-    for(var i = 0; i < row3.length; i++){
-        var td3 = document.createElement("button");
-        td3.innerHTML = row3[i];
+  }
 
-        if(row3[i] == "&larr;"){
-            td3.colSpan = 2;
+  for(var i = 0; i < row3.length; i++){
 
-            td3.onclick = function(){
-                __$(global_control).value = __$(global_control).value.substring(0,__$(global_control).value.length - 1);
-                searchDrug();
-            }
-            
-        } else if(row3[i].trim() == "stat<br />dose"){            
-            td3.style.fontSize = "0.9em";            
-            td3.style.padding = "0px";           
-            td3.style.fontWeight = "bold";
-            
-            td3.onclick = function(){
-                if (__$("optionOD"))
-                    __$("optionOD").click();
-                if (__$("group1_1-10"))
-                    __$("group1_1-10").click();
-                if (__$("group2_1"))
-                    __$("group2_1").click();
-            }
-        } else {            
+    var td3 = document.createElement("button");
 
-            td3.onclick = function(){
-                if(!this.innerHTML.match(/^$/)){
-                    __$(global_control).value += this.innerHTML.toProperCase();
-                    __$(global_control).value = __$(global_control).value.toProperCase();
-                    searchDrug();
-                }
-            }
+    td3.innerHTML = row3[i];
+
+    if(row3[i] == "&larr;"){
+
+      td3.colSpan = 2;
+
+      td3.onclick = function(){
+
+        __$(global_control).value = __$(global_control).value.substring(0,__$(global_control).value.length - 1);
+
+        searchDrug();
+
+      }
+  
+    } else if(row3[i].trim() == "stat<br />dose"){            
+  
+      td3.style.fontSize = "0.9em";            
+  
+      td3.style.padding = "0px";           
+  
+      td3.style.fontWeight = "bold";
+  
+      td3.onclick = function(){
+  
+        if (__$("optionOD"))
+  
+          __$("optionOD").click();
+    
+        if (__$("group1_1-10"))
+  
+          __$("group1_1-10").click();
+    
+        if (__$("group2_1"))
+  
+          __$("group2_1").click();
+    
+      }
+      
+    } else {            
+
+      td3.onclick = function(){
+
+        if(!this.innerHTML.match(/^$/)){
+
+          __$(global_control).value += this.innerHTML.toProperCase();
+
+          __$(global_control).value = __$(global_control).value.toProperCase();
+
+          searchDrug();
 
         }
-
-        if(!row3[i].trim().match(/^$/)){
-            td3.className = "button_blue keyboard_button";
-            cell3.appendChild(td3);
-        }
+  
+      }
 
     }
+
+    if(!row3[i].trim().match(/^$/)){
+
+      td3.className = "button_blue keyboard_button";
+
+      cell3.appendChild(td3);
+
+    }
+
+  }
 
 }
 
 
 function showNumber(id, global_control, showDefault){
     
-    var row1 = ["1","2","3"];
-    var row2 = ["4","5","6"];
-    var row3 = ["7","8","9"];
-    var row4 = ["C","0","OK"];
-
-    var tbl = document.createElement("table");
-    tbl.className = "keyBoardTable";
-    tbl.cellSpacing = 0;
-    tbl.cellPadding = 3;
-    tbl.id = "tblKeyboard";
-    tbl.style.margin = "auto";
-
-    var tr1 = document.createElement("tr");
-
-    var td = document.createElement("td");
-    td.rowSpan = "4";
-    td.style.minWidth = "60px";
-    td.style.textAlign = "center";
-    td.style.verticalAlign = "top";
+  var row1 = ["1","2","3"];
     
-    tr1.appendChild(td);
+  var row2 = ["4","5","6"];
+  
+  var row3 = ["7","8","9"];
+  
+  var row4 = ["C","0","OK"];
 
-    if(typeof(showDefault) != "undefined"){
-        if(showDefault == true){
-            td.innerHTML = "<span style='font-size: 1.1em; font-style: italic;'>Default</span>";
-            
-            var defaultButton = document.createElement("button");
-            defaultButton.id = "defaultButton" + id;
-            defaultButton.className = "button_blue keyboard_button";
-            defaultButton.onclick = function(){
-                var value = this.innerHTML.replace(/\<span\>/i, "").replace(/\<\/span\>/i, "");
-        
-                if(value != "Default"){
-                    __$(global_control).value = value;
-                } else {
-                    __$(global_control).value = 0; 
-                }
-            }
-        
-            td.appendChild(defaultButton);
+  var tbl = document.createElement("table");
+
+  tbl.className = "keyBoardTable";
+
+  tbl.cellSpacing = 0;
+
+  tbl.cellPadding = 3;
+
+  tbl.id = "tblKeyboard";
+
+  tbl.style.margin = "auto";
+
+  var tr1 = document.createElement("tr");
+
+  var td = document.createElement("td");
+
+  td.rowSpan = "4";
+
+  td.style.minWidth = "60px";
+
+  td.style.textAlign = "center";
+
+  td.style.verticalAlign = "top";
+
+  tr1.appendChild(td);
+
+  if(typeof(showDefault) != "undefined"){
+
+    if(showDefault == true){
+
+      td.innerHTML = "<span style='font-size: 1.1em; font-style: italic;'>Default</span>";
+
+      var defaultButton = document.createElement("button");
+
+      defaultButton.id = "defaultButton" + id;
+
+      defaultButton.className = "button_blue keyboard_button";
+
+      defaultButton.onclick = function(){
+
+        var value = this.innerHTML.replace(/\<span\>/i, "").replace(/\<\/span\>/i, "");
+
+        if(value != "Default"){
+
+          __$(global_control).value = value;
+
+        } else {
+
+          __$(global_control).value = 0; 
+
         }
-    } 
+
+      }
+  
+      td.appendChild(defaultButton);
+  
+    }
+  
+  } 
+  
+  for(var i = 0; i < row1.length; i++){
+  
+    var td1 = document.createElement("td");
+  
+    td1.align = "center";
+  
+    td1.vAlign = "middle";
+  
+    td1.style.cursor = "pointer";
+  
+    td1.bgColor = "#ffffff";
+  
+    td1.width = "30px";
+
+    tr1.appendChild(td1);
+
+    var btn = document.createElement("button");
+
+    btn.className = "button_blue keyboard_button";
+
+    btn.innerHTML = "<span>" + row1[i] + "</span>";
+
+    btn.onclick = function(){
+
+      if(!this.innerHTML.match(/^__$/)){
+
+        __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+      }
+  
+    }
+
+    td1.appendChild(btn);
+
+  }
+
+  tbl.appendChild(tr1);
+
+  var tr2 = document.createElement("tr");
+
+  for(var i = 0; i < row2.length; i++){
+
+    var td2 = document.createElement("td");
+
+    td2.align = "center";
+
+    td2.vAlign = "middle";
+
+    td2.style.cursor = "pointer";
+
+    td2.bgColor = "#ffffff";
+
+    td2.width = "30px";
+
+    tr2.appendChild(td2);
+
+    var btn = document.createElement("button");
+
+    btn.className = "button_blue keyboard_button";
+
+    btn.innerHTML = "<span>" + row2[i] + "</span>";
+
+    btn.onclick = function(){
+
+      if(!this.innerHTML.match(/^$/)){
+
+        __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+      }
+  
+    }
+
+    td2.appendChild(btn);
+
+  }
+
+  tbl.appendChild(tr2);
+
+  var tr3 = document.createElement("tr");
+
+  for(var i = 0; i < row3.length; i++){
+
+    var td3 = document.createElement("td");
+
+    td3.align = "center";
+
+    td3.vAlign = "middle";
+
+    td3.style.cursor = "pointer";
+
+    td3.bgColor = "#ffffff";
+
+    td3.width = "30px";
+
+    tr3.appendChild(td3);
+
+    var btn = document.createElement("button");
+
+    btn.className = "button_blue keyboard_button";
+
+    btn.innerHTML = "<span>" + row3[i] + "</span>";
+
+    btn.onclick = function(){
+
+      if(!this.innerHTML.match(/^__$/)){
+
+        __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+
+      }
+  
+    }
+
+    td3.appendChild(btn);
+
+  }
+
+  tbl.appendChild(tr3);
+
+  var tr4 = document.createElement("tr");
+
+  for(var i = 0; i < row4.length; i++){
+
+    var td4 = document.createElement("td");
+
+    td4.align = "center";
+
+    td4.vAlign = "middle";
+
+    td4.style.cursor = "pointer";
+
+    td4.bgColor = "#ffffff";
+
+    td4.width = "30px";
+
+    tr4.appendChild(td4);
+
+    var btn = document.createElement("button");
+
+    btn.innerHTML = "<span>" + row4[i] + "</span>";
+
+    if (i == 1){
+
+      btn.className = "button_blue keyboard_button";
+
+    }else if (i == 0){
+
+      btn.className = "button_red keyboard_button";
+
+    }else if (i == 2){
+
+      btn.className = "button_green keyboard_button";
+
+    }
+
+    btn.onclick = function(){
+
+      if(this.innerHTML.match(/<span>(.+)<\/span>/)[1] == "C"){
+
+        __$(global_control).value = __$(global_control).value.substring(0,__$(global_control).value.length - 1);
+
+      }else if(this.innerHTML.match(/OK/)){
+
+        var cells = __$("cummulative").getElementsByClassName("cell");
+
+        if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 3].innerHTML == "")){
+
+          confirmAction("Enter frequency for drug: " + cells[cells.length - 4].innerHTML)
+
+        }else if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 2].innerHTML == "")){
+
+          confirmAction("Enter duration for drug: " + cells[cells.length - 4].innerHTML)
+
+        }else{
+
+          document.getElementById('search').value = '';
+
+          switchViews('All drugs');
+
+        }
+
+      }else if(!this.innerHTML.match(/^$/)){
+  
+        __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
+  
+      }
     
-    for(var i = 0; i < row1.length; i++){
-        var td1 = document.createElement("td");
-        td1.align = "center";
-        td1.vAlign = "middle";
-        td1.style.cursor = "pointer";
-        td1.bgColor = "#ffffff";
-        td1.width = "30px";
-
-        tr1.appendChild(td1);
-
-        var btn = document.createElement("button");
-        btn.className = "button_blue keyboard_button";
-        btn.innerHTML = "<span>" + row1[i] + "</span>";
-        btn.onclick = function(){
-            if(!this.innerHTML.match(/^__$/)){
-                __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-            }
-        }
-
-        td1.appendChild(btn);
-
     }
 
-    tbl.appendChild(tr1);
+    td4.appendChild(btn);
 
-    var tr2 = document.createElement("tr");
+  }
 
-    for(var i = 0; i < row2.length; i++){
-        var td2 = document.createElement("td");
-        td2.align = "center";
-        td2.vAlign = "middle";
-        td2.style.cursor = "pointer";
-        td2.bgColor = "#ffffff";
-        td2.width = "30px";
+  tbl.appendChild(tr4);
 
-        tr2.appendChild(td2);
-
-        var btn = document.createElement("button");
-        btn.className = "button_blue keyboard_button";
-        btn.innerHTML = "<span>" + row2[i] + "</span>";
-        btn.onclick = function(){
-            if(!this.innerHTML.match(/^$/)){
-                __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-            }
-        }
-
-        td2.appendChild(btn);
-
-    }
-
-    tbl.appendChild(tr2);
-
-    var tr3 = document.createElement("tr");
-
-    for(var i = 0; i < row3.length; i++){
-        var td3 = document.createElement("td");
-        td3.align = "center";
-        td3.vAlign = "middle";
-        td3.style.cursor = "pointer";
-        td3.bgColor = "#ffffff";
-        td3.width = "30px";
-
-        tr3.appendChild(td3);
-
-        var btn = document.createElement("button");
-        btn.className = "button_blue keyboard_button";
-        btn.innerHTML = "<span>" + row3[i] + "</span>";
-        btn.onclick = function(){
-            if(!this.innerHTML.match(/^__$/)){
-                __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-            }
-        }
-
-        td3.appendChild(btn);
-
-    }
-
-    tbl.appendChild(tr3);
-
-    var tr4 = document.createElement("tr");
-
-    for(var i = 0; i < row4.length; i++){
-        var td4 = document.createElement("td");
-        td4.align = "center";
-        td4.vAlign = "middle";
-        td4.style.cursor = "pointer";
-        td4.bgColor = "#ffffff";
-        td4.width = "30px";
-
-        tr4.appendChild(td4);
-
-        var btn = document.createElement("button");
-        btn.innerHTML = "<span>" + row4[i] + "</span>";
-        if (i == 1){
-            btn.className = "button_blue keyboard_button";
-        }else if (i == 0){
-            btn.className = "button_red keyboard_button";
-        }else if (i == 2){
-            btn.className = "button_green keyboard_button";
-        }
-        btn.onclick = function(){
-            if(this.innerHTML.match(/<span>(.+)<\/span>/)[1] == "C"){
-                __$(global_control).value = __$(global_control).value.substring(0,__$(global_control).value.length - 1);
-            }else if(this.innerHTML.match(/OK/)){
-
-                var cells = __$("cummulative").getElementsByClassName("cell");
-                              
-                if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 3].innerHTML == "")){
-                    confirmAction("Enter frequency for drug: " + cells[cells.length - 4].innerHTML)
-                }else if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 2].innerHTML == "")){
-                    confirmAction("Enter duration for drug: " + cells[cells.length - 4].innerHTML)
-                }else{
-                    document.getElementById('search').value = '';
-                    switchViews('All drugs');
-                }
-                
-            }else if(!this.innerHTML.match(/^$/)){
-                __$(global_control).value += this.innerHTML.match(/<span>(.+)<\/span>/)[1];
-            }
-        }
-
-        td4.appendChild(btn);
-
-    }
-
-    tbl.appendChild(tr4);
-
-    __$(id).appendChild(tbl);
+  __$(id).appendChild(tbl);
 
 }
 
-/*
-  <div class="table" style="width: 100%; height: 100%;">
-    <div class="row">
-      <div id="selections" class="cell" style="border: 1px solid #fff; overflow: auto; border-radius: 10px; background-color: #c8e1d3;">
-      
-      </div>
-    </div>
-    <div class="row">
-      <div id="keying" class="cell" style="border: 1px solid #999; overflow: auto; text-align: center; border-radius: 10px; height: 240px;">
-      
-      </div>
-    </div>
-  </div>
- */
 function loadAllDrugs(){
+
+  clearTimeout(clicksChecker);
   
-    clearTimeout(clicksChecker);
+  __$("switcher").innerHTML = "";
   
-    __$("switcher").innerHTML = "";
+  var table = document.createElement("div");
   
-    var table = document.createElement("div");
-    table.className = "table";
-    table.style.width = "100%";
-    table.style.height = "100%";
+  table.className = "table";
   
-    __$("switcher").appendChild(table);
+  table.style.width = "100%";
   
-    var cells = [
+  table.style.height = "100%";
+  
+  __$("switcher").appendChild(table);
+  
+  var cells = [
     {
-        id: "selections",
-        styles: {
-            border: "1px solid #ccc",
-            overflow: "auto",
-            borderRadius: "10px",
-            marginBottom: "2px",
-            height: "230px",
-            backgroundColor: "#fff" // "#c8e1d3"
-        }
+      id: "selections",
+        
+      styles: {
+            
+        border: "1px solid #ccc",
+        
+        overflow: "auto",
+        
+        borderRadius: "10px",
+        
+        marginBottom: "2px",
+        
+        height: "230px",
+        
+        backgroundColor: "#fff" // "#c8e1d3"
+        
+      }
+    
     },
     {
-        id: "keying",
-        styles: {
-            border: "1px solid #999",
-            overflow: "auto",
-            borderRadius: "10px",
-            textAlign: "center",
-            height: "180px",
-            paddingBottom: "2px"
-        }
-    }
-    ];
-  
-    for(var i = 0; i < cells.length; i++){
-        var row = document.createElement("div");
-        row.className = "row";
-    
-        table.appendChild(row);
-    
-        var cell = document.createElement("div");
-        cell.className = "cell";
-    
-        row.appendChild(cell);
-    
-        for(var attr in cells[i]){
-    
-            if(typeof(cells[i][attr]) == "object" && attr == "styles"){
-        
-                for(var el in cells[i][attr]){
-          
-                    cell.style[el] = cells[i][attr][el];
-          
-                }
-        
-            } else {
+      id: "keying",
       
-                cell.setAttribute(attr, cells[i][attr]);
+      styles: {
       
-            }
+        border: "1px solid #999",
       
-        }
+        overflow: "auto",
+      
+        borderRadius: "10px",
+      
+        textAlign: "center",
+      
+        height: "180px",
+      
+        paddingBottom: "2px"
+      
+      }
+    
     }
   
-    showFixedKeyboard(__$("keying"), "search");
-
-    listAllDrugs();
+  ];
   
-    clicksChecker = checkClicks();
-}
-
-function loadFrequenciesAndDuration(id){
-  
-    clearTimeout(clicksChecker);
-  
-    __$("switcher").innerHTML = "";
-    __$("searchbox").value = "";
-    __$("searchbox").style.display = "none";
-  
-    var table = document.createElement("div");
-    table.className = "table";
-    table.style.width = "100%";
-    table.style.height = "100%";
-    table.style.borderRadius = "10px";
-    table.style.border = "1px solid #ccc";
-  
-    __$("switcher").appendChild(table);
+  for(var i = 0; i < cells.length; i++){
   
     var row = document.createElement("div");
+  
     row.className = "row";
   
     table.appendChild(row);
   
     var cell = document.createElement("div");
+  
     cell.className = "cell";
   
     row.appendChild(cell);
   
-    var container = document.createElement("div");
-    container.id = "selections";
-    container.style.width = "100%";
+    for(var attr in cells[i]){
   
-    cell.appendChild(container);
+      if(typeof(cells[i][attr]) == "object" && attr == "styles"){
   
-    resize();
+        for(var el in cells[i][attr]){
   
-    var tbl = document.createElement("div");
-    tbl.className = "table";
-    tbl.style.width = "100%";
+          cell.style[el] = cells[i][attr][el];
+
+        }
+
+      } else {
   
-    container.appendChild(tbl);
+        cell.setAttribute(attr, cells[i][attr]);
+
+      }
+
+    }
   
-    var tr = document.createElement("div");
-    tr.className = "row";
+  }
   
-    tbl.appendChild(tr);
+  showFixedKeyboard(__$("keying"), "search");
+
+  listAllDrugs();
   
-    var cell1 = document.createElement("div");
-    cell1.className = "cell";
-    cell1.style.width = "60%";
-    cell1.style.border = "1px solid #ccc";
-    cell1.style.height = "100%";
-    cell1.style.borderRadius = "10px";
-    cell1.style.textAlign = "center";
-    cell1.style.backgroundColor = "#fff";
+  clicksChecker = checkClicks();
+
+}
+
+function loadFrequenciesAndDuration(id){
   
-    tr.appendChild(cell1);
+  clearTimeout(clicksChecker);
   
-    var cell2 = document.createElement("div");
-    cell2.className = "cell";
-    cell2.style.width = "40%";
-    cell2.style.border = "1px solid #ccc";
-    cell2.style.height = "100%";
-    cell2.style.borderRadius = "10px";
-    cell2.style.textAlign = "center";
-    cell2.style.backgroundColor = "#fff";
-    cell2.id = "durationControl";
-    cell2.style.paddingBottom = "10px";
+  __$("switcher").innerHTML = "";
   
-    tr.appendChild(cell2);
+  __$("searchbox").value = "";
   
-    var freqHead = document.createElement("div");
-    freqHead.style.paddingTop = "10px";
-    freqHead.style.paddingBottom = "10px";
-    freqHead.style.fontSize = "36px";
-    freqHead.innerHTML = "Frequency";
-    freqHead.style.width = "100%";
-    freqHead.style.textAlign = "center";
+  __$("searchbox").style.display = "none";
   
-    cell1.appendChild(freqHead);
+  var table = document.createElement("div");
   
-    var durHead = document.createElement("div");
-    durHead.style.paddingTop = "10px";
-    durHead.style.paddingBottom = "10px";
-    durHead.style.fontSize = "36px";
-    durHead.innerHTML = "Duration (days)";
-    durHead.style.width = "100%";
-    durHead.style.textAlign = "center";
+  table.className = "table";
   
-    cell2.appendChild(durHead);
+  table.style.width = "100%";
   
-    var ul = document.createElement("ul");
-    ul.className = "listing";
-    ul.style.overflow = "auto";
-    ul.style.height = "400px";
-    ul.style.width = "100%"
-    ul.id = "ul";
-    ul.style.fontSize = "0.8em";
+  table.style.height = "100%";
   
-    cell1.appendChild(ul);
+  table.style.borderRadius = "10px";
   
-    var frequencies = ["Once a day (OD)", "Twice a day (BD)", "Three a day (TDS)",
+  table.style.border = "1px solid #ccc";
+  
+  __$("switcher").appendChild(table);
+  
+  var row = document.createElement("div");
+  
+  row.className = "row";
+  
+  table.appendChild(row);
+  
+  var cell = document.createElement("div");
+  
+  cell.className = "cell";
+  
+  row.appendChild(cell);
+  
+  var container = document.createElement("div");
+  
+  container.id = "selections";
+  
+  container.style.width = "100%";
+  
+  cell.appendChild(container);
+  
+  resize();
+  
+  var tbl = document.createElement("div");
+  
+  tbl.className = "table";
+  
+  tbl.style.width = "100%";
+  
+  container.appendChild(tbl);
+  
+  var tr = document.createElement("div");
+  
+  tr.className = "row";
+  
+  tbl.appendChild(tr);
+  
+  var cell1 = document.createElement("div");
+  
+  cell1.className = "cell";
+  
+  cell1.style.width = "60%";
+  
+  cell1.style.border = "1px solid #ccc";
+  
+  cell1.style.height = "100%";
+  
+  cell1.style.borderRadius = "10px";
+  
+  cell1.style.textAlign = "center";
+  
+  cell1.style.backgroundColor = "#fff";
+  
+  tr.appendChild(cell1);
+  
+  var cell2 = document.createElement("div");
+  
+  cell2.className = "cell";
+  
+  cell2.style.width = "40%";
+  
+  cell2.style.border = "1px solid #ccc";
+  
+  cell2.style.height = "100%";
+  
+  cell2.style.borderRadius = "10px";
+  
+  cell2.style.textAlign = "center";
+  
+  cell2.style.backgroundColor = "#fff";
+  
+  cell2.id = "durationControl";
+  
+  cell2.style.paddingBottom = "10px";
+  
+  tr.appendChild(cell2);
+  
+  var freqHead = document.createElement("div");
+  
+  freqHead.style.paddingTop = "10px";
+  
+  freqHead.style.paddingBottom = "10px";
+  
+  freqHead.style.fontSize = "36px";
+  
+  freqHead.innerHTML = "Frequency";
+  
+  freqHead.style.width = "100%";
+  
+  freqHead.style.textAlign = "center";
+  
+  cell1.appendChild(freqHead);
+  
+  var durHead = document.createElement("div");
+  
+  durHead.style.paddingTop = "10px";
+  
+  durHead.style.paddingBottom = "10px";
+  
+  durHead.style.fontSize = "36px";
+  
+  durHead.innerHTML = "Duration (days)";
+  
+  durHead.style.width = "100%";
+  
+  durHead.style.textAlign = "center";
+  
+  cell2.appendChild(durHead);
+  
+  var ul = document.createElement("ul");
+  
+  ul.className = "listing";
+  
+  ul.style.overflow = "auto";
+  
+  ul.style.height = "400px";
+  
+  ul.style.width = "100%"
+  
+  ul.id = "ul";
+  
+  ul.style.fontSize = "0.8em";
+  
+  cell1.appendChild(ul);
+  
+  var frequencies = ["Once a day (OD)", "Twice a day (BD)", "Three a day (TDS)",
+  
     "Four times a day (QID)", "Five times a day (5X/D)", "Six times a day (Q4HRS)",
+  
     "In the morning (QAM)", "Once a week (QWK)", "Once a month", "Twice a month"]; //"TBD", "NOCTE",
-      
-    for(var i = 0; i < frequencies.length; i++){
-        var li = document.createElement("li");
-        li.innerHTML = frequencies[i];
-        li.style.backgroundColor = (i % 2 == 0 ? "#f8f7ec" : "#fff");
-        li.setAttribute("frequency", frequencies[i]);
-        li.setAttribute("tag", id);
-        li.style.textAlign = "left";
-        li.id = "li_" + i;
+  
+  for(var i = 0; i < frequencies.length; i++){
+  
+    var li = document.createElement("li");
+  
+    li.innerHTML = frequencies[i];
+  
+    li.style.backgroundColor = (i % 2 == 0 ? "#f8f7ec" : "#fff");
+  
+    li.setAttribute("frequency", frequencies[i]);
+  
+    li.setAttribute("tag", id);
+  
+    li.style.textAlign = "left";
+  
+    li.id = "li_" + i;
+  
+    li.onclick = function(){
     
-        li.onclick = function(){
-            if(this.getAttribute("frequency") != null && this.getAttribute("tag") != null){
-                if(__$("row_frequency_" + this.getAttribute("tag"))){
-                    __$("row_frequency_" + this.getAttribute("tag")).innerHTML = this.getAttribute("frequency");
-                }
-            }
+      if(this.getAttribute("frequency") != null && this.getAttribute("tag") != null){
+    
+        if(__$("row_frequency_" + this.getAttribute("tag"))){
+    
+          __$("row_frequency_" + this.getAttribute("tag")).innerHTML = this.getAttribute("frequency");
+    
+        }
+    
+      }
       
             for(var j = 0; j < __$("ul").children.length; j++){
                 __$("ul").children[j].className -= "selected";
@@ -979,7 +1693,8 @@ String.prototype.toProperCase = function()
 // Stub for searching the drugs
 function searchDrug(){
     var search_str = document.getElementById('search').value;
-                                                                                  
+    url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs?page_size=50&name=" + search_str
+
     if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
         xmlhttp=new XMLHttpRequest();
     }else{// code for IE6, IE5
@@ -1004,7 +1719,9 @@ function searchDrug(){
             }
         }
     }
-    xmlhttp.open("GET","/prescriptions/search_for_drugs?search_str=" + search_str, true);
+    
+    xmlhttp.open("GET",url, true);
+    xmlhttp.setRequestHeader('Authorization',sessionStorage.authorization);
     xmlhttp.send();
 }
 
