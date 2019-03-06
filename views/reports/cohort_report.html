@@ -199,17 +199,13 @@
                             </tr>
                             <tr>
                               <td>
-                                <form id="new_reg" method="post" action="decompose">
-                                  <input type="hidden" value="36,37,38,39,46,47,48,49,50" name="patients">
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
                               </td>
                               <td style="width: 60%; border-left: 1px solid #999;
                                   border-bottom: 1px solid #999; border-right: 1px solid #999;">
                                 New women registered
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('new_reg').submit()">
+                                <a id="a-new-reg" href="">
                                   <span id="new-reg"></span>
                                 </a>
                               </td>
@@ -229,14 +225,10 @@
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;
                                   border-bottom: 0px solid #999;">
-                                <form id="pregnancy_test_done_yes" method="post" action="decompose">
-                                  <input type="hidden" value="36,37,38,39,46,47,49" name="patients">
-                                  Yes
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                Yes
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('pregnancy_test_done_yes').submit()">
+                                <a id="a-preg-test-yes" href="">
                                   <span id="preg-test-yes"></span>
                                 </a>
                               </td>
@@ -247,14 +239,10 @@
                                 2
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="pregnancy_test_done_no" method="post" action="decompose">
-                                  <input type="hidden" value="48,50" name="patients">
-                                  <input type="hidden" value="new registered women" name="block">
-                                  <span style="color:gray">No</span>
-                                </form>
+                                <span style="color:gray">No</span>
                               </td>
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
-                                <a href="javascript:document.getElementById('pregnancy_test_done_no').submit()">
+                                <a id="a-preg-test-no" href="">
                                   <span style="color:gray" id="preg-test-no">
                                   </span>
                                 </a>
@@ -275,14 +263,10 @@
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;
                                   border-bottom: 0px solid #999;">
-                                <form id="pregnancy_test_in_first_trim_yes" method="post" action="decompose">
-                                  <input type="hidden" value="36,37,38,39,49" name="patients">
-                                  Yes
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                Yes
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('pregnancy_test_in_first_trim_yes').submit()">
+                                <a id="a-preg-test-done-first-trim" href="">
                                   <span id="preg-test-done-first-trim"></span>
                                 </a>
                               </td>
@@ -293,14 +277,10 @@
 
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="pregnancy_test_in_first_trim_no" method="post" action="decompose">
-                                  <input type="hidden" value="46,47" name="patients">
-                                  <input type="hidden" value="new registered women" name="block">
-                                  <span style="color:gray">No</span>
-                                </form>
+                                <span style="color:gray">No</span>
                               </td>
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
-                                <a href="javascript:document.getElementById('pregnancy_in_first_trim_no').submit()">
+                                <a id="a-preg-test-not-done-first-trim" href="">
                                   <span style="color:gray" id="preg-test-not-done-first-trim">
                                   </span>
                                 </a>
@@ -322,14 +302,10 @@
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;
                                   border-bottom: 0px solid #999;">
-                                <form id="week_of_first_visit_1" method="post" action="decompose">
-                                  <input type="hidden" value="36,37,38,39,49,50" name="patients">
-                                  Week 0-12
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                Week 0-12
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('week_of_first_visit_1').submit()">
+                                <a id="a-week-0-12-of-visit" href="">
                                   <span id="week-0-12-of-visit"></span>
                                 </a>
                               </td>
@@ -340,14 +316,10 @@
 
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="week_of_first_visit_2" method="post" action="decompose">
-                                  <input type="hidden" value="46,47,48" name="patients">
-                                  <input type="hidden" value="new registered women" name="block">
-                                  <span style="color:gray">Week 13+</span>
-                                </form>
+                                <span style="color:gray">Week 13+</span>
                               </td>
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
-                                <a href="javascript:document.getElementById('week_of_first_visit_2').submit()">
+                                <a id="a-week-13-of-visit" href="">
                                   <span style="color:gray" id="week-13-of-visit">
                                   </span>
                                 </a>
@@ -367,14 +339,10 @@
                                 23
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
-                                <form id="hiv_test_result_prev_neg" method="post" action="decompose">
-                                  <input type="hidden" value="37,39" name="patients">
-                                  Prev. Negative
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                Prev. Negative
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('hiv_test_result_prev_neg').submit()">
+                                <a id="a-m-prev-negative" href="">
                                   <span id="m-prev-negative"></span>
                                 </a>
                               </td>
@@ -384,14 +352,10 @@
                                 24
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="hiv_test_result_prev_pos" method="post" action="decompose">
-                                  <input type="hidden" value="36,38,46,47,49" name="patients">
-                                  Prev. Positive
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                Prev. Positive
                               </td>
                               <td class="valueCell" style="border-top: 0px">
-                                <a href="javascript:document.getElementById('hiv_test_result_prev_pos').submit()">
+                                <a id="a-m-prev-positive" href="">
                                   <span id="m-prev-positive"></span>
                                 </a>
                               </td>
@@ -401,14 +365,10 @@
                                 25
                               </td>
                               <td style="border-left: 1px solid #999; width: 60%;">
-                                <form id="hiv_test_result_neg" method="post" action="decompose">
-                                  <input type="hidden" value="48" name="patients">
-                                  New Negative
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                New Negative
                               </td>
                               <td class="valueCell" style="border-top: 0px">
-                                <a href="javascript:document.getElementById('hiv_test_result_neg').submit()">
+                                <a id="a-m-new-negative" href="">
                                   <span id="m-new-negative"></span>
                                 </a>
                               </td>
@@ -418,14 +378,10 @@
                                 26
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="hiv_test_result_pos" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  New Positive
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                New Positive
                               </td>
                               <td class="valueCell" style="border-top: 0px">
-                                <a href="javascript:document.getElementById('hiv_test_result_pos').submit()">
+                                <a id="a-m-new-positive" href="">
                                   <span id="m-new-positive"></span>
                                 </a>
                               </td>
@@ -435,14 +391,10 @@
                                 27
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="hiv_test_result_unk" method="post" action="decompose">
-                                  <input type="hidden" value="50" name="patients">
-                                  Not Done
-                                  <input type="hidden" value="new registered women" name="block">
-                                </form>
+                                Not Done
                               </td>
                               <td class="valueCell" style="border-top: 0px; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('hiv_test_result_unk').submit()">
+                                <a id="a-m-hiv-test-not-done" href="">
                                   <span id="m-hiv-test-not-done"></span>
                                 </a>
                               </td>
@@ -450,13 +402,10 @@
                             <tr>
                               <td></td>
                               <td style="font-style:italic;">
-                                <form id="total_hiv_positive" method="post" action="decompose">
-                                  <input type="hidden" value="36,38,46,47,49" name="patients">
-                                  TotalHIV+ (19+21)
-                                </form>
+                                TotalHIV+ (19+21)
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('total_hiv_positive').submit()">
+                                <a id="a-m-total-hiv-positive" href="">
                                   <span id="m-total-hiv-positive"></span>
                                 </a>
                               </td>
@@ -474,13 +423,10 @@
                                 30
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
-                                <form id="not_on_art" method="post" action="decompose">
-                                  <input type="hidden" value="38,46,47,49" name="patients">
-                                  Not on ART
-                                </form>
+                                Not on ART
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('not_on_art').submit()">
+                                <a id="a-m-not-on-art" href="">
                                   <span id="m-not-on-art"></span>
                                 </a>
                               </td>
@@ -490,13 +436,10 @@
                                 31
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="on_art_before" method="post" action="decompose">
-                                  <input type="hidden" value="36" name="patients">
-                                  On ART before ANC
-                                </form>
+                                On ART before ANC
                               </td>
                               <td class="valueCell" style="border-top: 0px">
-                                <a href="javascript:document.getElementById('on_art_before').submit()">
+                                <a id="a-m-on-art-before-visit" href="">
                                   <span id="m-on-art-before-visit"></span>
                                 </a>
                               </td>
@@ -506,13 +449,10 @@
                                 32
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="on_art_zero_to_27" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Start ART 0-27 weeks
-                                </form>
+                                Start ART 0-27 weeks
                               </td>
                               <td class="valueCell" style="border-top: 0px; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('on_art_zero_to_27').submit()">
+                                <a id="a-m-art-0-27-weeks" href="">
                                   <span id="m-art-0-27-weeks"></span>
                                 </a>
                               </td>
@@ -522,13 +462,10 @@
                                 33
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="on_art_28_plus" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Start ART 28+ weeks
-                                </form>
+                                Start ART 28+ weeks
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('on_art_28_plus').submit()">
+                                <a id="a-m-art-28-weeks" href="">
                                   <span id="m-art-28-weeks"></span>
                                 </a>
                               </td>

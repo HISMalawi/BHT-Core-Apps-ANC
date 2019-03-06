@@ -31,6 +31,8 @@ var month = params["months"];
 
 var date = year+"-"+month+"-01";
 
+var decompose_url = "/apps/ANC/views/reports/decompose.html?ids=";
+
 $(document).ready(function(){
 
   // Populate report header
@@ -61,37 +63,143 @@ $(document).ready(function(){
                 
           results = JSON.parse(this.responseText);
 
-          document.getElementById("new-reg").innerText = results["values"]["monthly_patient"]["table"]["contents"].length;
+          // New registered
 
-          document.getElementById("preg-test-yes").innerText = results["values"]["pregnancy_test_done"]["table"]["contents"].length;
+          var new_registered = results["values"]["monthly_patient"]["table"]["contents"];
 
-          document.getElementById("preg-test-done-first-trim").innerText = results["values"]["pregnancy_test_done_in_first_trimester"]["table"]["contents"].length;
-        
-          document.getElementById("preg-test-not-done-first-trim").innerText = "...";//results["values"]["monthly_patient"]["table"]["contents"].length;
+          document.getElementById("new-reg").innerText = new_registered.length;
 
-          document.getElementById("week-0-12-of-visit").innerText = results["values"]["week_of_first_visit_zero_to_twelve"]["table"]["contents"].length;
+          document.getElementById("a-new-reg").href = decompose_url+encodeURIComponent(JSON.stringify(new_registered));
 
-          document.getElementById("week-13-of-visit").innerText = "...";//results["values"]["pregnancy_test_done_in_first_trimester"]["table"]["contents"].length;
+          // Pregnancy test done
 
-          document.getElementById("m-prev-negative").innerText = results["values"]["pre_hiv_negative_first_visit"]["table"]["contents"].length;
+          var preg_test_done = results["values"]["pregnancy_test_done"]["table"]["contents"];
 
-          document.getElementById("m-prev-positive").innerText = results["values"]["prev_hiv_positive_first_visit"]["table"]["contents"].length;
+          document.getElementById("preg-test-yes").innerText = preg_test_done.length;
 
-          document.getElementById("m-new-positive").innerText = results["values"]["new_hiv_positive_first_visit"]["table"]["contents"].length;
+          document.getElementById("a-preg-test-yes").href = decompose_url+encodeURIComponent(JSON.stringify(preg_test_done));
 
-          document.getElementById("m-new-negative").innerText = results["values"]["new_hiv_negative_first_visit"]["table"]["contents"].length;
+          // Pregnancy test not done
 
-          document.getElementById("m-hiv-test-not-done").innerText = results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          var preg_test_not_done = results["values"]["pregnancy_test_not_done"]["table"]["contents"];
 
-          document.getElementById("m-total-hiv-positive").innerText = "...";//results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          document.getElementById("preg-test-no").innerText = preg_test_not_done.length;
 
-          document.getElementById("m-not-on-art").innerText = results["values"]["not_on_art_first_visit"]["table"]["contents"].length;
+          document.getElementById("a-preg-test-no").href = decompose_url+encodeURIComponent(JSON.stringify(preg_test_not_done));
 
-          document.getElementById("m-on-art-before-visit").innerText = results["values"]["on_art_before_anc_first_visit"]["table"]["contents"].length;
+          // Pregnancy test done in first trimester
 
-          document.getElementById("m-art-0-27-weeks").innerText = results["values"]["start_art_zero_to_twenty_seven_for_first_visit"]["table"]["contents"].length;
+          var preg_test_done_in_first_trim = results["values"]["pregnancy_test_done_in_first_trimester"]["table"]["contents"];
 
-          document.getElementById("m-art-28-weeks").innerText = results["values"]["start_art_plus_twenty_eight_for_first_visit"]["table"]["contents"].length;
+          document.getElementById("preg-test-done-first-trim").innerText = preg_test_done_in_first_trim.length;
+
+          document.getElementById("a-preg-test-done-first-trim").href = decompose_url+encodeURIComponent(JSON.stringify(preg_test_done_in_first_trim));
+
+          // Pregnancy test not done in first trimester
+
+          var preg_test_not_done_in_first_trim = results["values"]["pregnancy_test_not_done_in_first_trimester"]["table"]["contents"];
+
+          document.getElementById("preg-test-not-done-first-trim").innerText = preg_test_not_done_in_first_trim.length;
+          
+          document.getElementById("a-preg-test-not-done-first-trim").href = decompose_url+encodeURIComponent(JSON.stringify(preg_test_not_done_in_first_trim));
+
+          // Week of first visits (0-12 weeks)
+
+          var week_0_12_of_visit = results["values"]["week_of_first_visit_zero_to_twelve"]["table"]["contents"];
+
+          document.getElementById("week-0-12-of-visit").innerText = week_0_12_of_visit.length;
+
+          document.getElementById("a-week-0-12-of-visit").href = decompose_url+encodeURIComponent(JSON.stringify(week_0_12_of_visit));
+
+          // Week of first visits (13+ weeks)
+
+          var week_plus_13_of_visit = results["values"]["week_of_first_visit_plus_thirteen"]["table"]["contents"];
+
+          document.getElementById("week-13-of-visit").innerText = week_plus_13_of_visit.length;
+
+          document.getElementById("a-week-13-of-visit").href = decompose_url+encodeURIComponent(JSON.stringify(week_plus_13_of_visit));
+
+          // Previous HIV negative on first visit
+
+          var prev_hiv_neg_first = results["values"]["pre_hiv_negative_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-prev-negative").innerText = prev_hiv_neg_first.length;
+
+          document.getElementById("a-m-prev-negative").href = decompose_url+encodeURIComponent(JSON.stringify(prev_hiv_neg_first));
+
+          // Previous HIV positive on first visit
+
+          var prev_hiv_pos_first = results["values"]["prev_hiv_positive_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-prev-positive").innerText = prev_hiv_pos_first.length;
+          
+          document.getElementById("a-m-prev-positive").href = decompose_url+encodeURIComponent(JSON.stringify(prev_hiv_pos_first));
+
+          // New positive first visit
+
+          var new_hiv_neg_first = results["values"]["new_hiv_negative_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-new-negative").innerText = new_hiv_neg_first.length;
+
+          document.getElementById("a-m-new-negative").href = decompose_url+encodeURIComponent(JSON.stringify(new_hiv_neg_first));
+
+          // New negative on first visit
+
+          var new_hiv_pos_first = results["values"]["new_hiv_positive_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-new-positive").innerText = new_hiv_pos_first.length;
+
+          document.getElementById("a-m-new-positive").href = decompose_url+encodeURIComponent(JSON.stringify(new_hiv_pos_first));
+
+          // HIV Test not done on first visit
+
+          var hiv_test_not_done_first = results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-hiv-test-not-done").innerText = hiv_test_not_done_first.length;
+
+          document.getElementById("a-m-hiv-test-not-done").href = decompose_url+encodeURIComponent(JSON.stringify(hiv_test_not_done_first));
+
+          // Total HIV positive on first visits
+
+          var total_hiv_pos_first = results["values"]["total_hiv_positive_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-total-hiv-positive").innerText = total_hiv_pos_first.length;
+
+          document.getElementById("a-m-total-hiv-positive").href = decompose_url+encodeURIComponent(JSON.stringify(total_hiv_pos_first));
+          
+          // HIV patients Not on ART first visit
+
+          not_on_art_first = results["values"]["not_on_art_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-not-on-art").innerText = not_on_art_first.length;
+
+          document.getElementById("a-m-not-on-art").href = decompose_url+encodeURIComponent(JSON.stringify(not_on_art_first));
+          
+          // HIV patients on art before ANC visit 
+
+          on_art_before_first_visit = results["values"]["on_art_before_anc_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-on-art-before-visit").innerText = on_art_before_first_visit.length;
+
+          document.getElementById("a-m-on-art-before-visit").href = decompose_url+encodeURIComponent(JSON.stringify(on_art_before_first_visit));
+
+          // HIV patients started art between 0 to 27 weeks
+          
+          art_0_27_first_weeks = results["values"]["start_art_zero_to_twenty_seven_for_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-art-0-27-weeks").innerText = art_0_27_first_weeks.length;
+          
+          document.getElementById("a-m-art-0-27-weeks").href = decompose_url+encodeURIComponent(JSON.stringify(art_0_27_first_weeks));
+
+          // HIV patients started art after 27 weeks
+
+          art_over_27_first_weeks = results["values"]["start_art_plus_twenty_eight_for_first_visit"]["table"]["contents"];
+
+          document.getElementById("m-art-28-weeks").innerText = art_over_27_first_weeks.length;
+          
+          document.getElementById("a-m-art-28-weeks").href = decompose_url+encodeURIComponent(JSON.stringify(art_over_27_first_weeks));
+
+
           
           document.getElementById("total-1-visit").innerText = results["values"]["patients_with_total_of_one_visit"]["table"]["contents"].length;
           

@@ -64,8 +64,14 @@
       "available": true,
       "activitiesIcon": "/assets/images/prescription/medication.png",
       "url": "/apps/ANC/views/encounters/ttv.html"
+    },
+    "hiv clinic registration": {
+      "available": true,
+      "activitiesIcon": "/assets/images/registration.png",
+      "url": "/apps/ART/views/encounters/hiv_clinic_registration.html"
     }
   },
+
   "activities": {
     "url": "/apps/ANC/views/activities.html",
     "tasks": [
@@ -78,7 +84,8 @@
       ["CURRENT PREGNANCY", "current pregnancy"],
       ["ANC EXAMINATION", "anc examination"],
       ["DISPENSING", "TTV Dispensation"],
-      ["ART_FOLLOWUP", "art_followup"]
+      ["ART_FOLLOWUP", "art_followup"],
+      ["ART", "hiv clinic registration"]
     ]
   },
     
