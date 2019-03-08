@@ -2932,16 +2932,15 @@ function buildParams() {
 function loadSplitSelections() {
 
   //array format [url, input_id, helpText]
-
   var arr = [
 
-    ["/encounters/yes_no_options", "ever_had_episiotomy"],
+    [["Yes", "No"].join('|'), "ever_had_episiotomy"],
 
-    ["/encounters/hemorrhage_options", "hemorrhage"],
+    [["No|APH|PPH"].join("|"), "hemorrhage"],
 
-    ["/encounters/yes_no_options", "pre_eclampsia"],
+    [["Yes", "No"].join('|'), "pre_eclampsia"],
 
-    ["/encounters/yes_no_options", "eclampsia"]
+    [["Yes", "No"].join('|'), "eclampsia"]
 
   ];
 
@@ -3058,12 +3057,14 @@ function loadSplitSelections() {
         
         if (n != arr.length - 1) {
               
-          ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
-          
+          //ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
+          handleCustomResult(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
+
         } else {
               
-          ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
-          
+          //ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
+          handleCustomResult(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c)); 
+
         }
 
       }
@@ -3103,29 +3104,13 @@ function ajaxCustomRequest(aUrl, id, n, dom_id) {
   
 }
 
-function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
+function handleCustomResult(result, id, n, dom_id) {
 
-  if (!aXMLHttpRequest) return;
-
-  if (aXMLHttpRequest.status == 404) {
-
-    if (id == "hemorrhage"){
-
-      var result = "No|APH|PPH";
-
-      var data = result.split("|");
-
-    }else{
-
-      var result = "Yes|No";
-
-      var data = result.split("|");
-
-    }
+    var data = result.split("|");
 
     if (x.includes(id))
 
-    return
+      return
 
     x.push(id);
 
@@ -3264,8 +3249,6 @@ function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
       __$('holder').style.display = n;
 
     }, 150);
-
-  }
 
 }
 
