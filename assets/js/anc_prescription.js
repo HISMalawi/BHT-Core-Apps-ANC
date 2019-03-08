@@ -54,6 +54,31 @@ var drug_set_duration = [];
 
 var drug_quantity_hash = {};
 
+
+$(document).ready(function(){
+  
+  getDrugs();
+  
+  getDrugSets();
+
+  listAllDrugs();
+
+  console.log(Object.keys(drug_sets).length);
+
+  if (Object.keys(drug_sets).length > 0){
+      
+    loadDrugSets();
+    
+  }else{
+      
+    loadAllDrugs();
+  
+  }
+  
+  resize();
+  
+});
+
 function getDrugs(){
 
   var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs"
@@ -131,12 +156,6 @@ function getDrugSets(){
   });
     
 }
-  
-getDrugs();
-  
-getDrugSets();
-  
-listAllDrugs();
 
 function submitTreatmentEncounter(){
         
@@ -1292,28 +1311,75 @@ function loadFrequenciesAndDuration(id){
         }
     
       }
+
+      for(var j = 0; j < __$("ul").children.length; j++){
+                
+        __$("ul").children[j].className -= "selected";
+            
+      }
       
-            for(var j = 0; j < __$("ul").children.length; j++){
-                __$("ul").children[j].className -= "selected";
-            }
-      
-            this.className = "selected";
-        }
-    
-        ul.appendChild(li);
+      this.className = "selected";
+        
     }
-  
-    var input = document.createElement("input");
-    input.setAttribute("type", "text");
-    input.id = "duration";
-    input.className = "input";
-    input.style.width = "85%";
-    input.style.textAlign = "center";
-    input.style.fontSize = "32px";
-  
-    cell2.appendChild(input);
     
-    showNumber("durationControl", "duration");
+    ul.appendChild(li);
+    
+  }
+  
+  var input = document.createElement("input");
+    
+  input.setAttribute("type", "text");
+    
+  input.id = "duration";
+  
+  input.className = "input";
+  
+  input.style.width = "85%";
+  
+  input.style.textAlign = "center";
+  
+  input.style.fontSize = "32px";
+  
+  cell2.appendChild(input);
+  
+  showNumber("durationControl", "duration");
+
+}
+
+function checkParams(node){
+
+  if (node.innerHTML == "Drug Sets"){
+
+    if (__$("cummulative") != undefined){
+
+      var cells = __$("cummulative").getElementsByClassName("cell");
+
+      if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 3].innerHTML == "")){
+
+        confirmAction("Enter frequency for drug: " + cells[cells.length - 4].innerHTML)
+        
+      }else if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 2].innerHTML == "")){
+          
+        confirmAction("Enter duration for drug: " + cells[cells.length - 4].innerHTML)
+        
+      }else{
+          
+        switchViews(node.innerHTML);
+        
+      }
+      
+    }else{
+        
+      switchViews(node.innerHTML);
+      
+    }
+    
+  }else{
+
+    switchViews(node.innerHTML);
+    
+  }
+  
 }
 
 function setDuration() {
@@ -1407,55 +1473,83 @@ function loadDrugSets(){
 }
 
 function listAllDrugs(){
-    if(__$("selections")){
-        __$("selections").innerHTML = "";
     
-        var ul = document.createElement("ul");
-        ul.className = "listing";
+  if(__$("selections")){
+        
+    __$("selections").innerHTML = "";
     
-        __$("selections").appendChild(ul);
+    var ul = document.createElement("ul");
+        
+    ul.className = "listing";
     
-        var formulations = [];
+    __$("selections").appendChild(ul);
     
-        for(var i = 0; i < drugs.length; i++){
-            formulations.push({
-                drug: drugs[i] ,
-                dose: strengths[i],
-                unit: units[i],
-                drug_id: drug_ids[i]
-            });
-        }
+    var formulations = [];
     
-        for(var l = 0; l < formulations.length; l++){
-            var li = document.createElement("li");
-            li.id = "all_" + formulations[l].drug_id;
-            li.innerHTML = formulations[l].drug;
-            li.style.backgroundColor = (l % 2 == 0 ? "#f8f7ec" : "#fff");
-            li.setAttribute("dose", formulations[l].dose);
-            li.setAttribute("unit", formulations[l].unit);
-            li.setAttribute("drug", formulations[l].drug);
-      
-            if(selectedDrugs[li.id]){
-                li.className = "selected";
-            }
-      
-            li.onclick = function(){
-                if(this.getAttribute("class") != null && this.getAttribute("class").match(/selected/)){
-                    removeDrug(this.id);
-                } else {
-                    this.className = "selected";
-          
-                    addDrug(this.id);
-          
-                    selectedDrugs[this.id] = true;
-                    
-                    loadFrequenciesAndDuration(this.id);
-                }
-            }
-      
-            ul.appendChild(li);
-        }
+    for(var i = 0; i < drugs.length; i++){
+       
+      formulations.push({
+                
+        drug: drugs[i] ,
+                
+        dose: strengths[i],
+                
+        unit: units[i],
+                
+        drug_id: drug_ids[i]
+            
+      });
+        
     }
+    
+    for(var l = 0; l < formulations.length; l++){
+            
+      var li = document.createElement("li");
+            
+      li.id = "all_" + formulations[l].drug_id;
+            
+      li.innerHTML = formulations[l].drug;
+            
+      li.style.backgroundColor = (l % 2 == 0 ? "#f8f7ec" : "#fff");
+            
+      li.setAttribute("dose", formulations[l].dose);
+            
+      li.setAttribute("unit", formulations[l].unit);
+            
+      li.setAttribute("drug", formulations[l].drug);
+      
+      if(selectedDrugs[li.id]){
+       
+        li.className = "selected";
+            
+      }
+      
+      li.onclick = function(){
+          
+        if(this.getAttribute("class") != null && this.getAttribute("class").match(/selected/)){
+        
+          removeDrug(this.id);
+        
+        } else {
+        
+          this.className = "selected";
+        
+          addDrug(this.id);
+          
+          selectedDrugs[this.id] = true;
+          
+          loadFrequenciesAndDuration(this.id);
+          
+        }
+        
+      }
+      
+      ul.appendChild(li);
+      
+    }
+    
+  }
+
 }
 
 function listDrugsSets(){
@@ -1663,94 +1757,137 @@ function addDrug(id){
 }
 
 function removeDrug(id){
-    if(__$("row_" + id)){
-        __$("drugs").removeChild(__$("row_" + id));
-        scroll(__$("scroll_me"))
-    }  
-        
-    if(selectedDrugs[id])
-        delete selectedDrugs[id];
     
-    if(selectedSets[id])
-        delete selectedSets[id];
-          
-    if(__$(id)){
+  if(__$("row_" + id)){
         
-        __$(id).className -= "selected";
+    __$("drugs").removeChild(__$("row_" + id));
         
-    }
+    scroll(__$("scroll_me"))
+    
+  }
+  
+  if(selectedDrugs[id])
+        
+    delete selectedDrugs[id];
+    
+  if(selectedSets[id])
+        
+    delete selectedSets[id];
+    
+  if(__$(id)){
+        
+    __$(id).className -= "selected";
+    
+  }
+
 }
 
 // Supporting function to allow a humanized Concept Name display
-String.prototype.toProperCase = function()
-{
-    return this.toLowerCase().replace(/^(.)|\s(.)/g,
-        function($1) {
-            return $1.toUpperCase();
-        });
+String.prototype.toProperCase = function(){
+  
+  return this.toLowerCase().replace(/^(.)|\s(.)/g,
+  
+  function($1) {
+    
+    return $1.toUpperCase();
+        
+  });
+
 }
 
 // Stub for searching the drugs
 function searchDrug(){
-    var search_str = document.getElementById('search').value;
-    url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs?page_size=50&name=" + search_str
 
-    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
-        xmlhttp=new XMLHttpRequest();
-    }else{// code for IE6, IE5
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-            var results = xmlhttp.responseText;
-            if(results) {
-                var searchedDrugs = JSON.parse(results);
-                drugs = [];
-                strengths = [];
-                units = [];
-                drug_ids = [];
-                for(drug_id in searchedDrugs) {
-                    drugs.push(searchedDrugs[drug_id].name);
-                    strengths.push(searchedDrugs[drug_id].dose_strength);
-                    units.push(searchedDrugs[drug_id].unit);
-                    drug_ids.push(drug_id);
-                }
-                listAllDrugs();
-            }
+  var search_str = document.getElementById('search').value;
+    
+  url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs?page_size=50&name=" + search_str
+
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+        
+    xmlhttp=new XMLHttpRequest();
+    
+  }else{// code for IE6, IE5
+        
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    
+  }
+  
+  xmlhttp.onreadystatechange=function() {
+        
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+            
+      var results = xmlhttp.responseText;
+            
+      if(results) {
+                
+        var searchedDrugs = JSON.parse(results);
+                
+        drugs = [];
+                
+        strengths = [];
+                
+        units = [];
+                
+        drug_ids = [];
+                
+        for(drug_id in searchedDrugs) {
+                    
+          drugs.push(searchedDrugs[drug_id].name);
+                    
+          strengths.push(searchedDrugs[drug_id].dose_strength);
+                    
+          units.push(searchedDrugs[drug_id].unit);
+                    
+          drug_ids.push(searchedDrugs[drug_id].drug_id);
+                
         }
+                
+        listAllDrugs();
+            
+      }
+        
     }
     
-    xmlhttp.open("GET",url, true);
-    xmlhttp.setRequestHeader('Authorization',sessionStorage.authorization);
-    xmlhttp.send();
+  }
+  
+  xmlhttp.open("GET",url, true);
+    
+  xmlhttp.setRequestHeader('Authorization',sessionStorage.authorization);
+  
+  xmlhttp.send();
+
 }
 
 function clearAll() {
     
-    for(selected_drug in selectedDrugs) {
-        removeDrug(selected_drug);
-    }
+  for(selected_drug in selectedDrugs) {
+        
+    removeDrug(selected_drug);
+    
+  }
   
-    for(selected_set in selectedSets) {
-        removeDrug(selected_set);
-    }
-    document.getElementById('search').value = '';
+  for(selected_set in selectedSets) {
+        
+    removeDrug(selected_set);
+    
+  }
+  
+  document.getElementById('search').value = '';
 
-    if (Object.keys(drug_sets).length > 0){
-        switchViews('Drug Sets');
-    }else{
-        switchViews('All Drugs');
-    }
-}
+  if (Object.keys(drug_sets).length > 0){
+        
+    switchViews('Drug Sets');
+    
+  }else{
+        
+    switchViews('All Drugs');
+    
+  }
 
-if (Object.keys(drug_sets).length > 0){
-    loadDrugSets();
-}else{
-    loadAllDrugs();
 }
 
 function scroll(div){
 
-    div.scrollTop = div.scrollHeight - div.clientHeight;
+  div.scrollTop = div.scrollHeight - div.clientHeight;
+
 }
-resize();
