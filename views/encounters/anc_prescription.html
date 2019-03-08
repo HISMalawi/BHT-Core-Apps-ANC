@@ -95,7 +95,7 @@
               <%end% -->
             </button>
 
-            <div id="searchbox" style="position: absolute; bottom: 65%; left: 10px; width: 76%; display: none;">
+            <div id="searchbox" style="position: absolute; bottom: 0%; left: 10px; width: 96%; display: none;">
               <input type="text" id="search" value="" class="input" />
             </div>
 
@@ -139,30 +139,7 @@
     xmlhttp.send();
   }
 
-  function checkParams(node){
-
-    if (node.innerHTML == "Drug Sets"){
-
-      if (__$("cummulative") != undefined){
-
-        var cells = __$("cummulative").getElementsByClassName("cell");
-
-        if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 3].innerHTML == "")){
-
-          confirmAction("Enter frequency for drug: " + cells[cells.length - 4].innerHTML)
-        }else if (cells.length >= 8 && cells.length % 4 == 0 && (cells[cells.length - 2].innerHTML == "")){
-          confirmAction("Enter duration for drug: " + cells[cells.length - 4].innerHTML)
-        }else{
-          switchViews(node.innerHTML);
-        }
-      }else{
-        switchViews(node.innerHTML);
-      }
-    }else{
-
-      switchViews(node.innerHTML);
-    }
-  }
+  
   function buildParams(){
    
     var submitForm = document.createElement("FORM");
