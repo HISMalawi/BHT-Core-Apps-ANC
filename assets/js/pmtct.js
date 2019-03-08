@@ -55,13 +55,13 @@ function postARTFollowUpObs(encounter) {
    
     // Yes to pmtct  
     obs.observations.push(
-      { concept_id: 1939, value_text: parseInt(YesNoConcepts[res]) },
+      { concept_id: 1939, value_coded: parseInt(YesNoConcepts[res]) },
     );
 
   }else if(res.toLowerCase() === "no" && $('reason_for_not_starting_art').value !== ""){
     // No to pmtct 
     obs.observations.push(
-      { concept_id: 1939, value_numeric: parseInt(YesNoConcepts[res]) },
+      { concept_id: 1939, value_coded: parseInt(YesNoConcepts[res]) },
       { concept_id: 1811, value_text: $('reason_for_not_starting_art').value }
     );
 
