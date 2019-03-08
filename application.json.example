@@ -85,7 +85,10 @@
       ["ANC EXAMINATION", "anc examination"],
       ["DISPENSING", "TTV Dispensation"],
       ["ART_FOLLOWUP", "art_followup"],
-      ["ART", "hiv clinic registration"]
+      ["TREATMENT", "treatment"],
+      ["APPOINTMENT", "appointment"],
+      ["VITALS", "vitals"],
+      ["HIV CLINIC REGISTRATION", "hiv clinic registration"]
     ]
   },
     
