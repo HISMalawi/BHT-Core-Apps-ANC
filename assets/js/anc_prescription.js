@@ -54,14 +54,13 @@ var drug_set_duration = [];
 
 var drug_quantity_hash = {};
 
+getDrugs();
+  
+getDrugSets();
+
+listAllDrugs();
 
 $(document).ready(function(){
-  
-  getDrugs();
-  
-  getDrugSets();
-
-  listAllDrugs();
 
   console.log(Object.keys(drug_sets).length);
 
@@ -1637,36 +1636,47 @@ function listDrugsSets(){
 }
 
 function confirmAction(message) {
-    if (!tstMessageBar) {
 
-        var tstMessageBar = document.createElement("div");
-        tstMessageBar.id = "messageBar";
-        tstMessageBar.className = "messageBar";
+  if (!tstMessageBar) {
 
-        tstMessageBar.innerHTML = message + "<br/>" +
+    var tstMessageBar = document.createElement("div");
+        
+    tstMessageBar.id = "messageBar";
+    
+    tstMessageBar.className = "messageBar";
+
+    tstMessageBar.innerHTML = message + "<br/>" +
         "<button onmousedown=\"__$('container')" +
         ".removeChild(document.getElementById('messageBar'));\"><span>OK</span></button>";
 
-        tstMessageBar.style.display = "block";
-        __$('container').appendChild(tstMessageBar);
-    }
-
-    return false;
+    tstMessageBar.style.display = "block";
+        
+    __$('container').appendChild(tstMessageBar);
+    
+  }
+  
+  return false;
 
 }
     
 function switchViews(current){
-    if(current.trim().toLowerCase() == "drug sets"){
-        __$("btnswitch").innerHTML = "All Drugs";
     
-        loadDrugSets();
-    } else {
-        __$("btnswitch").innerHTML = "Drug Sets";
+  if(current.trim().toLowerCase() == "drug sets"){
+        
+    __$("btnswitch").innerHTML = "All Drugs";
     
-        loadAllDrugs();
-    }
+    loadDrugSets();
+    
+  } else {
+        
+    __$("btnswitch").innerHTML = "Drug Sets";
+    
+    loadAllDrugs();
+    
+  }
   
-    resize();
+  resize();
+
 }
 
 function addDrug(id){
