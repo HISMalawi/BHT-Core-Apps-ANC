@@ -30,7 +30,7 @@
       
       function getDrugs(){
 
-        var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs"
+        var apiPath = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1/drugs?page_size=1000"
 
         GET({
 
@@ -161,8 +161,7 @@
             tt_onload="showCategory2('Add drug sets');"/>
 
           <select id="drugs" name="drugs" tt_onLoad="showCategory2('Add drug sets'); populateDrugs();" 
-            helpText="Select drugs to add" tt_onUnload="" tt_pageStyleClass="longSelectList"
-            multiple="multiple" >
+            helpText="Select drugs to add" tt_onUnload="" >
 
         </select>
         </form>
