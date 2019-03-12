@@ -200,85 +200,314 @@ $(document).ready(function(){
           document.getElementById("a-m-art-28-weeks").href = decompose_url+encodeURIComponent(JSON.stringify(art_over_27_first_weeks));
 
 
+          // BOOKING COHORT 
+
+          // Total one visit
+
+          total_one_visit =  results["values"]["patients_with_total_of_one_visit"]["table"]["contents"];
+
+          document.getElementById("total-1-visit").innerText = total_one_visit.length;
           
-          document.getElementById("total-1-visit").innerText = results["values"]["patients_with_total_of_one_visit"]["table"]["contents"].length;
+          document.getElementById("a-total-1-visit").href = decompose_url+encodeURIComponent(JSON.stringify(total_one_visit));
           
-          document.getElementById("total-2-visits").innerText = results["values"]["patients_with_total_of_two_visits"]["table"]["contents"].length;
-        
-          document.getElementById("total-3-visits").innerText = results["values"]["patients_with_total_of_three_visits"]["table"]["contents"].length;
+          // Total two visits
           
-          document.getElementById("total-4-visits").innerText = results["values"]["patients_with_total_of_four_visits"]["table"]["contents"].length;
+          total_two_visits = results["values"]["patients_with_total_of_two_visits"]["table"]["contents"];
+
+          document.getElementById("total-2-visits").innerText = total_two_visits.length;
           
-          document.getElementById("total-5-visits").innerText = results["values"]["patients_with_total_of_five_plus_visits"]["table"]["contents"].length;
+          document.getElementById("a-total-2-visits").href = decompose_url+encodeURIComponent(JSON.stringify(total_two_visits));
+       
+          // Total three visits
           
-          document.getElementById("total-women-in-cohort").innerText = results["values"]["total_women_in_cohort"]["table"]["contents"].length;
+          total_three_visits = results["values"]["patients_with_total_of_three_visits"]["table"]["contents"];
+
+          document.getElementById("total-3-visits").innerText = total_three_visits.length;
           
-          document.getElementById("patients-with-pre-eclampsia").innerText = results["values"]["patients_with_pre_eclampsia"]["table"]["contents"].length;
+          document.getElementById("a-total-3-visits").href = decompose_url+encodeURIComponent(JSON.stringify(total_three_visits));
 
-          document.getElementById("patients-without-pre-eclampsia").innerText = results["values"]["patients_without_pre_eclampsia"]["table"]["contents"].length;
+          // Total four visits
 
-          document.getElementById("patients-given-less-than-2-ttv-doses").innerText = results["values"]["patients_given_ttv_less_than_two_doses"]["table"]["contents"].length;
-
-          document.getElementById("patients-given-more-than-1-ttv-doses").innerText = results["values"]["patients_given_ttv_at_least_two_doses"]["table"]["contents"].length;
-
-          document.getElementById("patients-given-0-2-sp-doses").innerText = results["values"]["patients_given_zero_to_two_sp_doses"]["table"]["contents"].length;
-
-          document.getElementById("patients-given-3-sp-doses").innerText = results["values"]["patients_given_at_least_three_sp_doses"]["table"]["contents"].length;
-
-          document.getElementById("patients-given-less-than-120-fefol-tabs").innerText = results["values"]["patients_given_less_than_one_twenty_fefol_tablets"]["table"]["contents"].length;
-
-          document.getElementById("patients-given-at-least-120-fefol-tabs").innerText = results["values"]["patients_given_one_twenty_plus_fefol_tablets"]["table"]["contents"].length;
-
-          document.getElementById("patients-not-given-albendazole").innerText = results["values"]["patients_not_given_albendazole_doses"]["table"]["contents"].length;
+          total_four_visits = results["values"]["patients_with_total_of_four_visits"]["table"]["contents"];
           
-          document.getElementById("patients-given-one-albendazole-dose").innerText = results["values"]["patients_given_one_albendazole_dose"]["table"]["contents"].length;
+          document.getElementById("total-4-visits").innerText = total_four_visits.length;
           
-          document.getElementById("patients-not-given-bed-net").innerText = results["values"]["patients_not_given_bed_net"]["table"]["contents"].length;
+          document.getElementById("a-total-4-visits").href = decompose_url+encodeURIComponent(JSON.stringify(total_four_visits));
+         
+          // Total plus 5 visits
+
+          total_five_visits = results["values"]["patients_with_total_of_five_plus_visits"]["table"]["contents"];
+
+          document.getElementById("total-5-visits").innerText = total_five_visits.length;
           
-          document.getElementById("patients-given-bed-net").innerText = results["values"]["patients_given_bed_net"]["table"]["contents"].length;
+          document.getElementById("a-total-5-visits").href = decompose_url+encodeURIComponent(JSON.stringify(total_five_visits));
+
+          // Total women in cohort
           
-          document.getElementById("patients-with-hb-less-than-7").innerText = results["values"]["patients_have_hb_less_than_7_g_dl"]["table"]["contents"].length;
+          total_women_in_cohort = results["values"]["total_women_in_cohort"]["table"]["contents"];
 
-          document.getElementById("patients-with-hb-at-least-7").innerText = results["values"]["patients_have_hb_greater_than_6_g_dl"]["table"]["contents"].length;
-
-          document.getElementById("patients-with-hb-not-done").innerText = results["values"]["patients_hb_test_not_done"]["table"]["contents"].length;
-
-          document.getElementById("patients-with-syphilis-negative").innerText = results["values"]["patients_with_negative_syphilis_status"]["table"]["contents"].length;
-
-          document.getElementById("patients-with-syphilis-positive").innerText = results["values"]["patients_with_positive_syphilis_status"]["table"]["contents"].length;
-
-          document.getElementById("patients-with-syphilis-unknown").innerText = results["values"]["patients_with_unknown_syphilis_status"]["table"]["contents"].length;
-
-          document.getElementById("c-prev-negative").innerText = results["values"]["pre_hiv_negative_final_visit"]["table"]["contents"].length;
-
-          document.getElementById("c-prev-positive").innerText = results["values"]["prev_hiv_positive_final_visit"]["table"]["contents"].length;
-
-          document.getElementById("c-new-positive").innerText = results["values"]["new_hiv_positive_final_visit"]["table"]["contents"].length;
-
-          document.getElementById("c-new-negative").innerText = results["values"]["new_hiv_negative_final_visit"]["table"]["contents"].length;
-
-          document.getElementById("c-hiv-test-not-done").innerText = results["values"]["not_done_hiv_test_final_visit"]["table"]["contents"].length;
-
-          document.getElementById("c-total-hiv-positive").innerText = "...";//results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          document.getElementById("total-women-in-cohort").innerText = total_women_in_cohort.length;
           
-          document.getElementById("not-on-cpt").innerText = "...";//results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          document.getElementById("a-total-women-in-cohort").href = decompose_url+encodeURIComponent(JSON.stringify(total_women_in_cohort));
 
-          document.getElementById("on-cpt").innerText = "...";//results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          // Pre-eclampsia : Yes
+          
+          patients_with_pre_eclampsia = results["values"]["patients_with_pre_eclampsia"]["table"]["contents"];
 
-          document.getElementById("nvp-not-given").innerText = "...";//results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          document.getElementById("patients-with-pre-eclampsia").innerText = patients_with_pre_eclampsia.length;
+          
+          document.getElementById("a-patients-with-pre-eclampsia").href = decompose_url+encodeURIComponent(JSON.stringify(patients_with_pre_eclampsia));
 
-          document.getElementById("nvp-given").innerText = "...";//results["values"]["not_done_hiv_test_first_visit"]["table"]["contents"].length;
+          // Pre-eclampsia : No
 
-          document.getElementById("c-not-on-art").innerText = results["values"]["not_on_art_final_visit"]["table"]["contents"].length;
+          patients_w_out_pre_eclampsia = results["values"]["patients_without_pre_eclampsia"]["table"]["contents"];
 
-          document.getElementById("c-on-art-before-visit").innerText = results["values"]["on_art_before_anc_final_visit"]["table"]["contents"].length;
+          document.getElementById("patients-without-pre-eclampsia").innerText = patients_w_out_pre_eclampsia.length;
+          
+          document.getElementById("a-patients-without-pre-eclampsia").href = decompose_url+encodeURIComponent(JSON.stringify(patients_w_out_pre_eclampsia));
 
-          document.getElementById("c-art-0-27-weeks").innerText = results["values"]["start_art_zero_to_twenty_seven_for_final_visit"]["table"]["contents"].length;
+          // TTV given: < 2 doses
 
-          document.getElementById("c-art-28-weeks").innerText = results["values"]["start_art_plus_twenty_eight_for_final_visit"]["table"]["contents"].length;
+          patients_given_less_than_2_ttv = results["values"]["patients_given_ttv_less_than_two_doses"]["table"]["contents"];
+
+          document.getElementById("patients-given-less-than-2-ttv-doses").innerText = patients_given_less_than_2_ttv.length;
+
+          document.getElementById("a-patients-given-less-than-2-ttv-doses").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_less_than_2_ttv));
+
+          // TTV given: 2+ doses
+
+          patients_given_2_plus_ttv = results["values"]["patients_given_ttv_at_least_two_doses"]["table"]["contents"];
+
+          document.getElementById("patients-given-more-than-1-ttv-doses").innerText = patients_given_2_plus_ttv.length;
+
+          document.getElementById("a-patients-given-more-than-1-ttv-doses").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_2_plus_ttv));
+
+          // SP given: 0-2 doses
+
+          patients_given_0_2_sp = results["values"]["patients_given_zero_to_two_sp_doses"]["table"]["contents"];
+
+          document.getElementById("patients-given-0-2-sp-doses").innerText = patients_given_0_2_sp.length;
+
+          document.getElementById("a-patients-given-0-2-sp-doses").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_0_2_sp));
+
+          // SP given: 3 doses
+
+          patients_given_3_sp = results["values"]["patients_given_at_least_three_sp_doses"]["table"]["contents"];
+
+          document.getElementById("patients-given-3-sp-doses").innerText = patients_given_3_sp.length;
+
+          document.getElementById("a-patients-given-3-sp-doses").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_3_sp));
+
+          // Fefol given: < 120 tabs
+
+          patients_given_less_than_120_fefol = results["values"]["patients_given_less_than_one_twenty_fefol_tablets"]["table"]["contents"];
+
+          document.getElementById("patients-given-less-than-120-fefol-tabs").innerText = patients_given_less_than_120_fefol.length;
+
+          document.getElementById("a-patients-given-less-than-120-fefol-tabs").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_less_than_120_fefol));
+
+          // Fefol given: >= 120 tabs
+
+          patients_given_120_plus_fefol = results["values"]["patients_given_one_twenty_plus_fefol_tablets"]["table"]["contents"];
+
+          document.getElementById("patients-given-at-least-120-fefol-tabs").innerText = patients_given_120_plus_fefol.length;
+
+          document.getElementById("a-patients-given-at-least-120-fefol-tabs").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_120_plus_fefol));
+
+          // Albendazole: Not given
+
+          patients_not_given_albendazole = results["values"]["patients_not_given_albendazole_doses"]["table"]["contents"];
+
+          document.getElementById("patients-not-given-albendazole").innerText = patients_not_given_albendazole.length;
+
+          document.getElementById("a-patients-not-given-albendazole").href = decompose_url+encodeURIComponent(JSON.stringify(patients_not_given_albendazole));
+
+          // Albendazole: Given
+
+          patients_given_albendazole = results["values"]["patients_given_one_albendazole_dose"]["table"]["contents"];
+          
+          document.getElementById("patients-given-one-albendazole-dose").innerText = patients_given_albendazole.length;
+
+          document.getElementById("a-patients-given-one-albendazole-dose").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_albendazole));
+
+          // Bed nets: Not given
+
+          patients_not_given_bed_net = results["values"]["patients_not_given_bed_net"]["table"]["contents"];
+          
+          document.getElementById("patients-not-given-bed-net").innerText = patients_not_given_bed_net.length;
+
+          document.getElementById("a-patients-not-given-bed-net").href = decompose_url+encodeURIComponent(JSON.stringify(patients_not_given_bed_net));
+
+          // Bed nets: Given
+
+          patients_given_bed_net = results["values"]["patients_given_bed_net"]["table"]["contents"];
+          
+          document.getElementById("patients-given-bed-net").innerText = patients_given_bed_net.length;
+
+          document.getElementById("a-patients-given-bed-net").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_bed_net));
+         
+          // Hb: < 7
+
+          patients_have_hb_less_than_7_g_dl = results["values"]["patients_have_hb_less_than_7_g_dl"]["table"]["contents"];
+          
+          document.getElementById("patients-with-hb-less-than-7").innerText = patients_have_hb_less_than_7_g_dl.length;
+
+          document.getElementById("a-patients-with-hb-less-than-7").href = decompose_url+encodeURIComponent(JSON.stringify(patients_have_hb_less_than_7_g_dl));
+
+          // Hb: >= 7
+
+          patients_have_hb_greater_than_6_g_dl = results["values"]["patients_have_hb_greater_than_6_g_dl"]["table"]["contents"];
+
+          document.getElementById("patients-with-hb-at-least-7").innerText = patients_have_hb_greater_than_6_g_dl.length;
+
+          document.getElementById("a-patients-with-hb-at-least-7").href = decompose_url+encodeURIComponent(JSON.stringify(patients_have_hb_greater_than_6_g_dl));
+
+          // Hb: Not done
+
+          patients_hb_test_not_done = results["values"]["patients_hb_test_not_done"]["table"]["contents"];
+
+          document.getElementById("patients-with-hb-not-done").innerText = patients_hb_test_not_done.length;
+
+          document.getElementById("a-patients-with-hb-not-done").href = decompose_url+encodeURIComponent(JSON.stringify(patients_hb_test_not_done));
+
+          // Syphilis: Negative
+
+          patients_with_negative_syphilis_status = results["values"]["patients_with_negative_syphilis_status"]["table"]["contents"];
+
+          document.getElementById("patients-with-syphilis-negative").innerText = patients_with_negative_syphilis_status.length;
+
+          document.getElementById("a-patients-with-syphilis-negative").href = decompose_url+encodeURIComponent(JSON.stringify(patients_with_negative_syphilis_status));
+
+          // Syphilis: Positive
+
+          patients_with_positive_syphilis_status = results["values"]["patients_with_positive_syphilis_status"]["table"]["contents"];
+
+          document.getElementById("patients-with-syphilis-positive").innerText = patients_with_positive_syphilis_status.length;
+
+          document.getElementById("a-patients-with-syphilis-positive").href = decompose_url+encodeURIComponent(JSON.stringify(patients_with_positive_syphilis_status));
+
+          // Syphilis: Unknown
+
+          patients_with_unknown_syphilis_status = results["values"]["patients_with_unknown_syphilis_status"]["table"]["contents"];
+
+          document.getElementById("patients-with-syphilis-unknown").innerText = patients_with_unknown_syphilis_status.length;
+
+          document.getElementById("a-patients-with-syphilis-unknown").href = decompose_url+encodeURIComponent(JSON.stringify(patients_with_unknown_syphilis_status));
+
+          // Previous HIV negative 
+
+          pre_hiv_negative_final_visit = results["values"]["pre_hiv_negative_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-prev-negative").innerText = pre_hiv_negative_final_visit.length;
+
+          document.getElementById("a-c-prev-negative").href = decompose_url+encodeURIComponent(JSON.stringify(pre_hiv_negative_final_visit));
+
+          // Previous HIV positive
+
+          prev_hiv_positive_final_visit = results["values"]["prev_hiv_positive_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-prev-positive").innerText = prev_hiv_positive_final_visit.length;
+
+          document.getElementById("a-c-prev-positive").href = decompose_url+encodeURIComponent(JSON.stringify(prev_hiv_positive_final_visit));
+
+          // New HIV positive
+
+           new_hiv_positive_final_visit = results["values"]["new_hiv_positive_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-new-positive").innerText = new_hiv_positive_final_visit.length;
+
+          document.getElementById("a-c-new-positive").href = decompose_url+encodeURIComponent(JSON.stringify(new_hiv_positive_final_visit));
+
+          // New HIV negative
+
+          new_hiv_negative_final_visit = results["values"]["new_hiv_negative_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-new-negative").innerText = new_hiv_negative_final_visit.length;
+
+          document.getElementById("a-c-new-negative").href = decompose_url+encodeURIComponent(JSON.stringify(new_hiv_negative_final_visit));
+
+          // HIV Test not done
+
+          not_done_hiv_test_final_visit = results["values"]["not_done_hiv_test_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-hiv-test-not-done").innerText = not_done_hiv_test_final_visit.length;
+
+          document.getElementById("a-c-hiv-test-not-done").href = decompose_url+encodeURIComponent(JSON.stringify(not_done_hiv_test_final_visit));
+
+          // Total HIV positive
+
+          c_total_hiv_positive = results["values"]["c_total_hiv_positive"]["table"]["contents"];
+
+          document.getElementById("c-total-hiv-positive").innerText = c_total_hiv_positive.length;
+
+          document.getElementById("a-c-total-hiv-positive").href = decompose_url+encodeURIComponent(JSON.stringify(c_total_hiv_positive));
+
+          // CPT: No
+          
+          not_on_cpt = results["values"]["not_on_cpt"]["table"]["contents"];
+
+          document.getElementById("not-on-cpt").innerText = not_on_cpt.length;
+
+          document.getElementById("a-not-on-cpt").href = decompose_url+encodeURIComponent(JSON.stringify(not_on_cpt));
+
+          // CPT: Yes
+
+          on_cpt = results["values"]["on_cpt"]["table"]["contents"]
+
+          document.getElementById("on-cpt").innerText = on_cpt.length;
+
+          document.getElementById("a-on-cpt").href = decompose_url+encodeURIComponent(JSON.stringify(on_cpt));
+
+          // NVP: Not given
+
+          nvp_not_given = results["values"]["nvp_not_given"]["table"]["contents"];
+          
+          document.getElementById("nvp-not-given").innerText = nvp_not_given.length;
+
+          document.getElementById("a-nvp-not-given").href = decompose_url+encodeURIComponent(JSON.stringify(nvp_not_given));
+
+          // NVP: Given
+
+          nvp_given = results["values"]["nvp_given"]["table"]["contents"];
+
+          document.getElementById("nvp-given").innerText = nvp_given.length;
+
+          document.getElementById("a-nvp-given").href = decompose_url+encodeURIComponent(JSON.stringify(nvp_given));
+
+          // On ART: No
+
+          not_on_art_final_visit = results["values"]["not_on_art_final_visit"]["table"]["contents"];          
+
+          document.getElementById("c-not-on-art").innerText = not_on_art_final_visit.length;
+
+          document.getElementById("a-c-not-on-art").href = decompose_url+encodeURIComponent(JSON.stringify(patients_given_less_than_2_ttv));
+
+          // On ART: Yes
+
+          on_art_before_anc_final_visit = results["values"]["on_art_before_anc_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-on-art-before-visit").innerText = on_art_before_anc_final_visit.length;
+
+          document.getElementById("a-c-on-art-before-visit").href = decompose_url+encodeURIComponent(JSON.stringify(on_art_before_anc_final_visit));
+
+          // On ART: 0-27 weeks
+
+          start_art_zero_to_twenty_seven_for_final_visit = results["values"]["start_art_zero_to_twenty_seven_for_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-art-0-27-weeks").innerText = start_art_zero_to_twenty_seven_for_final_visit.length;
+
+          document.getElementById("a-c-art-0-27-weeks").href = decompose_url+encodeURIComponent(JSON.stringify(start_art_zero_to_twenty_seven_for_final_visit));
+
+          // On ART: > 28 weeks
+
+          start_art_plus_twenty_eight_for_final_visit = results["values"]["start_art_plus_twenty_eight_for_final_visit"]["table"]["contents"];
+
+          document.getElementById("c-art-28-weeks").innerText = start_art_plus_twenty_eight_for_final_visit.length;
+
+          document.getElementById("a-c-art-28-weeks").href = decompose_url+encodeURIComponent(JSON.stringify(start_art_plus_twenty_eight_for_final_visit));
 
 
-          console.log(results["values"]["monthly_patient"]["table"]["contents"]);
+          //console.log(results["values"]["monthly_patient"]["table"]["contents"]);
   
         } catch(e){
 
