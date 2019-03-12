@@ -496,13 +496,10 @@
                                 3
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;">
-                                <form id="visits_1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Tot. with 1 Visit
-                                </form>
+                                Tot. with 1 Visit
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('visits_1').submit()">
+                                <a id="a-total-1-visit" href="">
                                   <span id="total-1-visit"></span>
                                 </a>
                               </td>
@@ -512,13 +509,10 @@
                                 4
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="visits_2" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Tot. with 2 Visits
-                                </form>
+                                Tot. with 2 Visits
                               </td>
                               <td class="valueCell" style="border-top: 0px">
-                                <a href="javascript:document.getElementById('visits_2').submit()">
+                                <a id="a-total-2-visits" href="">
                                   <span id="total-2-visits"></span>
                                 </a>
                               </td>
@@ -528,13 +522,10 @@
                                 5
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="visits_3" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Tot. with 3 Visits
-                                </form>
+                                Tot. with 3 Visits
                               </td>
                               <td class="valueCell" style="border-top: 0px">
-                                <a href="javascript:document.getElementById('visits_3').submit()">
+                                <a id="a-total-3-visits" href="">
                                   <span id="total-3-visits"></span>
                                 </a>
                               </td>
@@ -544,13 +535,10 @@
                                 6
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="visits_4" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Tot. with 4 Visits
-                                </form>
+                                Tot. with 4 Visits
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('visits_4').submit()">
+                                <a id="a-total-4-visits" href="">
                                   <span id="total-4-visits"></span>
                                 </a>
                               </td>
@@ -560,13 +548,10 @@
                                 7
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="visits_5" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Tot. with 5+ Visits
-                                </form>
+                                Tot. with 5+ Visits
                               </td>
                               <td class="valueCell" style="border-top: 0px; border-bottom:0px;">
-                                <a href="javascript:document.getElementById('visits_5').submit()">
+                                <a id="a-total-5-visits" href="">
                                   <span id="total-5-visits"></span>
                                 </a>
                               </td>
@@ -579,7 +564,9 @@
                                 Total women in cohort
                               </td>
                               <td class="valueCell">
-                                <span id="total-women-in-cohort"></span>
+                                <a id="a-total-women-in-cohort" href="">
+                                  <span id="total-women-in-cohort"></span>
+                                </a>
                               </td>
                             </tr>
                             
@@ -600,15 +587,12 @@
                               <td style="border-bottom: 0px;">
                               </td>
                               <td style="border-left: 1px solid #999; border-top: 1px solid #999; ">
-                                <form id="pre_eclampsia_no" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color: gray">No</span>
-                                </form>
+                                <span style="color: gray">No</span>
                               </td>
                               <td style="border-left: 1px solid #999; border-top: 1px solid #999;
                                   border-bottom: 0px solid #999; border-right: 1px solid #999;">
-                                <a href="javascript:document.getElementById('pre_eclampsia_no').submit()">
-                                  <span style="color: gray" id="patients-with-pre-eclampsia"></span>
+                                <a id="a-patients-without-pre-eclampsia" href="">
+                                  <span style="color: gray" id="patients-without-pre-eclampsia"></span>
                                 </a>
                               </td>
                             </tr>
@@ -617,14 +601,11 @@
                                 10
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="pre_eclampsia_1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Yes
-                                </form>
+                                Yes
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('pre_eclampsia_1').submit()">
-                                  <span id="patients-without-pre-eclampsia"></span>
+                                <a id="a-patients-with-pre-eclampsia" href="">
+                                  <span id="patients-with-pre-eclampsia"></span>
                                 </a>
                               </td>
                             </tr>
@@ -641,13 +622,10 @@
 
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;border-bottom: 0px;">
-                                <form id="ttv__total_previous_doses_1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color:gray;">&lt; 2 doses</span>
-                                </form>
+                                <span style="color:gray;">&lt; 2 doses</span>
                               </td>
                               <td style="border: 1px solid #999;border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('ttv__total_previous_doses_1').submit()">
+                                <a id="a-patients-given-less-than-2-ttv-doses" href="">
                                   <span style="color:gray;" id="patients-given-less-than-2-ttv-doses">0</span>
                                 </a>
                               </td>
@@ -657,13 +635,10 @@
                                 11
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px; border-left: 1px solid #999;">
-                                <form id="ttv__total_previous_doses_2" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  2+ doses
-                                </form>
+                                2+ doses
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('ttv__total_previous_doses_2').submit()">
+                                <a id="a-patients-given-more-than-1-ttv-doses" href="">
                                   <span id="patients-given-more-than-1-ttv-doses"></span> 
                                 </a>
                               </td>
@@ -681,13 +656,10 @@
                                 12
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;">
-                                <form id="sp_doses_given_zero_to_two" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  0-2 doses
-                                </form>
+                                0-2 doses
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('sp_doses_given_zero_to_two').submit()">
+                                <a id="a-patients-given-0-2-sp-doses" href="">
                                   <span id="patients-given-0-2-sp-doses"></span>
                                 </a>
                               </td>
@@ -697,13 +669,10 @@
                                 13
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="sp_doses_given_more_than_three" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  &#8805;3 doses
-                                </form>
+                                &#8805;3 doses
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('sp_doses_given_more_than_three').submit()">
+                                <a id="a-patients-given-3-sp-doses" href="">
                                   <span id="patients-given-3-sp-doses"></span>
                                 </a>
                               </td>
@@ -723,13 +692,10 @@
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;
                                   border-bottom: 0px;">
-                                <form id="fefo__number_of_tablets_given_1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color: gray"> &lt; 120 tabs </span>
-                                </form>
+                                <span style="color: gray"> &lt; 120 tabs </span>
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('fefo__number_of_tablets_given_1').submit()">
+                                <a id="a-patients-given-less-than-120-fefol-tabs" href="">
                                   <span style="color: gray" id="patients-given-less-than-120-fefol-tabs"> 0 </span>
                                 </a>
                               </td>
@@ -741,13 +707,10 @@
                               </td>
                               <td style="border-top: 0px; border-left: 1px solid #999;
                                   border-bottom: 1px solid #999;">
-                                <form id="fefo__number_of_tablets_given_2" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  120+ tabs
-                                </form>
+                                120+ tabs
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('fefo__number_of_tablets_given_2').submit()">
+                                <a id="a-patients-given-at-least-120-fefol-tabs" href="">
                                   <span id="patients-given-at-least-120-fefol-tabs"></span>
                                 </a>
                               </td>
@@ -768,13 +731,10 @@
                               </td>
                               <td style="border-bottom: 0px; border-top: 1px solid #999;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="albendazole_none" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color: gray">None</span>
-                                </form>
+                                <span style="color: gray">None</span>
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('albendazole_none').submit()">
+                                <a id="a-patients-not-given-albendazole" href="">
                                   <span style="color: gray" id="patients-not-given-albendazole"></span>
                                 </a>
                               </td>
@@ -786,13 +746,10 @@
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="albendazole" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  1 dose
-                                </form>
-                              </td>
+                                1 dose
+                             </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('albendazole').submit()">
+                                <a id="a-patients-given-one-albendazole-dose" href="">
                                   <span id="patients-given-one-albendazole-dose"></span>
                                 </a>
                               </td>
@@ -814,13 +771,10 @@
                               </td>
                               <td style="border-bottom: 0px; border-top: 1px solid #999;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="no_bed_net" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color: gray">None</span>
-                                </form>
+                                <span style="color: gray">None</span>
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('no_bed_net').submit()">
+                                <a id="a-patients-not-given-bed-net" href="">
                                   <span style="color: gray" id="patients-not-given-bed-net"></span>
                                 </a>
                               </td>
@@ -832,10 +786,7 @@
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="bed_net" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Received ITN
-                                </form>
+                                Received ITN
                               </td>
                               <td class="valueCell">
                                 <a href="javascript:document.getElementById('bed_net').submit()">
@@ -857,13 +808,10 @@
                                 17
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
-                                <form id="hb_less_than_seven" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  &lt;7
-                                </form>
+                                &lt;7
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('hb_less_than_seven').submit()">
+                                <a id="a-patients-with-hb-less-than-7" href="">
                                   <span id="patients-with-hb-less-than-7"></span>
                                 </a>
                               </td>
@@ -873,13 +821,10 @@
                                 16
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="hb_greater_or_equal_to_seven" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  &#8805;7
-                                </form>
+                                &#8805;7
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('hb_greater_or_equal_to_seven').submit()">
+                                <a id="a-patients-with-hb-at-least-7" href="">
                                   <span id="patients-with-hb-at-least-7"></span>
                                 </a>
                               </td>
@@ -889,13 +834,10 @@
                                 19
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="hb_not_done" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
                                   ND
-                                </form>
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('hb_not_done').submit()">
+                                <a id="a-patients-with-hb-not-done" href="">
                                   <span id="patients-with-hb-not-done"></span>
                                 </a>
                               </td>
@@ -914,13 +856,10 @@
                                 20
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
-                                <form id="syphilis_result_neg" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Negative
-                                </form>
+                                Negative
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('syphilis_result_neg').submit()">
+                                <a id="a-patients-with-syphilis-negative" href="">
                                   <span id="patients-with-syphilis-negative"></span>
                                 </a>
                               </td>
@@ -930,13 +869,10 @@
                                 21
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="syphilis_result_pos" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Positive
-                                </form>
+                                Positive
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('syphilis_result_pos').submit()">
+                                <a id="a-patients-with-syphilis-positive" href="">
                                   <span id="patients-with-syphilis-positive"></span>
                                 </a>
                               </td>
@@ -946,13 +882,10 @@
                                 22
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="syphilis_result_unk" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Unknown
-                                </form>
+                                Unknown
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('syphilis_result_unk').submit()">
+                                <a id="a-patients-with-syphilis-unknown" href="">
                                   <span id="patients-with-syphilis-unknown"></span>
                                 </a>
                               </td>
@@ -975,13 +908,10 @@
                                 23
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
-                                <form id="hiv_final_test_result_prev_neg" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Prev. Negative
-                                </form>
+                                Prev. Negative
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('hiv_final_test_result_prev_neg').submit()">
+                                <a id="a-c-prev-negative" href="">
                                   <span id="c-prev-negative"></span>
                                 </a>
                               </td>
@@ -991,13 +921,10 @@
                                 24
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="hiv_final_test_result_prev_pos" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Prev. Positive
-                                </form>
+                                Prev. Positive
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('hiv_final_test_result_prev_pos').submit()">
+                                <a id="a-c-prev-positive" href="">
                                   <span id="c-prev-positive"></span>
                                 </a>
                               </td>
@@ -1007,13 +934,10 @@
                                 25
                               </td>
                               <td style="border-left: 1px solid #999; width: 60%;">
-                                <form id="hiv_final_test_result_neg" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  New Negative
-                                </form>
+                                New Negative
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('hiv_final_test_result_neg').submit()">
+                                <a id="a-c-new-negative" href="">
                                   <span id="c-new-negative"></span>
                                 </a>
                               </td>
@@ -1023,13 +947,10 @@
                                 26
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="hiv_final_test_result_pos" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  New Positive
-                                </form>
+                                New Positive
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('hiv_final_test_result_pos').submit()">
+                                <a id="a-c-new-positive" href="">
                                   <span id="c-new-positive"></span>
                                 </a>
                               </td>
@@ -1040,13 +961,10 @@
                                 27
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="hiv_final_test_result_unk" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
                                   Not Done
-                                </form>
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('hiv_final_test_result_unk').submit()">
+                                <a id="a-c-hiv-test-not-done" href="">
                                   <span id="c-hiv-test-not-done"></span>
                                 </a>
                               </td>
@@ -1054,13 +972,10 @@
                             <tr>
                               <td></td>
                               <td style="font-style:italic;">
-                                <form id="total_final_hiv_positive" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  TotalHIV+ (19+21)
-                                </form>
+                                TotalHIV+ (19+21)
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('total_final_hiv_positive').submit()">
+                                <a id="a-c-total-hiv-positive" href="">
                                   <span id="c-total-hiv-positive"></span>
                                 </a>
                               </td>
@@ -1080,13 +995,10 @@
                               </td>
                               <td style="border-bottom: 0px; border-top: 1px solid #999;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="no_cpt__1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color: gray">Not On CPT</span>
-                                </form>
+                                <span style="color: gray">Not On CPT</span>
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('no_cpt__1').submit()">
+                                <a id="c-not-on-cpt" href="">
                                   <span id="not-on-cpt"></span>
                                 </a>
                               </td>
@@ -1098,13 +1010,10 @@
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="on_cpt__1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  On CPT
-                                </form>
+                                On CPT
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('on_cpt__1').submit()">
+                                <a id="a-on-cpt" href="">
                                   <span id="on-cpt"></span>
                                 </a>
                               </td>
@@ -1125,13 +1034,10 @@
                               </td>
                               <td style="border-bottom: 0px; border-top: 1px solid #999;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="no_nvp_baby__1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  <span style="color: gray">No</span>
-                                </form>
+                                <span style="color: gray">No</span>
                               </td>
                               <td style="border: 1px solid #999; border-top: 1px solid #999; border-bottom: 0px;">
-                                <a href="javascript:document.getElementById('no_nvp_baby__1').submit()">
+                                <a id="a-nvp-not-given" href="">
                                   <span id="nvp-not-given"></span>
                                 </a>
                               </td>
@@ -1143,13 +1049,10 @@
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
-                                <form id="nvp_baby__1" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Received NVP
-                                </form>
+                                Received NVP
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('nvp_baby__1').submit()">
+                                <a id="a-nvp-given" href="">
                                   <span id="nvp-given"></span>
                                 </a>
                               </td>
@@ -1168,13 +1071,10 @@
                                 30
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
-                                <form id="final_not_on_art" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Not on ART
-                                </form>
+                                Not on ART
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('final_not_on_art').submit()">
+                                <a id="a-c-not-on-art" href="">
                                   <span id="c-not-on-art"></span>
                                 </a>
                               </td>
@@ -1184,13 +1084,10 @@
                                 31
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="final_on_art_before" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  On ART before ANC
-                                </form>
+                                On ART before ANC
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('on_art_before').submit()">
+                                <a id="a-c-on-art-before-visit" href="">
                                   <span id="c-on-art-before-visit"></span>
                                 </a>
                               </td>
@@ -1200,13 +1097,10 @@
                                 32
                               </td>
                               <td style="border-left: 1px solid #999;">
-                                <form id="final_on_art_zero_to_27" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Start ART 0-27 weeks
-                                </form>
+                                Start ART 0-27 weeks
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('on_art_zero_to_27').submit()">
+                                <a id="a-c-art-0-27-weeks" href="">
                                   <span id="c-art-0-27-weeks"></span>
                                 </a>
                               </td>
@@ -1216,13 +1110,10 @@
                                 33
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="final_on_art_28_plus" method="post" action="decompose">
-                                  <input type="hidden" value="" name="patients">
-                                  Start ART 28+ weeks
-                                </form>
+                                Start ART 28+ weeks
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('on_art_28_plus').submit()">
+                                <a id="a-c-art-28-weeks" href="">
                                   <span id="c-art-28-weeks"></span>
                                 </a>
                               </td>
