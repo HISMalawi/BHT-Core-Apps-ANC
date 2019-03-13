@@ -31,6 +31,8 @@ var month = params["months"];
 
 var date = year+"-"+month+"-01";
 
+var decompose_url = "/apps/ANC/views/reports/decompose.html?ids=";
+
 $(document).ready(function(){
 
   // Populate report header
@@ -59,52 +61,189 @@ $(document).ready(function(){
 
           results = JSON.parse(this.responseText);
 
-          document.getElementById("total-anc-visits").innerText = results["values"]["total_number_of_anc_visits"]["table"]["contents"].length;
+          // Total ANC visits
 
-          document.getElementById("new-visits").innerText = results["values"]["new_visits"]["table"]["contents"].length;
+          total_number_of_anc_visits = results["values"]["total_number_of_anc_visits"]["table"]["contents"];
 
-          document.getElementById("subsequent-visits").innerText = results["values"]["subsequent_visits"]["table"]["contents"].length;
+          document.getElementById("total-anc-visits").innerText = total_number_of_anc_visits.length;
 
-          document.getElementById("first-trimester").innerText = results["values"]["first_trimester"]["table"]["contents"].length;
+          document.getElementById("a-total-anc-visits").href = decompose_url+encodeURIComponent(JSON.stringify(total_number_of_anc_visits));
 
-          document.getElementById("second-trimester").innerText = results["values"]["second_trimester"]["table"]["contents"].length;
+          // New visits
 
-          document.getElementById("third-trimester").innerText = results["values"]["third_trimester"]["table"]["contents"].length;
+          new_visits = results["values"]["new_visits"]["table"]["contents"];
 
-          document.getElementById("teeneger-pregnancies").innerText = results["values"]["teeneger_pregnancies"]["table"]["contents"].length;
+          document.getElementById("new-visits").innerText = new_visits.length;
 
-          document.getElementById("women-attending-all-visits").innerText = results["values"]["women_attending_all_anc_visits"]["table"]["contents"].length;
+          document.getElementById("a-new-visits").href = decompose_url+encodeURIComponent(JSON.stringify(new_visits));
 
-          document.getElementById("women-screened-syphilis").innerText = results["values"]["women_screened_for_syphilis"]["table"]["contents"].length;
+          // Subsequent visits
 
-          document.getElementById("women-screened-hb").innerText = results["values"]["women_checked_hb"]["table"]["contents"].length;
+          subsequent_visits = results["values"]["subsequent_visits"]["table"]["contents"];
 
-          document.getElementById("women-received-sp1").innerText = results["values"]["women_received_sp_one"]["table"]["contents"].length;
+          document.getElementById("subsequent-visits").innerText = subsequent_visits.length;
 
-          document.getElementById("women-received-sp2").innerText = results["values"]["women_received_sp_two"]["table"]["contents"].length;
+          document.getElementById("a-subsequent-visits").href = decompose_url+encodeURIComponent(JSON.stringify(subsequent_visits));
 
-          document.getElementById("women-received-sp3").innerText = results["values"]["women_received_sp_three"]["table"]["contents"].length;
+          // First trimester
 
-          document.getElementById("women-received-ttv").innerText = results["values"]["women_received_ttv"]["table"]["contents"].length;
+          first_trimester = results["values"]["first_trimester"]["table"]["contents"];
 
-          document.getElementById("women-received-iron").innerText = results["values"]["women_received_one_twenty_iron_tabs"]["table"]["contents"].length;
+          document.getElementById("first-trimester").innerText = first_trimester.length;
 
-          document.getElementById("women-received-albendazole").innerText = results["values"]["women_received_albendazole"]["table"]["contents"].length;
+          document.getElementById("a-first-trimester").href = decompose_url+encodeURIComponent(JSON.stringify(first_trimester));
 
-          document.getElementById("women-received-itn").innerText = results["values"]["women_received_itn"]["table"]["contents"].length;
+          // Second trimester
 
-          document.getElementById("women-tested-hiv-positive").innerText = results["values"]["women_tested_hiv_positive"]["table"]["contents"].length;
+          second_trimester = results["values"]["second_trimester"]["table"]["contents"];
 
-          document.getElementById("women-prev-hiv-positive").innerText = results["values"]["women_prev_hiv_positive"]["table"]["contents"].length;
+          document.getElementById("second-trimester").innerText = second_trimester.length;
 
-          document.getElementById("women-on-cpt").innerText = results["values"]["women_on_cpt"]["table"]["contents"].length;
+          document.getElementById("a-second-trimester").href = decompose_url+encodeURIComponent(JSON.stringify(second_trimester));
 
-          document.getElementById("women-on-art").innerText = results["values"]["women_on_art"]["table"]["contents"].length;
+          // Third trimester
 
-          document.getElementById("number-of-outreach").innerText = results["values"]["total_number_of_outreach_clinic"]["table"]["contents"].length;
+          third_trimester = results["values"]["third_trimester"]["table"]["contents"];
 
-          document.getElementById("number-of-outreach-attended").innerText = results["values"]["total_number_of_outreach_clinic_attended"]["table"]["contents"].length;
-          console.log()
+          document.getElementById("third-trimester").innerText = third_trimester.length;
+
+          document.getElementById("a-third-trimester").href = decompose_url+encodeURIComponent(JSON.stringify(third_trimester));
+
+          // Teeneger pregnancy
+
+          teeneger_pregnancies = results["values"]["teeneger_pregnancies"]["table"]["contents"];
+
+          document.getElementById("teeneger-pregnancies").innerText = teeneger_pregnancies.length;
+
+          document.getElementById("a-teeneger-pregnancies").href = decompose_url+encodeURIComponent(JSON.stringify(teeneger_pregnancies));
+
+          // Women attending all visits
+
+          women_attending_all_anc_visits = results["values"]["women_attending_all_anc_visits"]["table"]["contents"];
+
+          document.getElementById("women-attending-all-visits").innerText = women_attending_all_anc_visits.length;
+
+          document.getElementById("a-women-attending-all-visits").href = decompose_url+encodeURIComponent(JSON.stringify(women_attending_all_anc_visits));
+
+          // Women screened syphilis
+
+          women_screened_for_syphilis = results["values"]["women_screened_for_syphilis"]["table"]["contents"];
+
+          document.getElementById("women-screened-syphilis").innerText = women_screened_for_syphilis.length;
+
+          document.getElementById("a-women-screened-syphilis").href = decompose_url+encodeURIComponent(JSON.stringify(women_screened_for_syphilis));
+
+          // Women screened HB
+
+          women_checked_hb = results["values"]["women_checked_hb"]["table"]["contents"];
+
+          document.getElementById("women-screened-hb").innerText = women_checked_hb.length;
+
+          document.getElementById("a-women-screened-hb").href = decompose_url+encodeURIComponent(JSON.stringify(women_checked_hb));
+
+          // Women received SP 1 dose
+
+          women_received_sp_one = results["values"]["women_received_sp_one"]["table"]["contents"];
+
+          document.getElementById("women-received-sp1").innerText = women_received_sp_one.length;
+
+          document.getElementById("a-women-received-sp1").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_sp_one));
+
+          // Women received SP 2 doses
+
+          women_received_sp_two = results["values"]["women_received_sp_two"]["table"]["contents"];
+
+          document.getElementById("women-received-sp2").innerText = women_received_sp_two.length;
+
+          document.getElementById("a-women-received-sp2").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_sp_two));
+
+          // Women received SP 3 doses
+
+          women_received_sp_three = results["values"]["women_received_sp_three"]["table"]["contents"];
+
+          document.getElementById("women-received-sp3").innerText = women_received_sp_three.length;
+
+          document.getElementById("a-women-received-sp3").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_sp_three));
+
+          // Women received TTV
+
+          women_received_ttv = results["values"]["women_received_ttv"]["table"]["contents"];
+
+          document.getElementById("women-received-ttv").innerText = women_received_ttv.length;
+
+          document.getElementById("a-women-received-ttv").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_ttv));
+
+          // Women received Iron
+
+          women_received_one_twenty_iron_tabs = results["values"]["women_received_one_twenty_iron_tabs"]["table"]["contents"];
+
+          document.getElementById("women-received-iron").innerText = women_received_one_twenty_iron_tabs.length;
+
+          document.getElementById("a-women-received-iron").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_one_twenty_iron_tabs));
+
+          // Women received albendazole
+
+          women_received_albendazole = results["values"]["women_received_albendazole"]["table"]["contents"];
+
+          document.getElementById("women-received-albendazole").innerText = women_received_albendazole.length;
+
+          document.getElementById("a-women-received-albendazole").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_albendazole));
+
+          // Women received itn
+
+          women_received_itn = results["values"]["women_received_itn"]["table"]["contents"];
+
+          document.getElementById("women-received-itn").innerText = women_received_itn.length;
+
+          document.getElementById("a-women-received-itn").href = decompose_url+encodeURIComponent(JSON.stringify(women_received_itn));
+
+          // Women tested HIV Positive
+
+          women_tested_hiv_positive = results["values"]["women_tested_hiv_positive"]["table"]["contents"];
+
+          document.getElementById("women-tested-hiv-positive").innerText = women_tested_hiv_positive.length;
+
+          document.getElementById("a-women-tested-hiv-positive").href = decompose_url+encodeURIComponent(JSON.stringify(women_tested_hiv_positive));
+
+          // Women previous HIV Positive
+
+          women_prev_hiv_positive = results["values"]["women_prev_hiv_positive"]["table"]["contents"];
+
+          document.getElementById("women-prev-hiv-positive").innerText = women_prev_hiv_positive.length;
+
+          document.getElementById("a-women-prev-hiv-positive").href = decompose_url+encodeURIComponent(JSON.stringify(women_prev_hiv_positive));
+
+          // Women on CPT
+
+          women_on_cpt = results["values"]["women_on_cpt"]["table"]["contents"];
+
+          document.getElementById("women-on-cpt").innerText = women_on_cpt.length;
+
+          document.getElementById("a-women-on-cpt").href = decompose_url+encodeURIComponent(JSON.stringify(women_on_cpt));
+
+          // Women on ART
+
+          women_on_art = results["values"]["women_on_art"]["table"]["contents"]
+
+          document.getElementById("women-on-art").innerText = women_on_art.length;
+
+          document.getElementById("a-women-on-art").href = decompose_url+encodeURIComponent(JSON.stringify(women_on_art));
+
+          // Number of outreach
+
+          total_number_of_outreach_clinic = results["values"]["total_number_of_outreach_clinic"]["table"]["contents"];
+
+          document.getElementById("number-of-outreach").innerText = total_number_of_outreach_clinic.length;
+
+          document.getElementById("a-number-of-outreach").href = decompose_url+encodeURIComponent(JSON.stringify(total_number_of_outreach_clinic));
+
+          // Number of outreach attended
+
+          total_number_of_outreach_clinic_attended = results["values"]["total_number_of_outreach_clinic_attended"]["table"]["contents"];
+
+          document.getElementById("number-of-outreach-attended").innerText = total_number_of_outreach_clinic_attended.length;
+
+          document.getElementById("a-number-of-outreach-attended").href = decompose_url+encodeURIComponent(JSON.stringify(total_number_of_outreach_clinic_attended));
 
         }catch(e){
 
