@@ -21,6 +21,7 @@
       text-decoration: underline;
       margin-top: 3%;
     }
+
   </style>
 </head>
 <body>
@@ -40,6 +41,10 @@
     </div>
 
       <script>
+      if(sessionStorage.programID === "1" && sessionStorage.switchedFromANC){
+        sessionStorage.setItem("programID", 12);
+        sessionStorage.setItem("switchedFromANC", false);
+      }
       var apiURL = sessionStorage.getItem("apiURL");
       var apiPort = sessionStorage.getItem("apiPort");
       var apiProtocol = sessionStorage.getItem("apiProtocol");

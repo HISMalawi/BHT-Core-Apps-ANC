@@ -12,9 +12,7 @@ var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patien
 
 YesNoConcepts = {};
 
-YesNoConcepts["Yes"] = 1065;
-
-YesNoConcepts["No"] = 1066;
+YesNoConcepts = {"Yes" : 1065, "No" : 1066 };
 
 function submitARTFollowUpEncounter() {
   
@@ -57,6 +55,8 @@ function postARTFollowUpObs(encounter) {
     obs.observations.push(
       { concept_id: 1939, value_coded: parseInt(YesNoConcepts[res]) },
     );
+
+    sessionStorage.setItem("switchedFromANC",true);
 
   }else if(res.toLowerCase() === "no" && $('reason_for_not_starting_art').value !== ""){
     // No to pmtct 
