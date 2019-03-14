@@ -27,6 +27,8 @@ var previous_hiv_test = false;
 var hiv_status = "";
 var art_status = ""
 var art_num = ""
+var subseq_visit = false;
+var preg_test_done = false;
 
 var concept_map = {
     "positive": 703,
@@ -39,6 +41,42 @@ var concept_map = {
 /**
 ** For ANC
 */
+
+function isSubsequentVisit(){
+
+  var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
+  url += '/programs/'+programID+'/patients/'+patientID+'/subsequent_visit';
+
+  var xhttp = new XMLHttpRequest();
+        
+  xhttp.onreadystatechange = function () {
+          
+    if (this.readyState == 4 && this.status == 200) {
+      
+      try{
+
+        var obj = JSON.parse(this.responseText);
+        console.log(obj)
+        subseq_visit = obj["subsequent_visit"];
+        preg_test_done = obj["pregnancy_test"];
+
+      }catch(e){
+        console.log(e);
+      }
+      
+    }
+        
+  };
+  
+  xhttp.open("GET", url, true);
+        
+  xhttp.setRequestHeader('Authorization', authToken);
+        
+  xhttp.setRequestHeader('Content-type', "application/json");
+        
+  xhttp.send();
+
+}
 
 function getPatientHIVStatus(){
   
@@ -74,6 +112,7 @@ function getPatientHIVStatus(){
 }
 
 getPatientHIVStatus();
+isSubsequentVisit();
 
 Object.defineProperty(Date.prototype, "format", {
   value: function (format) {
@@ -205,7 +244,7 @@ function removeHIVOption(){
 
   try{
     
-    prev_test_done = yesNo_Hash["Lab Results"]["Previous HIV test done"];
+    prev_test_done = (yesNo_Hash["Lab Results"] !== undefined) ? yesNo_Hash["Lab Results"]["Previous HIV test done"] : "";
 
     if (prev_hiv_test_res !== ""){
 
@@ -219,7 +258,7 @@ function removeHIVOption(){
     
     if ((prev_test_done !== undefined && prev_test_done.toLowerCase() === 'yes' && 
       prev_hiv_test_res.toLowerCase() === 'positive') || compare_dates || 
-      hiv_status.toLowerCase() === 'positive'){
+      (hiv_status !== null && hiv_status.toLowerCase() === 'positive')){
 
       x = tt_currentUnorderedListOptions.firstChild.attributes["tstvalue"].value;
 
@@ -289,11 +328,25 @@ function checkPreviousHIVTest(){
   
 }
 
+function checkCondiditions(){
+
+  if (subseq_visit && preg_test_done){
+
+    return false;
+
+  }else{
+
+    return true;
+
+  }
+
+}
+
 function addYesNoToLabTests() {
         
   var tar = document.getElementById("inputFrame" + tstCurrentPage);
 
-  if (artHIVStatus()){
+  if (artHIVStatus() || subseq_visit){
   
     var attr = 'Pregnancy test done,3339'
 
@@ -331,10 +384,7 @@ function postLabResultsObs(encounter) {
         
   var obs = {
     encounter_id: encounter.encounter_id,
-    observations: [
-        { concept_id: 2473, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Pregnancy test done']] },
-        { concept_id: 9655, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Previous HIV test done']] }
-      ]
+    observations: []
     };
     
   if(hiv_status !== null && hiv_status.toLowerCase() === 'positive'){
@@ -344,44 +394,50 @@ function postLabResultsObs(encounter) {
       );
 
   }
-    
-  // Getting previous HIV test Results
-        
-  if (yesNo_Hash['Lab Results']['Previous HIV test done'] === "Yes"){
-          
-    var previous_hiv_test_result = $('prev_hiv_test_result').value;
-          
-    var prev_hiv_test_date = $('prev_hiv_test_date').value.split("-").reverse().join("-");
 
-    obs.observations.push(
-        {concept_id: 9656, value_coded: concept_map[previous_hiv_test_result] },
-        {concept_id: 9657, value_datetime: prev_hiv_test_date }
-      );
-        
-    //Previous hiv test results is positive
+  if (yesNo_Hash['Lab Results'] !== undefined){
       
-    if(previous_hiv_test_result === 'positive'){
-            
-      var on_art = $('on_art').value
+    obs.observations.push(
+      { concept_id: 2473, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Pregnancy test done']] },
+      { concept_id: 9655, value_coded: YesNoConcepts[yesNo_Hash['Lab Results']['Previous HIV test done']] }
+    )
+    // Getting previous HIV test Results
           
-      var arv_number = $('arv_number').value 
+    if (yesNo_Hash['Lab Results']['Previous HIV test done'] === "Yes"){
+            
+      var previous_hiv_test_result = $('prev_hiv_test_result').value;
+            
+      var prev_hiv_test_date = $('prev_hiv_test_date').value.split("-").reverse().join("-");
 
       obs.observations.push(
-          {concept_id: 7010, value_coded: YesNoConcepts[on_art]}
+          {concept_id: 9656, value_coded: concept_map[previous_hiv_test_result] },
+          {concept_id: 9657, value_datetime: prev_hiv_test_date }
         );
           
-      if(on_art === 'Yes' && arv_number !== ''){
-          // Save to Patient Identifier
-          /** 
-           * obs.observations.push(
-           *   {concept_id: '', value_text: arv_number}
-           * )
-           */
+      //Previous hiv test results is positive
+        
+      if(previous_hiv_test_result === 'positive'){
+              
+        var on_art = $('on_art').value
+            
+        var arv_number = $('arv_number').value 
+
+        obs.observations.push(
+            {concept_id: 7010, value_coded: YesNoConcepts[on_art]}
+          );
+            
+        if(on_art === 'Yes' && arv_number !== ''){
+            
+          obs.observations.push({concept_id: 7014, value_text: arv_number});
+      
+        }
+
       }
 
     }
 
   }
+    
 
     if($('hiv_status').value !== ""){
           
@@ -484,6 +540,10 @@ function postLabResultsObs(encounter) {
 
     }
 
+    if (obs.observations.length === 0){
+      obs.observations.push({"concept_id":7759, "value_text": sessionStorage.userLocation});
+    }
+
     submitParameters(obs,"/observations/", "nextPage");
 
 }
@@ -554,17 +614,28 @@ function submitButton(){
 function changeSubmitFunction(){
         
   var nextButton =  document.getElementById('nextButton');
-  
+      
+  var field = $("touchscreenInput"+tstCurrentPage);
+
   nextButton.onmousedown = function(){
 
     var selected_lab_values = getSelectedLabTests().split(" ").filter(Boolean);
           
     var selected_urine_values = getSelectedUrineTests().split(" ").filter(Boolean);
+      
+    // DO THIS WHEN CAPTURING ON ART ANSWER
+    // WHY? Next page will be determined based on the answer to this question.
+    if (field.name === "on_art"){
+      
+      checkCurrentHIVResult();
+      return;
+
+    }
 
     if (selected_lab_values.length > 0){
             
       var field_name = $("touchscreenInput"+tstCurrentPage).name
-            
+    
       if (selected_lab_values[selected_lab_values.length - 1] === field_name || 
               
         selected_urine_values[selected_urine_values.length - 1] === field_name ){
@@ -589,8 +660,12 @@ function changeSubmitFunction(){
                 
             }
           
-          }else{
+          }else if (selected_lab_values[selected_lab_values.length - 1] === "hiv_status"){
               
+            checkCurrentHIVResult();
+          
+          }else{
+
             submitLabResultsEncounter();
           
           }
@@ -608,6 +683,82 @@ function changeSubmitFunction(){
     }
   
   }
+
+}
+
+function checkCurrentHIVResult(){
+
+  var field = $("touchscreenInput"+tstCurrentPage);
+
+  var selected_lab_values = getSelectedLabTests().split(" ").filter(Boolean);
+          
+  var selected_urine_values = getSelectedUrineTests().split(" ").filter(Boolean);
+
+  console.log(field.name);
+
+  if (field.name === "hiv_status" && field.value.toLowerCase() === "positive"){
+
+    gotoNextPage();
+    return;
+
+  }
+
+  if (field.name === "on_art" && field.value.toLowerCase() === "yes"){
+
+    gotoNextPage();
+    return;
+
+  }
+
+  if (selected_lab_values.length > 0){
+            
+    var field_name = $("touchscreenInput"+tstCurrentPage).name
+            
+    if (selected_lab_values[selected_lab_values.length - 1] === field_name || 
+              
+      selected_urine_values[selected_urine_values.length - 1] === field_name ){
+              
+      if (selected_lab_values[selected_lab_values.length - 1] === "urine"){
+                
+        if (selected_urine_values.length > 0){
+                  
+          if (selected_urine_values[selected_urine_values.length - 1] === field_name) {
+                    
+            submitLabResultsEncounter();
+                
+          }else{
+            console.log("Block one");
+            return;
+            //gotoNextPage();
+                  
+          }
+            
+        }else{
+                  
+          submitLabResultsEncounter();
+                
+        }
+          
+      }else{
+
+        submitLabResultsEncounter();
+          
+      }
+        
+    }else{
+            
+      console.log("Block two");
+      return;
+      //gotoNextPage();
+        
+    }
+    
+  }else{
+        
+    submitLabResultsEncounter();
+    
+  }
+  
 
 }
 

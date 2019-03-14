@@ -39,7 +39,7 @@
             helpText="ART Summary"
           \>
 
-          <input type="text" name="lab-results"
+          <input type="text" name="lab-results" condition="checkCondiditions();"
             tt_onLoad="__$('keyboard').style.display = 'none'; 
               addYesNoToLabTests(); addHIVOption();" optional="true" 
             tt_onUnload="updatePreviousHIVTestDoneResponse();"
@@ -110,9 +110,10 @@
           
           </select>
 
-          <select tt_onLoad="showCategory2('Available Lab Test Results');" 
-            allowFreeText="false" condition="$('hiv_status').value === 'Positive'" 
-            helpText="Patient on ART" id="on_art" name="on_art" 
+          <select tt_onLoad="showCategory2('Available Lab Test Results');
+              changeSubmitFunction();"  allowFreeText="false" 
+            condition="$('hiv_status').value === 'positive'" 
+            helpText="Patient on ART" id="on_art_1" name="on_art" 
             tt_pageStyleClass="NoKeyboard">
             
               <option value=''></option>
@@ -121,8 +122,9 @@
           
           </select>
                     
-          <input tt_onLoad ="showCategory2('Available Lab Test Results');__$('Unknown').style.display='inline';"
-            condition="$('on_art').value === 'Yes';" field_type="text" helpText="ARV Number" 
+          <input tt_onLoad ="showCategory2('Available Lab Test Results');
+              __$('Unknown').style.display='inline'; changeSubmitFunction();"
+            condition="$('on_art_1').value === 'Yes'" field_type="text" helpText="ARV Number" 
             id="arv_number" name="arv_number" tt_pageStyleClass="" 
             type="text" />
 
