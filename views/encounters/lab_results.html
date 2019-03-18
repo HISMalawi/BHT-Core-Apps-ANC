@@ -4,11 +4,13 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <title>ANC - Lab Results</title>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
+
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-
+    <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
+    <script type="text/javascript" src="/assets/js/GlobalProperty.js"></script>
     <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
-    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
     <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
@@ -125,8 +127,13 @@
           <input tt_onLoad ="showCategory2('Available Lab Test Results');
               __$('Unknown').style.display='inline'; changeSubmitFunction();"
             condition="$('on_art_1').value === 'Yes'" field_type="text" helpText="ARV Number" 
-            id="arv_number" name="arv_number" tt_pageStyleClass="" 
+            id="arv_number_1" name="arv_number" tt_pageStyleClass="" 
             type="text" />
+
+          <input type="text" name="recency-essay" condition="$('hiv_status').value === 'positive' && 
+              askRecencyEssay();" tt_onLoad="__$('keyboard').style.display = 'none'; addYesNoToAsanteTest();
+              changeSubmitFunction();" optional="true" 
+            tt_pageStyleClass= "NoControls" helpText="Rapid Recency Essay - Asante Results" >
 
           <input condition="getSelectedLabTests().match(/hb/);" field_type="number" 
             helpText="HB Test Result (g/dl)" id="hb" name="hb" 

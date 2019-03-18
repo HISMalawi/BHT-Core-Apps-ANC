@@ -1,33 +1,55 @@
 var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+
 var patientID = sessionStorage.patientID;
+
 var programID = sessionStorage.programID;
+
 var apiProtocol = sessionStorage.apiProtocol;
+
 var apiURL = sessionStorage.apiURL;
+
 var apiPort = sessionStorage.apiPort;
+
 var authToken = sessionStorage.authorization;
+
 var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
 YesNoConcepts = {"Yes" : 1065,"No" : 1066};
+
 var todayDate = new Date(tstCurrentDate);
+
 var originaltestDate = ""
           
 var alert_date = new Date(todayDate);
+
 alert_date.setDate(alert_date.getDate()- 90)
 
 var patient_age = parseInt(sessionStorage.patientAge);
+
 var ageInMonths = patient_age * 12;
 
 var currentYear = moment(tstCurrentDate).format("YYYY");
+
 var currentMonth = moment(tstCurrentDate).format("MM");
+
 var selected_stage_conditions = {};
+
 var selected_stage_conditions_copy = {}
           
 var firstPositiveHivTestType = "UNKNOWN";
+
 var previous_hiv_test = false;
+
 var hiv_status = "";
+
+var prev_test_results = "";
+
 var art_status = ""
+
 var art_num = ""
+
 var subseq_visit = false;
+
 var preg_test_done = false;
 
 var concept_map = {
@@ -38,9 +60,35 @@ var concept_map = {
     "trace" : 6698
   }
 
+var recency_essay = false;
+
+var global_property = GlobalProperty({
+  authToken: sessionStorage.authorization,
+  path: apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1'
+});
+
+global_property.isEnabled('recency_essay_activated', function (predicate) {
+  
+  if (predicate) {
+
+   recency_essay = true; 
+
+  }
+
+}, function (error) {
+
+  console.error(error);
+
+});
+
 /**
-** For ANC
+* For ANC
 */
+function askRecencyEssay(){
+
+  return recency_essay
+
+}
 
 function isSubsequentVisit(){
 
@@ -56,12 +104,17 @@ function isSubsequentVisit(){
       try{
 
         var obj = JSON.parse(this.responseText);
-        console.log(obj)
+
         subseq_visit = obj["subsequent_visit"];
+
         preg_test_done = obj["pregnancy_test"];
 
+        prev_test_results = obj["hiv_status"];
+
       }catch(e){
+
         console.log(e);
+
       }
       
     }
@@ -258,7 +311,8 @@ function removeHIVOption(){
     
     if ((prev_test_done !== undefined && prev_test_done.toLowerCase() === 'yes' && 
       prev_hiv_test_res.toLowerCase() === 'positive') || compare_dates || 
-      (hiv_status !== null && hiv_status.toLowerCase() === 'positive')){
+      (hiv_status !== null && hiv_status.toLowerCase() === 'positive') ||
+      (prev_test_results !== "" && prev_test_results.toLowerCase() === 'positive')){
 
       x = tt_currentUnorderedListOptions.firstChild.attributes["tstvalue"].value;
 
@@ -361,6 +415,18 @@ function addYesNoToLabTests() {
       
 }
 
+
+function addYesNoToAsanteTest() {
+        
+  var tar = document.getElementById("inputFrame" + tstCurrentPage);
+  
+  var attr = 'Line 1. Control Line Present,3339#Line 2. Positive Verification Line Present,9655#Line 3. Long-term Line Present, 3339'
+        
+        
+  buildYesNoUI('Recency Assay', attr, tar);
+      
+}
+
 function submitLabResultsEncounter() {
         
   var currentTime = moment().format(' HH:mm:ss');
@@ -447,21 +513,26 @@ function postLabResultsObs(encounter) {
 
       if ($('hiv_status').value === "positive") {
             
-        var on_art = $('on_art').value;
-            
-        var arv_number = $('arv_number').value;
+        var on_art = $('on_art_1').value;
+
+        if ($('touchscreenInput'+tstCurrentPage).name === "arv_number"){
+          
+          var arv_number = $('touchscreenInput'+tstCurrentPage).value;
+
+        }else{
+          
+          var arv_number = $('arv_number_1').value;
+ 
+        }
 
         obs.observations.push(
           {concept_id: 7010, value_coded: YesNoConcepts[on_art]}
         );
 
-        if(on_art === 'Yes' && arv_number !== ''){
-          // Save to Patient Identifier
-          /** 
-           * obs.observations.push(
-           *   {concept_id: '', value_text: arv_number}
-           * )
-           */
+        if(on_art.toLowerCase() === 'yes' && arv_number !== ''){
+            
+          obs.observations.push({concept_id: 7014, value_text: arv_number});
+      
         }
 
       }
@@ -625,7 +696,7 @@ function changeSubmitFunction(){
       
     // DO THIS WHEN CAPTURING ON ART ANSWER
     // WHY? Next page will be determined based on the answer to this question.
-    if (field.name === "on_art"){
+    if (field.name === "on_art" || field.name === "arv_number"){
       
       checkCurrentHIVResult();
       return;
@@ -671,7 +742,7 @@ function changeSubmitFunction(){
           }
         
       }else{
-            
+
         gotoNextPage();
         
       }
@@ -693,8 +764,6 @@ function checkCurrentHIVResult(){
   var selected_lab_values = getSelectedLabTests().split(" ").filter(Boolean);
           
   var selected_urine_values = getSelectedUrineTests().split(" ").filter(Boolean);
-
-  console.log(field.name);
 
   if (field.name === "hiv_status" && field.value.toLowerCase() === "positive"){
 
@@ -727,9 +796,8 @@ function checkCurrentHIVResult(){
             submitLabResultsEncounter();
                 
           }else{
-            console.log("Block one");
-            return;
-            //gotoNextPage();
+            
+            gotoNextPage();
                   
           }
             
@@ -746,10 +814,21 @@ function checkCurrentHIVResult(){
       }
         
     }else{
-            
-      console.log("Block two");
-      return;
-      //gotoNextPage();
+
+      if ((field.name === "on_art" && field.value.toLowerCase() === "no")
+        || (field.name === "arv_number")){
+
+        if (selected_lab_values.length > 1 || selected_urine_values.length > 0){
+
+          gotoNextPage();
+
+        }else{
+
+          submitLabResultsEncounter();
+
+        }
+
+      }
         
     }
     
