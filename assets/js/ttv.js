@@ -14,6 +14,7 @@ var YesNoConcepts = {"Yes": 1065,"No": 1066};
 
 var ttv_order_id = "";
 
+
 function submitTreatmentEncounter() {
   
   var currentTime = moment().format(' HH:mm:ss');

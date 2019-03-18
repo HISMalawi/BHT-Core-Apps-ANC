@@ -1466,6 +1466,7 @@ function loadInputWindow() {
         try {
 
           if (type && type.toLowerCase() == 'age') {
+            console.log(type);
 
             var value = __$('input').innerHTML;
 

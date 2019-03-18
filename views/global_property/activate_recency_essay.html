@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Property - Recency Essay</title>
+    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+    <script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+    <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
+    <script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+    <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+    <script type="text/javascript">
+    
+      function addYesNoToRecency() {
+        
+        var tar = document.getElementById("inputFrame" + tstCurrentPage);
+
+        var attr = 'Activate asante test,3339';
+        
+        buildYesNoUI('Recency essay', attr, tar);
+      
+      }
+
+      function changeNext() {
+
+        var b = document.getElementById('nextButton');
+
+        b.setAttribute('onmousedown','validateInput();');
+      }
+
+      function validateInput() {
+  
+        var inputField = yesNo_Hash["Recency essay"]["Activate asante test"];
+  
+        if(inputField === undefined || inputField === "" || inputField === null){
+    
+          showMessage('Please complete all selection(s) by clicking either Yes/No.');
+        
+          return;
+  
+        }
+        
+        var gp = {
+          property: 'recency_essay_activated', 
+          property_value: inputField
+        };
+
+        submitParameters(gp, '/global_properties', "gpSet");
+      }
+       
+      function gpSet(e){ document.location = '/' }
+
+    </script>
+    <style>
+      #summary{
+        font-size: 1.8em;
+        padding: 25px;
+      }
+      #summary .value{
+        color: red;
+        font-style: italic;
+      }
+    </style>
+    
+  </head>
+
+  <body id="mateme">
+    <div id="container">
+      <div id="content">
+        <form>
+          <input type="text" name="recency-essay"
+            tt_onLoad="__$('keyboard').style.display = 'none'; 
+              addYesNoToRecency(); changeNext();" optional="true" 
+            tt_onUnload=""
+            tt_pageStyleClass= "NoControls" helpText="Recency essay" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

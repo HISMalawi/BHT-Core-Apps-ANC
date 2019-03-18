@@ -1,3 +1,11 @@
+var patientAge = sessionStorage.patientAge;
+var programID = sessionStorage.programID;
+// Verify patient gender
+// If gender is below thresh hold redirect to another page
+if (parseInt(patientAge) < 13 && parseInt(programID) == 12){
+  window.location = "/apps/ANC/views/encounters/no_minors.html"
+}
+
 function showCategory2(category) {
   if (category.length < 1)
     return;

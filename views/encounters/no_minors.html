@@ -1,0 +1,35 @@
+
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+
+<script type="text/javascript">
+  var patientID = sessionStorage.getItem("patientID");
+  var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+</script>
+
+<script type="text/javascript" language="javascript">
+  tt_cancel_show = "/";
+  tt_cancel_destination = "/";
+</script>
+
+
+<body id="mateme">
+  <div id="container">
+    <div id="content">
+
+      <div style="padding: 200px;">
+        <h1 style="color: red;">Sorry, this system only allows age atleast 13 years old</h1>
+      </div>
+    
+    </div>
+    
+    <div id="buttons" class="buttonsDiv" style="bottom: 25px !important; top: 850px !important;">
+      <button id="nextButton" class="button green navButton" onmousedown="window.location = '/'">
+        <span>Finish</span>
+      </button>
+    </div>
+ </div>
+</body>
