@@ -7,12 +7,13 @@
     <link href="/public/touchscreentoolkit/lib/stylesheets/form.css" rel="stylesheet" type="text/css" />
     <link href="/public/touchscreentoolkit/lib/stylesheets/dashboard.css" rel="stylesheet" type="text/css" />
     <link href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" rel="stylesheet" type="text/css" />
+
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js"></script>
-    <script type="text/javascript" language="javascript">
-      
-      tt_cancel_destination = '/reports/select';
-      tt_show = '/reports/select';
-    </script>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/moment.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+    <script text="text/javascript" src="/apps/ANC/assets/js/decompose.js"></script>
+    
     <style media="print">
       button {
         display: none;
@@ -71,78 +72,6 @@
         color: #fff;
       }
     </style>
-    <script type="text/javascript" language="javascript">
-
-      function __$(id){
-        return document.getElementById(id);
-      }
-
-      function expand(id){
-        if(id.trim().length > 0){
-          console.log(id);
-          if(__$(id).style.display == "none"){
-            if(__$("__" + id)){
-              __$("__" + id).style.display = "none";
-            }
-            __$(id).style.display = "block";
-            return "/images/minus.png";
-          } else {
-            __$(id).style.display = "none";
-            if(__$("__" + id)){
-              __$("__" + id).style.display = "block";
-            }
-            return "/images/plus.png";
-          }
-        }
-      }
-
-      function expandDiv(url, id){
-
-          if(id.trim().length > 0){
-
-              if(__$(id).style.display == "none"){
-
-                  if(__$("__" + id)){
-                      __$("__" + id).style.display = "none";
-                  }
-                  ajaxify(url, id,  "__$(id).style.display = 'block'")
-                  return "/images/minus.png";
-              } else {
-                  __$(id).style.display = "none";
-                  if(__$("__" + id)){
-                      __$("__" + id).style.display = "block";
-                  }
-                  return "/images/plus.png";
-              }
-          }
-      }
-
-      function ajaxify(url, id, expr){
-
-          var httpRequest = new XMLHttpRequest();
-          httpRequest.onreadystatechange = function() {
-
-              if (httpRequest && httpRequest.readyState == 4 && (httpRequest.status == 200 ||
-                      httpRequest.status == 304)) {
-
-                    var result = JSON.parse(httpRequest.responseText);
-
-                    for (var i in result){
-                      
-                        __$(result[i]["eid"]+ "_name").innerHTML = ((parseInt(i) + 1) + ". " +
-                                result[i]["name"] + " <i> (" + result[i]["date"] + ")</i>");
-                        __$(result[i]["eid"]+ "_obs").innerHTML = result[i]["obs"];
-                    }
-                  eval(expr);
-              }
-          };
-          try {
-              httpRequest.open('GET', url, true);
-              httpRequest.send(null);
-          } catch(e){}
-      }
-      //-->
-    </script>
   </head>
   <body>
     <div id="contentt">
@@ -159,7 +88,7 @@
           <tr>
             <td style="height: 595px; border: 1px solid #ccc; vertical-align: top;">
               <div style="width: 100%; height: 590px; overflow: auto;">
-                <div class="table" style="width: 100%; ">
+                <div class="table" style="width: 100%; " id="table">
                   <div class="row">
                     <div class="headerCell">
                       Patient ID
