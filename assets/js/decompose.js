@@ -97,7 +97,7 @@ $(document).ready(function(){
 
         div5.className = "cell";
 
-        div5.innerHTML = "<button onmousedown=\"getValue('','"+patient_id+"','encounters2', 'btn btn-primary btn-lg', 'button')\"'>"+patient_id+"</button>";
+        div5.innerHTML = "<button onmousedown=\"getEncounters("+patient_id+")\"'>"+patient_id+"</button>";
 
         row.append(div1)
 
@@ -133,27 +133,11 @@ $(document).ready(function(){
   
 });
 
-function getValue(value, id, div, className, itemType) {
-        
-  // var encounters = document.getElementById(div);
-  
-  //document.getElementById("encounterDate").innerHTML = moment(value).format("DD/MMM/YYYY");
-  
-  sessionStorage.setItem("value", value);
-  
-  //if (encounters.innerHTML != null) {
-  
-  //    encounters.innerHTML = "";
-  
-  //} else {
-  
-  //}
+function getEncounters(id) {
   
   var url = 'http://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id //+ '&date=' + value;
   
   var req = new XMLHttpRequest();
-  
-  var counter = 0;
   
   req.onreadystatechange = function () {
 
@@ -161,83 +145,7 @@ function getValue(value, id, div, className, itemType) {
 
       var results = JSON.parse(this.responseText);
 
-      console.log(results);
-
-      document.getElementById("encounterHeader").innerHTML = results.length + " Activities";
-
-      var listGroup = document.createElement("div");
-
-      listGroup.setAttribute("class", "list-group");
-
-      encounters.appendChild(listGroup);
-
-      for (var x = 0; x < results.length; x++) {
-
-        var d = new Date(results[x].encounter_datetime);
-
-        var f = moment(d).format("HH:mm A");
-
-
-        if (itemType == "table") {
-
-          var a = document.createElement("a");
-
-          var aclass = "list-group-item d-flex justify-content-between";
-
-          aclass += " align-items-center list-group-item-action list-group-item- primary list-group-links";
-
-          a.setAttribute("class", aclass);
-
-          a.setAttribute("href", "#");
-
-          //a.setAttribute("onmousedown","getEncounter('" + results[x].encounter_id + "')");
-
-          a.innerHTML = results[x].type.name;
-
-
-          var s = document.createElement("span");
-
-          s.setAttribute("class", "badge badge-primary badge-pill");
-
-          s.innerHTML = f;
-
-          a.appendChild(s);
-
-          listGroup.appendChild(a);
-
-          if (x == 2 || (results.length == 2 && x == 1)) {
-
-            var a = document.createElement("a");
-
-            var aclass = "list-group-item d-flex justify-content-between";
-
-            aclass += " align-items-center list-group-item-action list-group-item- primary list-group-links";
-
-            a.setAttribute("class", aclass);
-
-            a.setAttribute("href", "#");
-
-            a.innerHTML = "Click to show more ..."
-
-            listGroup.appendChild(a);
-
-            break;
-
-          }
-        
-        } else if (itemType == "button") {
-        
-            encounters.innerHTML +=
-        
-            '<button type="button" id="' + results[x].encounter_ixd + '" value="' + results[x] +
-        
-            '" class="btn btn-primary btn-sm" style="width: 98%;  margin: 1%; border-radius: 0%; height: 50px;" onClick="getEncounter(' + results[x].encounter_id + ')">' +
-        
-            '<span class="h5">' + results[x].type.name + '</span></button>';
-        
-        }
-
-      }
+      buildEncountersHash(results);
   
     }
   
@@ -360,5 +268,110 @@ function ajaxify(url, id, expr){
         httpRequest.open('GET', url, true);
         httpRequest.send(null);
     } catch(e){}
+}
+
+function buildEncountersHash(encounter){
+    
+  var encounter_hash = {};
+
+  for(var i = 0; i < encounter.length; i++){
+
+    encounter_date = encounter[i]["encounter_datetime"].split("T")[0];
+
+    if(encounter_hash[encounter_date] === undefined){
+        
+      encounter_hash[encounter_date] = {};
+    
+    }
+    
+    encounter_name = encounter[i]["type"]["name"];
+    
+    encounter_hash[encounter_date][encounter_name] = {}; 
+    
+    observations = encounter[i]["observations"];
+
+    for (var k = 0; k < observations.length; k++){
+
+        var obs_name = observations[k]["concept"]["concept_names"][0]["name"];
+
+        var coded = observations[k]["value_coded"];
+        
+        var datetime = observations[k]["value_datetime"];
+        
+        var text = observations[k]["value_text"];
+        
+        var numeric = observations[k]["value_numeric"];
+        
+        var value = "";
+
+        if (text !== null && text.length > 0 ) {
+            
+          value = text;
+                    
+        } else if (numeric !== null) {
+                        
+          value = numeric;
+          
+        } else if (coded !== null) {
+                        
+          value = coded;
+                  
+          sessionStorage.removeItem("value_coded");
+          
+          var url = 'http://' + apiURL + ':' + apiPort + '/api/v1/concepts/' + coded;
+                        
+          var req = new XMLHttpRequest();
+          
+          req.onreadystatechange = function () {
+
+            if (this.readyState == 4) {
+
+              if (this.status == 200) {
+
+                var results = JSON.parse(this.responseText);
+
+                value = results.concept_names[0].name;
+
+                sessionStorage.setItem("value_coded", value);
+
+              }
+  
+            }
+  
+          };
+    
+          try {
+    
+            req.open('GET', url, false);
+    
+            req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    
+            req.send(null);
+    
+          } catch (e) {
+            
+            console.log(e);
+
+          }
+
+          value = sessionStorage.getItem("value_coded");
+
+          sessionStorage.removeItem("value_coded");
+
+        } else if (datetime != null) {
+
+            value = moment(datetime).format("DD/MMM/YYYY");
+
+        } else {
+
+        }
+
+        encounter_hash[encounter_date][encounter_name][obs_name] = value; 
+
+    }
+    
+  }
+  console.log(encounter_hash);
+
 }
 

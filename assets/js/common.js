@@ -2,7 +2,7 @@ var patientAge = sessionStorage.patientAge;
 var programID = sessionStorage.programID;
 // Verify patient gender
 // If gender is below thresh hold redirect to another page
-if (parseInt(patientAge) < 13 && parseInt(programID) == 12){
+if (parseInt(patientAge) < 9 && parseInt(programID) == 12){
   window.location = "/apps/ANC/views/encounters/no_minors.html"
 }
 
