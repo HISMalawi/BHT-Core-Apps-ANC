@@ -619,10 +619,17 @@ function postLabResultsObs(encounter) {
 
 }
 
-function nextPage(){
+function nextPage(obs){
+  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/lab_results"
+  url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
+  document.location = url;
+  
+  setTimeout('red();', 2000);
+  
+}
 
-  nextEncounter(patientID, programID);
-
+function red() {
+  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
 }
 
 function setAbsoluteMaxYear() {

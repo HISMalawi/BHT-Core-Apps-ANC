@@ -70,9 +70,16 @@ function postSocialHistoryObs(encounter) {
 }
 
 function nextPage(obs){
+  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/history"
+  url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
+  document.location = url;
   
-  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
+  setTimeout('red();', 2000);
+  
+}
 
+function red() {
+  nextEncounter(sessionStorage.patientID, sessionStorage.programID);
 }
 
 function addYesNo() {
