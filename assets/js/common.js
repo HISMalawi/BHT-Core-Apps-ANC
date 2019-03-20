@@ -1,10 +1,37 @@
 var patientAge = sessionStorage.patientAge;
+
+var patientID = sessionStorage.patientID;
+
 var programID = sessionStorage.programID;
-// Verify patient gender
-// If gender is below thresh hold redirect to another page
-if (parseInt(patientAge) < 9 && parseInt(programID) == 12){
-  window.location = "/apps/ANC/views/encounters/no_minors.html"
-}
+
+var apiPort = sessionStorage.apiPort;
+
+var apiURL = sessionStorage.apiURL;
+
+var hysterectomy = false;
+  
+getSurgicalHistory();
+
+$(document).ready(function(){
+  // Verify patient gender
+  // If gender is below thresh hold redirect to another page
+  if (parseInt(programID) == 12){
+
+    if (parseInt(patientAge) < 9){
+
+      window.location = "/apps/ANC/views/encounters/no_minors.html"
+
+    }
+
+    if (hysterectomy === true){
+
+      window.location = "/apps/ANC/views/encounters/no_hysterectomy.html"
+
+    }
+  
+  }
+
+});
 
 function showCategory2(category) {
   if (category.length < 1)
@@ -110,4 +137,43 @@ function getUrlParams() {
 
   return obj;
       
+}
+
+function getSurgicalHistory() {
+
+  var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
+  url += '/programs/'+programID+'/patients/'+patientID+'/surgical_history';
+
+  var req = new XMLHttpRequest();
+
+  req.onreadystatechange = function(){
+
+    if (this.readyState == 4) {
+
+      if (this.status == 200) {
+
+        var results = JSON.parse(this.responseText);
+
+        hysterectomy = results["hysterectomy"];
+
+      }
+
+    }
+
+  };
+
+  try {
+
+    req.open('GET', url, true);
+
+    req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+
+    req.send(null);
+
+  } catch (e) {
+  
+    console.log(e);
+
+  }
+
 }
