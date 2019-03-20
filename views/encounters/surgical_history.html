@@ -30,7 +30,7 @@
             helpText="Previous Surgical Procedure(s) Done" 
             selectAll="selectAll" multiple="multiple" 
             name="surgical history" optional="true" 
-            tt_onLoad="__$('nextButton').style.display='block';
+            tt_onLoad="hideSurgeries(); __$('nextButton').style.display='block';
               __$('backButton').style.display = 'none'; 
               submitFunction(); showCategory2('Surgical history')" 
             tt_onUnLoad="" tt_pageStyleClass="longSelectList">

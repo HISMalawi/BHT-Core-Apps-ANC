@@ -16,6 +16,93 @@ var selectAll = false;
 
 var surgical_obs = []
 
+var gravida = 0;
+
+
+function getGravida() {
+
+  var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
+  url += '/programs/'+programID+'/patients/'+patientID+'/anc_visit';
+
+  var req = new XMLHttpRequest();
+
+  req.onreadystatechange = function(){
+
+    if (this.readyState == 4) {
+
+      if (this.status == 200) {
+
+        var results = JSON.parse(this.responseText);
+
+        gravida = JSON.stringify(results["gravida"]);
+      }else {
+
+        gravida = 0;
+
+      }
+
+    }
+
+  };
+
+  try {
+
+    req.open('GET', url, true);
+
+    req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
+
+    req.send(null);
+
+  } catch (e) {
+  
+    console.log(e);
+
+  }
+
+}
+
+getGravida();
+
+function hideSurgeries(){
+
+  if (parseInt(gravida) === 1){
+    // Hide surgeries associated with pregnacy
+    $('tt_currentUnorderedListOptions').removeChild($("1"));
+    $('2').className = "odd";
+    $('tt_currentUnorderedListOptions').removeChild($("3"));
+    $('tt_currentUnorderedListOptions').removeChild($("5"));
+    $('6').className = "odd";
+    $('7').className = "even";
+    $('8').className = "odd";
+    $('9').className = "even";
+    $('10').className = "odd";
+    $('11').className = "even";
+    $('12').className = "odd";
+    $('13').className = "even";
+    $('14').className = "odd";
+    $('15').className = "even";
+    $('tt_currentUnorderedListOptions').removeChild($("17"));
+    $('16').className = "odd";
+    $('tt_currentUnorderedListOptions').removeChild($("23"));
+    $('tt_currentUnorderedListOptions').removeChild($("24"));
+    $('tt_currentUnorderedListOptions').removeChild($("38"));
+    $('39').className = "even";
+    $('40').className = "odd";
+    $('41').className = "even";
+    $('tt_currentUnorderedListOptions').removeChild($("42"));
+    $('tt_currentUnorderedListOptions').removeChild($("43"));
+    $('tt_currentUnorderedListOptions').removeChild($("44"));
+    $('tt_currentUnorderedListOptions').removeChild($("46"));
+    $('47').className = "even";
+  
+  }else{
+
+    return true;
+
+  }
+
+}
+
 
 function submitSurgicalHistoryEncounter() {
 
@@ -95,16 +182,21 @@ function checkFields(){
 
       var hash = {"concept_id": "", value_coded: ""}
 
-      if (id && !__$('img' + (i-1)).src.match("unticked")){
+      try{
 
-        hash["concept_id"] = parseInt(id)
+        if (id && !__$('img' + (i-1)).src.match("unticked")){
 
-        hash["value_coded"] = 1065
+          hash["concept_id"] = parseInt(id)
 
-        surgical_obs.push(hash);
+          hash["value_coded"] = 1065
+
+          surgical_obs.push(hash);
+
+        }
+
+      }catch(e){
 
       }
-
     }
 
   }
@@ -121,7 +213,7 @@ function postSurgicalObs(encounter){
     // where surgical history is none.
 
     
-    surgical_obs = [{"concept_id":7759, "value_text": sessionStorage.userLocation}];
+    surgical_obs = [{"concept_id":7439, "value_text": "None"}];
         
   }
 

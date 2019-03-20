@@ -29,7 +29,7 @@ function getAncVisitNumber() {
 
         var results = JSON.parse(this.responseText);
 
-        past_visits = JSON.stringify(results);
+        past_visits = JSON.stringify(results["visit_number"]);
 
       }else {
 
