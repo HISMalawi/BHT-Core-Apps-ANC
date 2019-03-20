@@ -487,7 +487,17 @@ getPrescriptions();
 
 function nextPage(obs){
 
-  nextEncounter(sessionStorage.patientID, programID);
+  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/visits"
+  url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
+  document.location = url;
+  
+  setTimeout('next();', 2000);
+  
+}
+
+function next() {
+
+  nextEncounter(patientID, programID);
 
 }
             
