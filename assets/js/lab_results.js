@@ -1,4 +1,4 @@
-var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+var tstCurrentDate = moment(sessionStorage.sessionDate).format("YYYY-MM-DD");
 
 var patientID = sessionStorage.patientID;
 
@@ -654,7 +654,7 @@ function checkMaxAndValue() {
 
   var maxDate = maxValue.split("-").reverse().join("-");
 
-  if(inputDate > maxDate && inputDate !== 'Invalid date') {
+  if(inputDate.toLowerCase() !== "unknown" && inputDate > maxDate && inputDate !== 'Invalid date') {
 
     showMessage('Value bigger than maximum '+maxDate);
 
@@ -896,6 +896,81 @@ function artHIVStatus(){
   }else{
 
     return false;
+
+  }
+
+}
+
+function initializeDate(){
+    
+  currentDate = new Date(sessionStorage.sessionDate)
+  
+  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  
+  year = currentDate.getFullYear()
+  
+  month = currentDate.getMonth();
+  
+  day = currentDate.getDate();
+
+  document.getElementById('dateselector_year').innerHTML = year;
+  document.getElementById('dateselector_month').innerHTML = month;
+  document.getElementById('dateselector_day').innerHTML = day;
+
+  setTimeout(__$("today").onmousedown, 0);
+
+  setTimeout(function(){
+
+    __$("touchscreenInput" + tstCurrentPage).value = "";
+
+  }, 3);
+
+  var year_plus = __$("dateselector_nextYear").onmousedown
+
+  __$("dateselector_nextYear").onmousedown = function(){
+
+    if(parseInt(year) <= parseInt(__$("dateselector_year").value)){
+      
+      
+    
+    }else{
+
+      setTimeout(year_plus, 0);
+
+    }
+
+  }
+  var month_plus = __$("dateselector_nextMonth").onmousedown
+
+  __$("dateselector_nextMonth").onmousedown = function(){
+
+    if((parseInt(year) <= parseInt(__$("dateselector_year").value)) && 
+
+    (parseInt(month) <= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+
+    }else{
+
+      setTimeout(month_plus, 0);
+
+    }
+
+  }
+
+  var day_plus = __$("dateselector_nextDay").onmousedown
+
+  __$("dateselector_nextDay").onmousedown = function(){
+
+    if((parseInt(day) <= parseInt(__$("dateselector_day").value)) && 
+
+    (parseInt(year) <= parseInt(__$("dateselector_year").value)) && 
+
+    (parseInt(month) <= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+
+    }else{
+
+      setTimeout(day_plus, 0);
+
+    }
 
   }
 

@@ -1,4 +1,4 @@
-var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+var tstCurrentDate = moment(sessionStorage.sessionDate).format("YYYY-MM-DD");
 
 var patient_id = sessionStorage.patientID;
 
@@ -149,7 +149,7 @@ function calculateEDOD(){
 
         theDate.setDate(theDate.getDate() + 7);
 
-        var today = new Date(tstCurrentDate);
+        var today = new Date(sessionStorage.sessionDate);
 
         var s = today - theDate;
 
@@ -709,25 +709,30 @@ function nextPage(obs){
 }
 
 function addHereButton(){
+
+
+  if (document.getElementById("addHere") === null){
+
+    var button = document.createElement("button");
   
-  var button = document.createElement("button");
+    button.id = "addHere";
   
-  button.id = "addHere";
+    button.innerHTML = "<span>Here</span>";
   
-  button.innerHTML = "<span>Here</span>";
+    button.style.cssFloat = "right";
   
-  button.style.cssFloat = "right";
-  
-  button.onclick = function(){
+    button.onclick = function(){
     
-    __$("touchscreenInput" + tstCurrentPage).value = sessionStorage.currentLocation;
+      __$("touchscreenInput" + tstCurrentPage).value = sessionStorage.currentLocation;
   
-  }
+    }
   
-  if(__$("buttons")){
+    if(__$("buttons")){
   
-    __$("buttons").appendChild(button);
+      __$("buttons").appendChild(button);
   
+    }
+
   }
 
 }
