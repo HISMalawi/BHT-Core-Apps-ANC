@@ -35,7 +35,7 @@
         <form>
           <input type="text" name="showSummary" 
             tt_onLoad="showCategory2('Lab results'); showARTSummary();
-              $('keyboard').style.display = 'none';"
+              $('keyboard').style.display = 'none'; $('clearButton').style.display = 'none';"
             optional="true" tt_pageStyleClass="NoControls NoKeyboard"
             condition="artHIVStatus();"
             helpText="ART Summary"
@@ -43,6 +43,7 @@
 
           <input type="text" name="lab-results" condition="checkCondiditions();"
             tt_onLoad="__$('keyboard').style.display = 'none'; 
+              $('clearButton').style.display = 'none'; hideBackButton(); 
               addYesNoToLabTests(); addHIVOption();" optional="true" 
             tt_onUnload="updatePreviousHIVTestDoneResponse();"
             tt_pageStyleClass= "NoControls" helpText="Lab Results" />
@@ -113,7 +114,7 @@
           </select>
 
           <select tt_onLoad="showCategory2('Available Lab Test Results');
-              changeSubmitFunction();"  allowFreeText="false" 
+              hivRoute();"  allowFreeText="false" 
             condition="$('hiv_status').value === 'positive'" 
             helpText="Patient on ART" id="on_art_1" name="on_art" 
             tt_pageStyleClass="NoKeyboard">
@@ -125,14 +126,14 @@
           </select>
                     
           <input tt_onLoad ="showCategory2('Available Lab Test Results');
-              __$('Unknown').style.display='inline'; changeSubmitFunction();"
+              __$('Unknown').style.display='inline'; hivRoute();"
             condition="$('on_art_1').value === 'Yes'" field_type="text" helpText="ARV Number" 
             id="arv_number_1" name="arv_number" tt_pageStyleClass="" 
             type="text" />
 
           <input type="text" name="recency-essay" condition="$('hiv_status').value === 'positive' && 
               askRecencyEssay();" tt_onLoad="__$('keyboard').style.display = 'none'; addYesNoToAsanteTest();
-              changeSubmitFunction();" optional="true" 
+              hivRoute();" optional="true" 
             tt_pageStyleClass= "NoControls" helpText="Rapid Recency Essay - Asante Results" >
 
           <input condition="getSelectedLabTests().match(/hb/);" field_type="number" 

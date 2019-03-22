@@ -312,7 +312,7 @@ function removeHIVOption(){
     if ((prev_test_done !== undefined && prev_test_done.toLowerCase() === 'yes' && 
       prev_hiv_test_res.toLowerCase() === 'positive') || compare_dates || 
       (hiv_status !== null && hiv_status.toLowerCase() === 'positive') ||
-      (prev_test_results !== "" && prev_test_results.toLowerCase() === 'positive')){
+      ((prev_test_results !== undefined && prev_test_results !== "") && prev_test_results.toLowerCase() === 'positive')){
 
       x = tt_currentUnorderedListOptions.firstChild.attributes["tstvalue"].value;
 
@@ -703,12 +703,12 @@ function changeSubmitFunction(){
       
     // DO THIS WHEN CAPTURING ON ART ANSWER
     // WHY? Next page will be determined based on the answer to this question.
-    if (field.name === "on_art" || field.name === "arv_number"){
+    //if (field.name === "on_art" || field.name === "arv_number"){
       
-      checkCurrentHIVResult();
-      return;
+      //checkCurrentHIVResult();
+      //return;
 
-    }
+    //}
 
     if (selected_lab_values.length > 0){
             
@@ -764,6 +764,16 @@ function changeSubmitFunction(){
 
 }
 
+function hivRoute(){
+
+  var nextButton =  document.getElementById('nextButton');
+      
+  nextButton.onmousedown = function (){
+    checkCurrentHIVResult(); 
+  }
+
+}
+
 function checkCurrentHIVResult(){
 
   var field = $("touchscreenInput"+tstCurrentPage);
@@ -777,6 +787,20 @@ function checkCurrentHIVResult(){
     gotoNextPage();
     return;
 
+  }else if(field.name === "hiv_status" && field.value.toLowerCase() === "negative"){
+
+    if(selected_lab_values.length > 1 || selected_urine_values.length > 0){
+
+      gotoNextPage();
+      return;
+
+    }else{
+
+      //validateHIVStatus();
+      submitLabResultsEncounter();
+
+    }
+
   }
 
   if (field.name === "on_art" && field.value.toLowerCase() === "yes"){
@@ -784,8 +808,52 @@ function checkCurrentHIVResult(){
     gotoNextPage();
     return;
 
+  }else if(field.name === "on_art" && field.value.toLowerCase() === "no"){
+
+    if(selected_lab_values.length > 1 || selected_urine_values.length > 0 || recency_essay){
+
+      gotoNextPage();
+      return;
+    
+    }else{
+
+      submitLabResultsEncounter();
+
+    } 
+
   }
 
+  if (field.name === "arv_number"){
+
+    if(selected_lab_values.length > 1 || selected_urine_values.length > 0 || recency_essay){
+
+      gotoNextPage();
+      return;
+    
+    }else{
+
+      submitLabResultsEncounter();
+
+    }
+
+  }
+
+
+  if (field.name === "recency-essay"){
+
+    if (selected_lab_values.length > 1 || selected_urine_values.length > 0){
+
+      gotoNextPage();
+      return;
+    
+    }else{
+
+      submitLabResultsEncounter();
+
+    }  
+    
+  }
+/**
   if (selected_lab_values.length > 0){
             
     var field_name = $("touchscreenInput"+tstCurrentPage).name
@@ -843,7 +911,7 @@ function checkCurrentHIVResult(){
         
     submitLabResultsEncounter();
     
-  }
+  }*/
   
 
 }
@@ -913,9 +981,15 @@ function initializeDate(){
   
   day = currentDate.getDate();
 
-  document.getElementById('dateselector_year').innerHTML = year;
-  document.getElementById('dateselector_month').innerHTML = month;
-  document.getElementById('dateselector_day').innerHTML = day;
+  birthDate = new Date(sessionStorage.patientDOB);
+
+  birth_year = birthDate.getFullYear();
+
+  birth_month = birthDate.getMonth();
+
+  birth_day = birthDate.getDate();
+
+
 
   setTimeout(__$("today").onmousedown, 0);
 
@@ -926,6 +1000,8 @@ function initializeDate(){
   }, 3);
 
   var year_plus = __$("dateselector_nextYear").onmousedown
+
+  var year_minus = __$("dateselector_preYear").onmousedown
 
   __$("dateselector_nextYear").onmousedown = function(){
 
@@ -940,7 +1016,24 @@ function initializeDate(){
     }
 
   }
+
+  __$("dateselector_preYear").onmousedown = function(){
+
+    if(parseInt(birth_year) >= parseInt(__$("dateselector_year").value)){
+      
+      
+    
+    }else{
+
+      setTimeout(year_minus, 0);
+
+    }
+
+  }
+
   var month_plus = __$("dateselector_nextMonth").onmousedown
+
+  var month_minus = __$("dateselector_preMonth").onmousedown
 
   __$("dateselector_nextMonth").onmousedown = function(){
 
@@ -956,7 +1049,23 @@ function initializeDate(){
 
   }
 
+  __$("dateselector_preMonth").onmousedown = function(){
+
+    if((parseInt(birth_year) >= parseInt(__$("dateselector_year").value)) && 
+
+    (parseInt(birth_month) >= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+
+    }else{
+
+      setTimeout(month_minus, 0);
+
+    }
+
+  }
+
   var day_plus = __$("dateselector_nextDay").onmousedown
+
+  var day_minus = __$("dateselector_preDay").onmousedown
 
   __$("dateselector_nextDay").onmousedown = function(){
 
@@ -964,7 +1073,7 @@ function initializeDate(){
 
     (parseInt(year) <= parseInt(__$("dateselector_year").value)) && 
 
-    (parseInt(month) <= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+    (parseInt(month + 1) <= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
 
     }else{
 
@@ -974,4 +1083,30 @@ function initializeDate(){
 
   }
 
+  __$("dateselector_preDay").onmousedown = function(){
+
+    if((parseInt(birth_day) >= parseInt(__$("dateselector_day").value)) && 
+
+    (parseInt(birth_year) >= parseInt(__$("dateselector_year").value)) && 
+
+    (parseInt(birth_month + 1) >= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+
+    }else{
+
+      setTimeout(day_minus, 0);
+
+    }
+
+  }
+
+}
+
+function hideBackButton(){
+
+  if (hiv_status !== "" || hiv_status.toLowerCase() !== "positive"){
+
+    $('backButton').style.display = 'none';
+
+  }
+  
 }
