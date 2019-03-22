@@ -85,6 +85,10 @@
             id="arv_number" name="arv_number" tt_pageStyleClass="" 
             type="text" />
 
+          <input type="text" name="recency-essay" condition="$('prev_hiv_test_result').value === 'positive' && 
+              askRecencyEssay();" tt_onLoad="__$('keyboard').style.display = 'none'; addYesNoToAsanteTest();" 
+            optional="true" tt_pageStyleClass= "NoControls" helpText="Rapid Recency Essay - Asante Results" >
+
           <select condition="" multiple="multiple" 
             helpText="Available Lab Tests" optional="true" 
             id="available_test_results" name="available_test_results" 

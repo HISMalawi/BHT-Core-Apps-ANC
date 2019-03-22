@@ -420,7 +420,7 @@ function addYesNoToAsanteTest() {
         
   var tar = document.getElementById("inputFrame" + tstCurrentPage);
   
-  var attr = 'Line 1. Control Line Present,3339#Line 2. Positive Verification Line Present,9655#Line 3. Long-term Line Present, 3339'
+  var attr = 'Line 1. Control Line Present,9658#Line 2. Positive Verification Line Present,9659#Line 3. Long-term Line Present, 9660'
         
         
   buildYesNoUI('Recency Assay', attr, tar);
@@ -455,14 +455,17 @@ function postLabResultsObs(encounter) {
     observations: []
     
   };
-    
-  if(hiv_status !== null && hiv_status.toLowerCase() === 'positive'){
 
-    obs.observations.push(
+  if (hiv_status !== null){
 
-        {concept_id: 9656, value_coded: concept_map[hiv_status.toLowerCase()] },
+    if(hiv_status !== "" && hiv_status.toLowerCase() === 'positive'){
 
-      );
+      obs.observations.push(
+        {concept_id: 9656, value_coded: concept_map[hiv_status.toLowerCase()]},
+        { concept_id: 9655, value_coded: YesNoConcepts["Yes"]}
+        );
+
+    }
 
   }
 
@@ -536,6 +539,17 @@ function postLabResultsObs(encounter) {
       }
 
     }
+
+  }
+
+  if (yesNo_Hash["Recency Assay"] !== undefined){
+
+    obs.observations.push(
+      {concept_id: 9658, value_coded: YesNoConcepts[yesNo_Hash["Recency Assay"]["Line 1. Control Line Present"]]},
+      {concept_id: 9659, value_coded: YesNoConcepts[yesNo_Hash["Recency Assay"]["Line 2. Positive Verification Line Present"]]},
+      {concept_id: 9660, value_coded: YesNoConcepts[yesNo_Hash["Recency Assay"]["Line 3. Long-term Line Present"]]},
+
+    )
 
   }
   
@@ -1080,7 +1094,7 @@ function initializeDate(){
 
 function hideBackButton(){
 
-  if (hiv_status !== "" || hiv_status.toLowerCase() !== "positive"){
+  if (hiv_status === null || hiv_status === "" || hiv_status.toLowerCase() !== "positive"){
 
     $('backButton').style.display = 'none';
 
