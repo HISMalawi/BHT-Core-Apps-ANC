@@ -456,7 +456,17 @@ function postLabResultsObs(encounter) {
     
   };
 
-  if (hiv_status !== null){
+  if (prev_test_results !== undefined){
+
+    var tested_here_before = prev_test_results;
+  
+  }else{
+
+    var tested_here_before = "";
+
+  }
+
+  if (hiv_status !== null && tested_here_before.toLowerCase() !== "positive"){
 
     if(hiv_status !== "" && hiv_status.toLowerCase() === 'positive'){
 
