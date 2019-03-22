@@ -449,14 +449,19 @@ function submitLabResultsEncounter() {
 function postLabResultsObs(encounter) {
         
   var obs = {
+   
     encounter_id: encounter.encounter_id,
+
     observations: []
-    };
+    
+  };
     
   if(hiv_status !== null && hiv_status.toLowerCase() === 'positive'){
 
     obs.observations.push(
+
         {concept_id: 9656, value_coded: concept_map[hiv_status.toLowerCase()] },
+
       );
 
   }
@@ -503,46 +508,51 @@ function postLabResultsObs(encounter) {
     }
 
   }
-    
-
-    if($('hiv_status').value !== ""){
-          
-      obs.observations.push(
-          {concept_id: 3753, value_coded: concept_map[$('hiv_status').value]}
-        );
-
-      if ($('hiv_status').value === "positive") {
-            
-        var on_art = $('on_art_1').value;
-
-        if ($('touchscreenInput'+tstCurrentPage).name === "arv_number"){
-          
-          var arv_number = $('touchscreenInput'+tstCurrentPage).value;
-
-        }else{
-          
-          var arv_number = $('arv_number_1').value;
- 
-        }
-
-        obs.observations.push(
-          {concept_id: 7010, value_coded: YesNoConcepts[on_art]}
-        );
-
-        if(on_art.toLowerCase() === 'yes' && arv_number !== ''){
-            
-          obs.observations.push({concept_id: 7014, value_text: arv_number});
+  
+  if($('hiv_status').value !== ""){
       
-        }
+    obs.observations.push({concept_id: 3753, value_coded: concept_map[$('hiv_status').value]});
 
+    if ($('hiv_status').value === "positive") {
+            
+      var on_art = $('on_art_1').value;
+
+      if ($('touchscreenInput'+tstCurrentPage).name === "arv_number"){
+          
+        var arv_number = $('touchscreenInput'+tstCurrentPage).value;
+
+      }else{
+          
+        var arv_number = $('arv_number_1').value;
+ 
+      }
+
+      obs.observations.push({concept_id: 7010, value_coded: YesNoConcepts[on_art]});
+
+      if(on_art.toLowerCase() === 'yes' && arv_number !== ''){
+            
+        obs.observations.push({concept_id: 7014, value_text: arv_number});
+      
       }
 
     }
 
-    if ($('hb').value !== "") {
+  }
+  
+  if ($('touchscreenInput'+tstCurrentPage).name === "hb"){
+          
+    var hb = $('touchscreenInput'+tstCurrentPage).value;
+
+  }else{
+          
+    var hb = $('hb').value;
+ 
+  }
+
+  if (hb !== "") {
 
       obs.observations.push(
-        {concept_id: 7982, value_numeric: parseInt($('hb').value) }
+        {concept_id: 7982, value_numeric: parseInt(hb) }
       );
 
     }
@@ -723,39 +733,53 @@ function changeSubmitFunction(){
             if (selected_urine_values.length > 0){
                   
               if (selected_urine_values[selected_urine_values.length - 1] === field_name) {
-                    
+                
+                if (!inputIsValid()) return;
+                
                 submitLabResultsEncounter();
                 
               }else{
                     
+                if (!inputIsValid()) return;
+                
                 gotoNextPage();
                   
               }
             
             }else{
                   
+              if (!inputIsValid()) return;
+                
               submitLabResultsEncounter();
                 
             }
           
           }else if (selected_lab_values[selected_lab_values.length - 1] === "hiv_status"){
               
+            if (!inputIsValid()) return;
+                
             checkCurrentHIVResult();
           
           }else{
 
+            if (!inputIsValid()) return;
+                
             submitLabResultsEncounter();
           
           }
         
       }else{
 
+        if (!inputIsValid()) return;
+                
         gotoNextPage();
         
       }
     
     }else{
         
+      if (!inputIsValid()) return;
+                
       submitLabResultsEncounter();
     
     }
@@ -784,19 +808,22 @@ function checkCurrentHIVResult(){
 
   if (field.name === "hiv_status" && field.value.toLowerCase() === "positive"){
 
+    if (!inputIsValid()) return;
+
     gotoNextPage();
-    return;
 
   }else if(field.name === "hiv_status" && field.value.toLowerCase() === "negative"){
 
     if(selected_lab_values.length > 1 || selected_urine_values.length > 0){
 
+      if (!inputIsValid()) return;
+
       gotoNextPage();
-      return;
 
     }else{
+    
+      if (!inputIsValid()) return;
 
-      //validateHIVStatus();
       submitLabResultsEncounter();
 
     }
@@ -805,17 +832,21 @@ function checkCurrentHIVResult(){
 
   if (field.name === "on_art" && field.value.toLowerCase() === "yes"){
 
+    if (!inputIsValid()) return;
+    
     gotoNextPage();
-    return;
 
   }else if(field.name === "on_art" && field.value.toLowerCase() === "no"){
 
     if(selected_lab_values.length > 1 || selected_urine_values.length > 0 || recency_essay){
 
+      if (!inputIsValid()) return;
+
       gotoNextPage();
-      return;
     
     }else{
+
+      if(!inputIsValid()) return;
 
       submitLabResultsEncounter();
 
@@ -827,11 +858,14 @@ function checkCurrentHIVResult(){
 
     if(selected_lab_values.length > 1 || selected_urine_values.length > 0 || recency_essay){
 
+      if (!inputIsValid()) return;
+
       gotoNextPage();
-      return;
     
     }else{
 
+      if (!inputIsValid()) return;
+      
       submitLabResultsEncounter();
 
     }
@@ -843,76 +877,19 @@ function checkCurrentHIVResult(){
 
     if (selected_lab_values.length > 1 || selected_urine_values.length > 0){
 
+      if (!inputIsValid()) return;
+
       gotoNextPage();
-      return;
     
     }else{
+
+      if (!inputIsValid()) return;
 
       submitLabResultsEncounter();
 
     }  
     
   }
-/**
-  if (selected_lab_values.length > 0){
-            
-    var field_name = $("touchscreenInput"+tstCurrentPage).name
-            
-    if (selected_lab_values[selected_lab_values.length - 1] === field_name || 
-              
-      selected_urine_values[selected_urine_values.length - 1] === field_name ){
-              
-      if (selected_lab_values[selected_lab_values.length - 1] === "urine"){
-                
-        if (selected_urine_values.length > 0){
-                  
-          if (selected_urine_values[selected_urine_values.length - 1] === field_name) {
-                    
-            submitLabResultsEncounter();
-                
-          }else{
-            
-            gotoNextPage();
-                  
-          }
-            
-        }else{
-                  
-          submitLabResultsEncounter();
-                
-        }
-          
-      }else{
-
-        submitLabResultsEncounter();
-          
-      }
-        
-    }else{
-
-      if ((field.name === "on_art" && field.value.toLowerCase() === "no")
-        || (field.name === "arv_number")){
-
-        if (selected_lab_values.length > 1 || selected_urine_values.length > 0){
-
-          gotoNextPage();
-
-        }else{
-
-          submitLabResultsEncounter();
-
-        }
-
-      }
-        
-    }
-    
-  }else{
-        
-    submitLabResultsEncounter();
-    
-  }*/
-  
 
 }
 
@@ -1110,3 +1087,40 @@ function hideBackButton(){
   }
   
 }
+
+function inputIsValid() {
+  // don't leave current page if no value has been entered
+  var ttInput = new TTInput(tstCurrentPage);
+  var validateResult = ttInput.validate();
+  var messageBar = __$("messageBar");
+  messageBar.innerHTML = "";
+
+  if (validateResult.length > 0 && !tstSearchPage) {
+      var message = validateResult;
+
+      if (ttInput.shouldConfirm) {
+
+          messageBar.innerHTML += "<p>" + ((message.match(/^Value\s/))?(message.replace(/^Value\s/, "The value is ")):message) +
+          ". Are you sure about this value?</p><div style='display: block;'>" +
+          "<button class='button' style='float: none;' onclick='this.offsetParent.style.display=\"none\"; " +
+          "gotoPage(tstCurrentPage+1, false);' onmousedown='this.offsetParent.style.display=\"none\"; " +
+          "gotoPage(tstCurrentPage+1, false);'><span>Yes</span></button><button class='button' " +
+          "style='float: none; right: 3px;' onmousedown='this.offsetParent.style.display=\"none\"; '>" +
+          "<span>No</span></button>";
+
+          messageBar.style.display = "block";
+
+      } else {
+          
+        showMessage(message)
+        
+      }
+      
+      return false;
+  
+    }
+  
+  return true;
+
+}
+

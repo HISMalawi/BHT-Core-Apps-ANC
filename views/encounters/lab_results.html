@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css"/>
 
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+    <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/dashboard.js" defer="true"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
     <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
     <script type="text/javascript" src="/assets/js/GlobalProperty.js"></script>
@@ -206,7 +207,7 @@
             helpText="Urine Protein Test Result" 
             id="protein" name="protein" 
             tt_onLoad="showCategory2('Available Urine Test Results');" 
-            tt_onUnLoad="">
+            tt_pageStyleClass="NoKeyboard">
 
               <option value=""></option>
               <option value="negative">Negative</option>
@@ -234,22 +235,26 @@
           </select>
           
           <input condition="getSelectedUrineTests().match(/wbc/);" 
-            field_type="number" min="0" max="1000000"
+            field_type="number" min="1" max="1000000"
             helpText="White Blood Cells Test Result (cmm)" 
-            id="wbc" name="wbc" 
+            id="wbc" name="wbc" absoluteMin="0"
             tt_onLoad="showCategory2('Available Urine Test Results');
               changeSubmitFunction();" 
             tt_onUnload="" type="text" 
-            tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
+            tt_pageStyleClass="numeric NumbersOnlyWithDecimal" 
+            validationRule="(^([0-9]*[.])?[0-9]+$)"
+            validationMessage="You must enter a valid number"/>
 
           <input condition="getSelectedUrineTests().match(/rbc/)" 
-            field_type="number" min="0" max="1000000" 
+            field_type="number" min="1" max="1000000" 
             helpText="Red Blood Cells Test Result (cmm)" 
-            id="rbc" name="rbc" 
+            id="rbc" name="rbc" absoluteMin="0"
             tt_onLoad="showCategory2('Available Urine Test Results');
               changeSubmitFunction();" 
             tt_onUnload="" type="text" 
-            tt_pageStyleClass="numeric NumbersOnlyWithDecimal" />
+            tt_pageStyleClass="numeric NumbersOnlyWithDecimal" 
+            validationRule="(^([0-9]*[.])?[0-9]+$)"
+            validationMessage="You must enter a valid number"/>
 
           <select tt_onLoad="showCategory2('Available Urine Test Results');
               changeSubmitFunction();" allowFreeText="false" 
