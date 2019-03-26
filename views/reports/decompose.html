@@ -3,13 +3,15 @@
     <title>Cohort Report Selection</title>
     <!--%= stylesheet_link_tag "form" %>
     <%= stylesheet_link_tag fancy_or_high_contrast_touch %-->
+    <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
     <link href="/stylesheets/dashboard.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="/public/touchscreentoolkit/lib/stylesheets/form.css" rel="stylesheet" type="text/css" />
-    <link href="/public/touchscreentoolkit/lib/stylesheets/dashboard.css" rel="stylesheet" type="text/css" />
-    <link href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" rel="stylesheet" type="text/css" />
-
+    <!--link href="/public/touchscreentoolkit/lib/stylesheets/dashboard.css" rel="stylesheet" type="text/css" /-->
+    <!--link href="/public/touchscreentoolkit/lib/stylesheets/touch-fancy.css" rel="stylesheet" type="text/css" />
+    -->
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/assets/js/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script text="text/javascript" src="/apps/ANC/assets/js/decompose.js"></script>
@@ -71,6 +73,68 @@
         font-weight: normal;
         color: #fff;
       }
+
+      .modal-lg {
+        width: 90% !important;
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 80px;
+        line-height: 60px;
+        background-color: #333333;
+        display: block;
+      }
+      .container-footer {
+        width: auto;
+        padding: 0 15px;
+      }
+      .container-footer button {
+        height: 60px;
+        float: right;
+        font-size: 2rem;
+        line-height: normal;
+      }
+      #btnNext {
+        margin: 5px 0px 0px;
+        padding-left: 25px;
+        padding-right: 25px;
+        float: right;
+      }
+      .green {
+        border: 1px solid #34740e;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        font-size: 28px;
+        font-family: arial, helvetica, sans-serif;
+        padding: 10px 10px 10px 10px;
+        text-decoration: none;
+        display: inline-block;
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+        color: #FFFFFF;
+        background-color: #4ba614;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#4ba614), to(#008c00));
+        background-image: -webkit-linear-gradient(top, #4ba614, #008c00);
+        background-image: -moz-linear-gradient(top, #4ba614, #008c00);
+        background-image: -ms-linear-gradient(top, #4ba614, #008c00);
+        background-image: -o-linear-gradient(top, #4ba614, #008c00);
+        background-image: linear-gradient(to bottom, #4ba614, #008c00);
+        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#4ba614, endColorstr=#008c00);
+      }
+      .green:hover {
+        border: 1px solid #224b09;
+        background-color: #36780f;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#36780f), to(#005900));
+        background-image: -webkit-linear-gradient(top, #36780f, #005900);
+        background-image: -moz-linear-gradient(top, #36780f, #005900);
+        background-image: -ms-linear-gradient(top, #36780f, #005900);
+        background-image: -o-linear-gradient(top, #36780f, #005900);
+        background-image: linear-gradient(to bottom, #36780f, #005900);
+        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#36780f, endColorstr=#005900);
+      }
     </style>
   </head>
   <body>
@@ -106,79 +170,57 @@
                       Encounters
                     </div>
                   </div>
-
-                  <!--% @data.each do |arr| %>
-                    <div class="row">
-                      <div class="cell">
-                        <%= arr[0] %>
-                      </div>
-                      <div class="cell">
-                        <%= arr[1] %>
-                      </div>
-                      <div class="cell">
-                        <%= arr[2]%>
-                      </div>
-                      <div class="cell">
-                        <%= arr[3] %>
-                      </div>
-                      <div class="cell" style="vertical-align: top; padding: 0px;">
-                        <div class="table">
-                          <div class="row">
-                            <div style="display: table-cell; padding: 0px; padding-left: 10px; padding-right: 10px;">
-                              <img onclick="this.src=expandDiv(('patient_encounters?patient_id=<%= arr[5]%>'), '<%= arr[5] %>')"
-                                   style="height: 32px; width: 32px; cursor: pointer;"
-                                   src="/images/plus.png" />
-                            </div>
-                            <div id="<%= "__" + arr[5].to_s %>"
-                                 style="display: block; display: table-cell; vertical-align: middle; font-size: 1.5em;">
-                              <%= arr[4].length %>
-                            </div>
-                            <div id="<%= arr[5] %>" style="display: table-cell; display: none; width: 100%;">
-
-                              <% arr[4].each do |encounter| %>
-
-                                <div id = "<%= encounter%>" style="display: table; width: 100%;">
-                                  <div style="display: table-row;">
-                                    <div style="display: table-cell;">
-                                        <b id= "<%= encounter%>_name" style='color: #333; float: left; padding: 10px;'> </b>
-                                    </div>
-                                    <div style="display: table-cell;">
-
-                                      <img onclick="this.src=expand('<%= encounter%>_obs')"
-                                           style="height: 32px; width: 32px; cursor: pointer; float: right; margin-left: 20px; padding: 10px;"
-                                           src="/images/plus.png" />
-                                    </div>
-                                  </div>
-                                </div>
-                                  <div id= "<%= encounter%>_obs" style="display: table-cell;display:none;margin:20px;border-radius: 10px;
-                                          background-color:#ee6; padding: 10px;">
-
-                                  </div>
-                              <% end %>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  <% end %-->
                 </div>
               </div>
             </td>
           </tr>
         </table>
       </div>
-      <div id="nav">
-        <button class="green" style="float: right; margin: 10px; width: 150px;" onclick="window.history.back()">
-          <span>
-            Finish
-          </span>
-        </button>
-        <button class="blue" style="float: right; margin: 10px; width: 150px;" onclick="window.history.back()">
-          <span>
-            Back
-          </span>
-        </button>
+
+      <!-- Modal -->
+      <div id="myModal" class="modal fade" role="dialog" style="height: 100%;">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content" style="margin: 0; max-height: 100%;">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title"> View Patient</span></h4>
+            </div>
+            
+            <div class="modal-body" 
+              style="height: calc(100vh - 200px); max-height: calc(100vh - 200px); overflow: hidden;">
+              <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 border" id="encounter_dates"
+                style="height: 100%; border-right: solid 1px; overflow-y: auto;">
+              </div>
+              
+              <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 border" id="encounter_types"
+                style="height: 100%; border-right: solid 1px; overflow-y: auto;">
+              </div>
+              
+              <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6" id="observations" 
+                style="height: 100%;overflow-y:auto;" >
+                        
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">
+                Close
+              </button>
+            </div>
+
+          </div>
+        
+        </div>
+      
       </div>
+      <footer class="footer">
+          <div class="container-footer">
+            <button id="btnNext" class="green right" onclick="window.history.back();">
+              <span>Finish</span>
+            </button>
+          </div>
+        </footer>
     </div>
   </body>
 </html>
