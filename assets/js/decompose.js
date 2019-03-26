@@ -16,6 +16,8 @@ tt_cancel_destination = '/reports/select';
 
 tt_show = '/reports/select';
 
+var isPaused = false;
+
 
 $(document).ready(function(){
 
@@ -140,6 +142,8 @@ $(document).ready(function(){
 });
 
 function getEncounters(id) {
+
+  isPaused = true;
   
   var url = 'http://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id //+ '&date=' + value;
   
@@ -170,6 +174,7 @@ function getEncounters(id) {
     console.log(e);
 
   }
+
 
 }
 
@@ -375,6 +380,7 @@ function buildEncountersHash(encounter){
     }
     
   }
+  isPaused = false;
 
 }
 
@@ -419,31 +425,43 @@ $(document).ready(function(){
   $('#myModal').on('shown.bs.modal', function(e) {
     var i = $(e.relatedTarget).data('index');
     getEncounters(i);
-    console.log(encounter_hash);
 
-    encounter_dates = document.getElementById("encounter_dates");
-    encounters = document.getElementById("encounter_types");
-    obs = document.getElementById("observations");
+    function populateModal(){
+       console.log(isPaused); 
+      if (isPaused) {
+        
+        console.log(encounter_hash);
+        setTimeout(function(){populateModal()},100);
+      
+      } else {
+
+        encounter_dates = document.getElementById("encounter_dates");
+        encounters = document.getElementById("encounter_types");
+        obs = document.getElementById("observations");
     
-    encounters.innerHTML = "";
-    encounter_dates.innerHTML = "";
-    obs.innerHTML = "";
+        encounters.innerHTML = "";
+        encounter_dates.innerHTML = "";
+        obs.innerHTML = "";
 
-    for(key in encounter_hash){
-      console.log(key);
+        for(key in encounter_hash){
+          console.log(key);
 
-      //$("encounter_dates").html("<a href=''>"+key+"</a><br>");
-      encounter_dates_btn  = "<button type='button' id='" + key + "' value='" + key +"' ";
-      encounter_dates_btn += "class='btn btn-primary btn-sm' style='width: 98%;  margin: 1%; border-radius: 0%; height: 50px;'";
-      encounter_dates_btn += "onClick='getEncounterTypes(\"" + key + "\")'>";
-      encounter_dates_btn += "<span class='h5'>" + key + "</span></button>";
+          encounter_dates_btn  = "<button type='button' id='" + key + "' value='" + key +"' ";
+          encounter_dates_btn += "class='btn btn-primary btn-sm' style='width: 98%;  margin: 1%; border-radius: 0%; height: 50px;'";
+          encounter_dates_btn += "onClick='getEncounterTypes(\"" + key + "\")'>";
+          encounter_dates_btn += "<span class='h5'>" + key + "</span></button>";
 
-      encounter_dates.innerHTML += encounter_dates_btn;
+          encounter_dates.innerHTML += encounter_dates_btn;
 
+        }
+
+      };
+    
     }
 
-    //$("#main-content").html('<div class="box3">' + Object.keys(encounter_hash)[0] + '<br>' + 
-    //Object.keys(encounter_hash[Object.keys(encounter_hash)[0]]) + '<br>' + Object.keys(encounter_hash)[0] + '</div>');
+    populateModal();
+
   })
+
 });
 
