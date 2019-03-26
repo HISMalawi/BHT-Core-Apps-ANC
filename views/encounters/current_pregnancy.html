@@ -61,6 +61,12 @@
             tt_onUnload="clearTimeout(timedEvent);getLocations();"
             tt_pageStyleClass="exclude" type="text"/>
 
+            <input type="text" name="Estimate LMP" id="estimate_lmp" 
+              condition="$('lnmp').value == 'Unknown'" helpText="Gestation (months)"
+              field_type="number" tt_pageStyleClass="NumbersOnly" 
+              tt_onUnload="estimateDates(__$('touchscreenInput' + tstCurrentPage).value);"
+              max="6" absoluteMax="10" />
+
           <select id="planned_delivery_place" name="planned_delivery_place"
             tt_onLoad="showCategory2('Current pregnancy');addHereButton();" 
             helpText="Planned delivery place" tt_onUnload="">

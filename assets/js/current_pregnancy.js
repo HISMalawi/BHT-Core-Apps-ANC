@@ -212,7 +212,7 @@ function checkLMP(){
 }
 
 function setDate(period){
-  console.log(period);
+
   currentDate = new Date(sessionStorage.sessionDate)
 
   var year = currentDate.getFullYear();
@@ -232,7 +232,7 @@ function setDate(period){
 
   d.setMonth(d.getMonth() - parseInt(period));
 
-  __$("lmp").value = d.getFullYear() + "-" + padZeros((d.getMonth() + 1), 2) + "-" + padZeros(d.getDate(),2);
+  __$("lnmp").value = d.getFullYear() + "-" + padZeros((d.getMonth() + 1), 2) + "-" + padZeros(d.getDate(),2);
 
   __$("week_of_first_visit").value = Math.round(parseInt(period) * 30 / 7);
 
@@ -744,5 +744,33 @@ function removeHereButton(){
     __$("buttons").removeChild(__$("addHere"));
 
   }
+
+}
+
+function estimateDates(period){
+  
+  setDate(period);
+
+  var month = ["Jan", "Feb", "Mar", 
+
+    "Apr", "May", "Jun", 
+
+    "Jul", "Aug", "Sep", 
+
+    "Oct", "Nov", "Dec"];
+
+  var theDate = new Date($("lnmp").value);//.split("-").reverse().join("-"));
+
+  theDate.setDate(theDate.getDate() + 7);
+
+  var today = new Date(sessionStorage.sessionDate);
+
+  var s = today - theDate;
+
+  gestation = String(Math.floor(s / (24 * 60 * 60 * 7 * 1000)));
+
+  theDate.setMonth(theDate.getMonth() + 9);
+
+  edod = (theDate.getDate() + "-" + month[theDate.getMonth()] + "-" + theDate.getFullYear());
 
 }
