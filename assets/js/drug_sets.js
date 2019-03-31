@@ -200,27 +200,243 @@ function clearCachedDrugs(){
 }
 
 function listSelectedDrugs(){
+  medication = drugs;
+  var frame = document.getElementById('inputFrame' + tstCurrentPage);
+  frame.style = 'width: 96%; height: 89%; overflow: scroll;';
 
-  var inputFrame = document.getElementById('inputFrame'+tstCurrentPage);
+  var ordersTable = document.createElement('div');
+  ordersTable.setAttribute('class', 'orders-table');
+  frame.appendChild(ordersTable);
 
-  inputFrame.innerHTML = "";
+  var theaders = ['Drugs', 'Frequency', 'Quantity'];
+  var ordersTableRow = document.createElement('div');
+  ordersTableRow.setAttribute('class', 'orders-table-row');
+  ordersTable.appendChild(ordersTableRow)
 
-  var ul = document.createElement("ul");
-
-  ul.className = "list-group list-group-flush";
-
-  for(key in drugs){
-
-    var li = document.createElement("li");
-
-    li.className = "list-group-item";
-
-    li.innerHTML = drugs[key]
-
-    ul.appendChild(li);
-
+  for (var x = 0; x < theaders.length; x++) {
+    var th = document.createElement('div');
+    th.setAttribute('class', 'orders-table-row-cell');
+    th.innerHTML = theaders[x];
+    ordersTableRow.appendChild(th)
+    if (x > 0) {
+      th.style = "text-align: center; width: 20%; float: right;";
+    } else {
+      th.style = "width: 58%; float: left; padding-left: 10px;";
+    }
   }
 
-  inputFrame.append(ul);
+  var medication_given_count = 0;
+
+  for (i in medication) {
+    var ordersTableRow = document.createElement('div');
+    ordersTableRow.setAttribute('class', 'orders-table-row');
+    ordersTable.appendChild(ordersTableRow)
+
+    var ordersTableCell = document.createElement('div');
+    ordersTableCell.setAttribute('class', 'orders-table-cell medication-cells');
+    ordersTableCell.innerHTML = medication[i];
+    ordersTableCell.style = "padding-left: 10px;width: 58%; float: left;font-weight: bold;";
+    ordersTableRow.appendChild(ordersTableCell)
+
+    var ordersTableCell = document.createElement('div');
+    ordersTableCell.setAttribute('class', 'orders-table-cell medication-cells pill-counts');
+    ordersTableCell.innerHTML = ' - ';
+    ordersTableCell.setAttribute('id', "drug_quantity_"+i);
+    ordersTableCell.setAttribute('quantity', "0");
+    ordersTableCell.setAttribute('drug_name', medication[i]);
+    ordersTableCell.setAttribute('drug_id', i);
+    ordersTableCell.setAttribute('start_date', "");
+    ordersTableCell.setAttribute('equivalent_daily_dose', "");
+    ordersTableCell.setAttribute('onmousedown', 'enterQuantity(this);');
+    ordersTableCell.style = "font-weight: bold;font-size: 1.3em;text-align: center; width: 20%; float: right;";
+    ordersTableRow.appendChild(ordersTableCell)
+
+    var ordersTableCell = document.createElement('div');
+    ordersTableCell.setAttribute('class', 'orders-table-cell medication-cells pill-counts');
+    ordersTableCell.innerHTML = ' - ';
+    ordersTableCell.setAttribute('id', "drug_frequency_"+i);
+    ordersTableCell.setAttribute('quantity', "0");
+    ordersTableCell.setAttribute('drug_name', medication[i]);
+    ordersTableCell.setAttribute('drug_id', i);
+    ordersTableCell.setAttribute('start_date', "");
+    ordersTableCell.setAttribute('equivalent_daily_dose', "");
+    ordersTableCell.setAttribute('onmousedown', 'enterFrequency(this);');
+    ordersTableCell.style = "font-weight: bold;font-size: 1.3em;text-align: center; width: 20%; float: right;";
+    ordersTableRow.appendChild(ordersTableCell)
+
+    medication_given_count++;
+  }
+/**
+        if(medication_given_count < 1){
+          showMessage('Client was not given actual <br / > medication / pills last visit');
+          var nextButton = document.getElementById('nextButton');
+          nextButton.style = 'display: none;';
+        }
+*/
+  document.getElementById('confirmatory-test-cover').style = 'display: none;';
+}
+
+function enterQuantity(e) {
+  document.getElementById('confirmatory-test-cover').style = 'display: inline;';
+  var popUpBox = document.getElementById('confirmatory-test-popup-div');
+  popUpBox.style = 'display: inline';
+  popUpBox.innerHTML = null;
+
+  var table = document.createElement('table');
+  table.style = 'width: 99%; height: 98%';
+  popUpBox.appendChild(table);
+
+  var tr = document.createElement('tr');
+  table.appendChild(tr);
+
+  var td = document.createElement('td');
+  td.style = 'vertical-align: top;';
+  tr.appendChild(td);
+
+  var inputBox = document.createElement('input');
+  inputBox.setAttribute('type', 'text');
+  inputBox.setAttribute('id', 'num-pills');
+  td.appendChild(inputBox);
+
+
+  var tr = document.createElement('tr');
+  table.appendChild(tr);
+
+  var td = document.createElement('td');
+  td.style = 'vertical-align: top; text-align: center;';
+  tr.appendChild(td);
+  createKeyPad(td, e);
+}
+
+function enterFrequency(e) {
+  document.getElementById('confirmatory-test-cover').style = 'display: inline;';
+  var popUpBox = document.getElementById('confirmatory-test-popup-div');
+  popUpBox.style = 'display: inline';
+  popUpBox.innerHTML = null;
+
+  var table = document.createElement('table');
+  table.style = 'width: 99%; height: 98%';
+  popUpBox.appendChild(table);
+
+  var tr = document.createElement('tr');
+  table.appendChild(tr);
+
+  var td = document.createElement('td');
+  td.style = 'vertical-align: top;';
+  tr.appendChild(td);
+
+  var inputBox = document.createElement('input');
+  inputBox.setAttribute('type', 'text');
+  inputBox.setAttribute('id', 'num-pills');
+  td.appendChild(inputBox);
+
+
+  var tr = document.createElement('tr');
+  table.appendChild(tr);
+
+  var td = document.createElement('td');
+  td.style = 'vertical-align: top; text-align: center;';
+  tr.appendChild(td);
+  createKeyPad(td, e);
+}
+
+function createKeyPad(e, cell) {
+  var table = document.createElement('table');
+  table.setAttribute("class", "prescription-keypad");
+  /* ........................................ */
+  /* ........................................ */
+  var keypad_attributes = [];
+  keypad_attributes.push([1, 2, 3]);
+  keypad_attributes.push([4, 5, 6]);
+  keypad_attributes.push([7, 8, 9]);
+  keypad_attributes.push(["Del.", 0, "Done"]);
+  //keypad_attributes.push(["Clear","%","/"]);
+
+  for (var i = 0; i < keypad_attributes.length; i++) {
+      var tr = document.createElement("tr");
+      table.appendChild(tr);
+
+      for (var j = 0; j < keypad_attributes[i].length; j++) {
+          var td = document.createElement('td');
+          tr.appendChild(td);
+
+          var span = document.createElement('span');
+          span.setAttribute("class", "keypad-buttons");
+          span.setAttribute("onmousedown", "enterKeypadValue(this,'" + cell.id + "');");
+          span.innerHTML = keypad_attributes[i][j];
+          td.appendChild(span);
+      }
+  }
+
+  e.appendChild(table);
 
 }
+
+function enterKeypadValue(e, cell_id) {
+  var inputBox = document.getElementById('num-pills');
+
+  try {
+
+      if (e.innerHTML.match(/Del/i)) {
+          inputBox.value = inputBox.value.substring(0, inputBox.value.length - 1);
+      } else if (e.innerHTML.match(/Clear/i)) {
+          inputBox.value = null;
+          removeFromHash();
+      } else if (e.innerHTML.match(/Done/i)) {
+          closePopUp(cell_id);
+      } else {
+          inputBox.value += e.innerHTML;
+      }
+
+  } catch (x) {
+  }
+
+}
+
+var medicationPillCounts = {};
+
+function closePopUp(cell_id) {
+  var inputBox = document.getElementById('num-pills');
+  var cell = document.getElementById(cell_id);
+  var drug_name = cell.getAttribute("drug_name");
+
+  if (isNumeric(inputBox.value)) {
+    cell.innerHTML = inputBox.value;
+
+    if (medicationPillCounts[drug_name] !== undefined){
+
+      if (cell_id.match(/frequency/)){
+        medicationPillCounts[drug_name]["frequency"] = inputBox.value;
+      }
+
+      if (cell_id.match(/quantity/)){
+        medicationPillCounts[drug_name]["quantity"] = inputBox.value;
+      }
+      
+    }else {
+
+      if (cell_id.match(/frequency/)){
+        medicationPillCounts[drug_name] = {
+          frequency: inputBox.value,
+          quantity: 0
+        };
+      }
+
+      if (cell_id.match(/quantity/)){
+        medicationPillCounts[drug_name] = {
+          frequency: 0,
+          quantity: inputBox.value
+        };
+      }
+
+    }
+  }
+
+  document.getElementById('confirmatory-test-cover').style = 'display: none;';
+  document.getElementById('confirmatory-test-popup-div').style = 'display: none;';
+}
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
