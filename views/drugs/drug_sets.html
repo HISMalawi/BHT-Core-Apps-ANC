@@ -44,6 +44,26 @@
         line-height: 75px;
     }
     
+    #confirmatory-frequency-popup-div{
+      display: none;
+      background-color: #F4F4F4;
+      border: 2px solid #E0E0E0;
+      border-radius: 15px;
+      height: 390px;
+      padding: 5px;
+      position: absolute;
+      margin-top: 25px;
+      width: 400px;
+      /*margin-left: 430px;*/
+      left: 39%;
+      z-index: 991;
+      overflow: auto;
+    }
+    /* 392.52 * 744
+    67,000
+    67,000
+    */
+
     #confirmatory-test-popup-div {
         display: none;
         background-color: #F4F4F4;
@@ -140,11 +160,23 @@
         font-size: 2.3em;
     }
 
+    .freq-list {
+      color: black;
+      list-style: none;
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      font-family: "Nimbus Sans L","Arial Narrow",sans-serif;
+      font-size: 1.2em;
+    }
+
 </style>
 </head>
   <body id="mateme">
     <div id="container">
       <div id="confirmatory-test-popup-div"></div>
+      <div id="confirmatory-frequency-popup-div"></div>
       <div id="confirmatory-test-cover"></div>
       <div id="content">
         <form>

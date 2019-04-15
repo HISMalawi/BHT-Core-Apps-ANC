@@ -218,10 +218,12 @@ function listSelectedDrugs(){
     th.setAttribute('class', 'orders-table-row-cell');
     th.innerHTML = theaders[x];
     ordersTableRow.appendChild(th)
-    if (x > 0) {
+    if (x == 1) {
       th.style = "text-align: center; width: 20%; float: right;";
-    } else {
-      th.style = "width: 58%; float: left; padding-left: 10px;";
+    } else if (x == 2) {
+      th.style = "text-align: center; width: 28%; float: right;";
+    }else {
+      th.style = "width: 50%; float: left; padding-left: 10px;";
     }
   }
 
@@ -235,20 +237,7 @@ function listSelectedDrugs(){
     var ordersTableCell = document.createElement('div');
     ordersTableCell.setAttribute('class', 'orders-table-cell medication-cells');
     ordersTableCell.innerHTML = medication[i];
-    ordersTableCell.style = "padding-left: 10px;width: 58%; float: left;font-weight: bold;";
-    ordersTableRow.appendChild(ordersTableCell)
-
-    var ordersTableCell = document.createElement('div');
-    ordersTableCell.setAttribute('class', 'orders-table-cell medication-cells pill-counts');
-    ordersTableCell.innerHTML = ' - ';
-    ordersTableCell.setAttribute('id', "drug_quantity_"+i);
-    ordersTableCell.setAttribute('quantity', "0");
-    ordersTableCell.setAttribute('drug_name', medication[i]);
-    ordersTableCell.setAttribute('drug_id', i);
-    ordersTableCell.setAttribute('start_date', "");
-    ordersTableCell.setAttribute('equivalent_daily_dose', "");
-    ordersTableCell.setAttribute('onmousedown', 'enterQuantity(this);');
-    ordersTableCell.style = "font-weight: bold;font-size: 1.3em;text-align: center; width: 20%; float: right;";
+    ordersTableCell.style = "padding-left: 10px;width: 50%; float: left;font-weight: bold;";
     ordersTableRow.appendChild(ordersTableCell)
 
     var ordersTableCell = document.createElement('div');
@@ -261,6 +250,19 @@ function listSelectedDrugs(){
     ordersTableCell.setAttribute('start_date', "");
     ordersTableCell.setAttribute('equivalent_daily_dose', "");
     ordersTableCell.setAttribute('onmousedown', 'enterFrequency(this);');
+    ordersTableCell.style = "font-weight: bold;font-size: 1.3em;text-align: center; width: 28%; float: right;";
+    ordersTableRow.appendChild(ordersTableCell)
+
+    var ordersTableCell = document.createElement('div');
+    ordersTableCell.setAttribute('class', 'orders-table-cell medication-cells pill-counts');
+    ordersTableCell.innerHTML = ' - ';
+    ordersTableCell.setAttribute('id', "drug_quantity_"+i);
+    ordersTableCell.setAttribute('quantity', "0");
+    ordersTableCell.setAttribute('drug_name', medication[i]);
+    ordersTableCell.setAttribute('drug_id', i);
+    ordersTableCell.setAttribute('start_date', "");
+    ordersTableCell.setAttribute('equivalent_daily_dose', "");
+    ordersTableCell.setAttribute('onmousedown', 'enterQuantity(this);');
     ordersTableCell.style = "font-weight: bold;font-size: 1.3em;text-align: center; width: 20%; float: right;";
     ordersTableRow.appendChild(ordersTableCell)
 
@@ -310,7 +312,7 @@ function enterQuantity(e) {
 
 function enterFrequency(e) {
   document.getElementById('confirmatory-test-cover').style = 'display: inline;';
-  var popUpBox = document.getElementById('confirmatory-test-popup-div');
+  var popUpBox = document.getElementById('confirmatory-frequency-popup-div');
   popUpBox.style = 'display: inline';
   popUpBox.innerHTML = null;
 
@@ -322,22 +324,9 @@ function enterFrequency(e) {
   table.appendChild(tr);
 
   var td = document.createElement('td');
-  td.style = 'vertical-align: top;';
-  tr.appendChild(td);
-
-  var inputBox = document.createElement('input');
-  inputBox.setAttribute('type', 'text');
-  inputBox.setAttribute('id', 'num-pills');
-  td.appendChild(inputBox);
-
-
-  var tr = document.createElement('tr');
-  table.appendChild(tr);
-
-  var td = document.createElement('td');
   td.style = 'vertical-align: top; text-align: center;';
   tr.appendChild(td);
-  createKeyPad(td, e);
+  createListPad(td, e);
 }
 
 function createKeyPad(e, cell) {
@@ -372,6 +361,53 @@ function createKeyPad(e, cell) {
 
 }
 
+function createListPad(e, cell) {
+  var ul = document.createElement('ul');
+  ul.setAttribute("class", "prescription-keypad");
+  ul.style.listStyle = "none";
+  ul.style.paddingLeft = "0px";
+  ul.style.textAlign = "left";
+  ul.style.overflow = "scroll";
+  /* ........................................ */
+  /* ........................................ */
+  var keypad_attributes = [
+    "Once a day (OD)",
+    "Twice a day (BD)",
+    "Three times a day (TDS)",
+    "Four times a day (QID)",
+    "Five times a day (5X/D)",
+    "Six times a day (Q4HRS)",
+    "In the morning (QAM)",
+    "Once a week (QWK)",
+    "Once a month",
+    "Twice a month"
+  ];
+  
+  for (var i = 0; i < keypad_attributes.length; i++) {
+      var li = document.createElement("li");
+      li.style.paddingLeft = "20px";
+      li.style.fontSize = "1.35em";
+      li.style.marginTop = "1px";
+      li.style.marginBottom = "1px";
+      li.style.paddingTop = "15px";
+      li.style.paddingBottom = "15px";
+      li.innerHTML = keypad_attributes[i];
+
+      if (parseInt(i%2) == 0){
+        li.style.backgroundColor = "#ddd";
+      }else{
+        li.style.backgroundColor = "#eee";
+      }
+      
+      li.setAttribute("onmousedown", "closePopUp2('" + cell.id + "', '"+keypad_attributes[i]+"');");
+
+      ul.appendChild(li);
+  }
+
+  e.appendChild(ul);
+}
+
+
 function enterKeypadValue(e, cell_id) {
   var inputBox = document.getElementById('num-pills');
 
@@ -405,22 +441,11 @@ function closePopUp(cell_id) {
 
     if (medicationPillCounts[drug_name] !== undefined){
 
-      if (cell_id.match(/frequency/)){
-        medicationPillCounts[drug_name]["frequency"] = inputBox.value;
-      }
-
       if (cell_id.match(/quantity/)){
         medicationPillCounts[drug_name]["quantity"] = inputBox.value;
       }
       
     }else {
-
-      if (cell_id.match(/frequency/)){
-        medicationPillCounts[drug_name] = {
-          frequency: inputBox.value,
-          quantity: 0
-        };
-      }
 
       if (cell_id.match(/quantity/)){
         medicationPillCounts[drug_name] = {
@@ -434,6 +459,31 @@ function closePopUp(cell_id) {
 
   document.getElementById('confirmatory-test-cover').style = 'display: none;';
   document.getElementById('confirmatory-test-popup-div').style = 'display: none;';
+}
+
+function closePopUp2(cell_id, value){
+
+  var cell = document.getElementById(cell_id);
+  var drug_name = cell.getAttribute("drug_name");
+
+  cell.innerHTML = value; 
+  if (medicationPillCounts[drug_name] !== undefined){
+
+    medicationPillCounts[drug_name]["frequency"] = value;
+
+  }else{
+
+    medicationPillCounts[drug_name] = {
+      frequency: value,
+      quantity: 0
+    };
+
+
+  }
+  
+  document.getElementById('confirmatory-test-cover').style = 'display: none;';
+  document.getElementById('confirmatory-frequency-popup-div').style = 'display: none;';
+
 }
 
 function isNumeric(n) {
