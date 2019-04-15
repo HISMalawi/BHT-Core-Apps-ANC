@@ -16,6 +16,10 @@ var allDrugs = [];
 
 var drugs = {};
 
+var medicationPillCounts = {};
+
+var parameters = {};
+
 $(document).ready(function(){
 
   getDrugs();
@@ -429,7 +433,6 @@ function enterKeypadValue(e, cell_id) {
 
 }
 
-var medicationPillCounts = {};
 
 function closePopUp(cell_id) {
   var inputBox = document.getElementById('num-pills');
@@ -490,3 +493,114 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function changeSubmitButton(){
+
+  nextButton = document.getElementById("nextButton");
+
+  nextButton.onmousedown = "";
+
+  nextButton.onmousedown = function(){
+
+    if (validateSelectedDrugDetails()){
+
+      obs = {
+        "name": parameters["name"],
+        "description": parameters["description"],
+        "drugs": permitDrugs(medicationPillCounts)
+      }
+
+      console.log(obs);
+
+      submitParameters(obs, "/drug_sets", "nextPage");
+
+    }
+
+
+  }
+
+}
+
+function permitDrugs(drugs){
+
+  var permitted_drugs = [];
+
+  for(key in drugs){
+    
+    permitted_drugs.push({
+      
+      "drug": key,
+      
+      quantity: drugs[key]["quantity"],
+      
+      frequency: drugs[key]["frequency"]
+    
+    });
+
+  }
+
+  return permitted_drugs;
+
+}
+
+function buildParams(){
+
+  field = $("touchscreenInput"+tstCurrentPage)
+
+  field_name = field.name;
+
+  field_value = field.value;
+
+  if (field_name === "name"){
+
+    parameters["name"] = field_value;
+
+  }
+
+  if (field_name === "description"){
+
+    parameters["description"] = field_value;
+
+  }
+
+}
+
+function validateSelectedDrugDetails(){
+
+  if (parseInt(Object.keys(medicationPillCounts).length) === 0){
+
+    showMessage("Please fill in quantity and frequency for the selected drugs to continue.");
+
+    return false;
+
+  }
+    
+  
+
+  for (keys in medication){
+
+    if (medicationPillCounts[medication[keys]] === undefined){
+
+      showMessage("Please fill in quantity and frequency for the selected drugs to continue.");
+
+      return false;
+
+    }
+      
+    for(key in medicationPillCounts[medication[keys]]){
+      var drug = medication[keys];
+      if (medicationPillCounts[drug][key] === 0 || 
+        medicationPillCounts[drug][key] === ""){
+
+        showMessage("Please fill in quantity and frequency for the selected drugs to continue.");
+
+        return false;
+
+      }
+
+    }
+
+  }
+
+  return true;
+
+}

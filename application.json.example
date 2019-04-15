@@ -112,7 +112,11 @@
       ["TREATMENT", "treatment"],
       ["APPOINTMENT", "appointment"],
       ["VITALS", "vitals"],
-      ["HIV CLINIC REGISTRATION", "hiv clinic registration"]
+      ["HIV CLINIC REGISTRATION", "hiv clinic registration"],
+      ["ART ADHERENCE","art adherence"],
+      ["HIV CLINIC CONSULTATION","hiv clinic consultation"],
+      ["HIV RECEPTION VISITS","hiv reception"],
+      ["HIV STAGING VISITS","hiv staging"]
     ]
   },
     
