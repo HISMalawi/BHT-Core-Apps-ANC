@@ -54,6 +54,10 @@ var drug_set_duration = [];
 
 var drug_quantity_hash = {};
 
+var tstTimerHandle = null;
+
+var tstTimerFunctionCall = "";
+
 getDrugs();
   
 getDrugSets();
@@ -157,6 +161,13 @@ function getDrugSets(){
 }
 
 function submitTreatmentEncounter(){
+
+  if (parseInt(Object.keys(selectedDrugs).length) < 1){
+
+    showMessage(" Please dispense drugs to continue.");
+    return;
+
+  }
         
   var currentTime = moment().format(' HH:mm:ss');
   
@@ -1015,6 +1026,7 @@ function showNumber(id, global_control, showDefault){
 
           document.getElementById('search').value = '';
 
+
           switchViews('All drugs');
 
         }
@@ -1865,7 +1877,7 @@ function searchDrug(){
         listAllDrugs();
             
       }
-        
+  
     }
     
   }
@@ -1909,5 +1921,33 @@ function clearAll() {
 function scroll(div){
 
   div.scrollTop = div.scrollHeight - div.clientHeight;
+
+}
+
+function showMessage(aMessage, withCancel, timed) {
+  if(typeof(tstMessageBar) == "undefined"){
+      document.getElementById("container").innerHTML += "<div id='messageBar' class='messageBar'></div>";
+      
+      tstMessageBar = document.getElementById('messageBar');
+  }
+  
+  var messageBar = tstMessageBar;
+  messageBar.innerHTML = aMessage +
+  "<br />" + (typeof(withCancel) != "undefined" ? (withCancel == true ?
+      "<button onmousedown='tstMessageBar.style.display = \"none\"; " +
+      "clearTimeout(tstTimerHandle);'><span>Cancel</span></button>" : "") : "") +
+  "<button style='width: 200px;' class='button_blue' onmousedown='tstMessageBar.style.display = \"none\"; " +
+  "clearTimeout(tstTimerHandle); eval(tstTimerFunctionCall);'><span>OK</span></button>";
+  if (aMessage.length > 0) {
+    
+    messageBar.style.display = 'block';
+  
+  }
+
+}
+
+function hideMessage(){
+
+  tstMessageBar.style.display = 'none'
 
 }
