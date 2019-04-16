@@ -504,8 +504,12 @@ function changeSubmitButton(){
     if (validateSelectedDrugDetails()){
 
       obs = {
+        "datetime": sessionStorage.sessionDate,
+
         "name": parameters["name"],
+
         "description": parameters["description"],
+
         "drugs": permitDrugs(medicationPillCounts)
       }
 
@@ -518,6 +522,18 @@ function changeSubmitButton(){
 
   }
 
+}
+
+function nextPage(set){
+
+  if (parseInt(Object.keys(set).length) < 1){
+
+    showMessage("Failed to create drug sets.");
+
+    return;
+
+  }
+  window.location.href = "/apps/ANC/views/drugs/list_drug_sets.html"
 }
 
 function permitDrugs(drugs){

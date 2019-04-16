@@ -23,10 +23,14 @@
       <div id="confirmatory-test-cover"></div>
       <div id="content">
         <form>
-          <input type="text" name="name" id="name" helpText="Enter drug set name" 
-            tt_onload="showCategory2('Add drug sets');" tt_onUnload="buildParams(this);" />
-          <input type="text" name="description" id="desc" helpText="Drug set description" 
-            tt_onload="showCategory2('Add drug sets');" tt_onUnload="buildParams(this);" />
+          <input field_type="alpha" name="name" id="name" helpText="Enter drug set name" 
+            tt_onload="showCategory2('Add drug sets');" tt_onUnload="buildParams(this);"
+            validationRule="^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$" allowFreeText=true
+            validationMessage="Enter a valid drug set name." />
+          <input field_type="alpha" name="description" id="desc" helpText="Drug set description" 
+            tt_onload="showCategory2('Add drug sets');" tt_onUnload="buildParams(this);" 
+            validationRule="^([a-zA-Z]{2,100})'?-?([a-zA-Z]{1,100})$" allowFreeText=true
+            validationMessage="Enter a valid drug set name." />
 
           <select id="drugs" name="drugs" tt_onLoad="$('keyboard').style.display = 'none';
             changeNextButton(); showCategory2('Add drug sets'); populateDrugs(); clearCachedDrugs();" 
