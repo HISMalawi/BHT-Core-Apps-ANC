@@ -47,6 +47,8 @@ var prev_test_results = "";
 var art_status = ""
 
 var art_num = ""
+    
+var tested_here_before = "";
 
 var subseq_visit = false;
 
@@ -458,15 +460,16 @@ function postLabResultsObs(encounter) {
 
   if (prev_test_results !== undefined){
 
-    var tested_here_before = prev_test_results;
+    tested_here_before = prev_test_results;
   
   }else{
 
-    var tested_here_before = "";
+    tested_here_before = "";
 
   }
 
-  if (hiv_status !== null && tested_here_before.toLowerCase() !== "positive"){
+  if (hiv_status !== null && 
+    (tested_here_before !== null && tested_here_before.toLowerCase() !== "positive")){
 
     if(hiv_status !== "" && hiv_status.toLowerCase() === 'positive'){
 
@@ -957,6 +960,7 @@ function showARTSummary(){
 }
 
 function artHIVStatus(){
+
   
   if (hiv_status !== null && hiv_status.toLowerCase() === 'positive'){
 
