@@ -33,20 +33,123 @@ var months = {0: "January", 1: "February",
 
 var monthdiff = monthDiff(new Date(start_date), new Date(end_date));
 
-function populateTable(){
+var table = null;
+  
+var count = 1;
 
-  var table = document.getElementById("table3");
+function populateTable(start_date){
 
-  var current_date = moment(start_date)
+  var link = url + '/anc_cohort_disaggregated';
+
+  link += "?date=" + sessionStorage.sessionDate;
+  
+  link += "&start_date=" + start_date;
+  
+  link += "&rebuild_outcome=false";
+  
+  link += '&program_id=' + sessionStorage.programID;
+
+  rebuild_outcome = false;
+
+  var xhttp = new XMLHttpRequest();
+  
+  xhttp.onreadystatechange = function() {
+    
+    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+      
+      var obj = JSON.parse(this.responseText);
+      
+      addRows(obj,start_date)
+    
+    }
+  
+  };
+  
+  xhttp.open("GET", link, true);
+  
+  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+  
+  xhttp.setRequestHeader('Content-type', "application/json");
+  
+  xhttp.send();
+    
+}
+
+function addRows(data, current_date){
+    
+  console.log(data);
+
+  for(var i = 0; i < indicators.length; i++){
+
+    var indicator = indicators[i];
+
+    for(var j = 0; j < age_category.length; j++){
+
+      var age = age_category[j];
+      
+      var value = data[moment(current_date).format("MMM YYYY")][indicator][age];
+
+      table.row.add( [count,"Zomba", sessionStorage.currentLocation,
+        months[parseInt(moment(current_date).month())], moment(current_date).year(),
+        indicators[i], age_category[j], value.length]).draw();
+
+      count = count + 1;
+
+    }
+
+  }
+
+}
+
+function getData(current_date){
+  
+  populateTable(current_date)
+  
+  if(current_date < end_date){
+    
+    setTimeout(function(){
+    
+      current_date = moment(current_date).add(1, 'months').format("YYYY-MM-DD");
+          
+      getData(current_date);
+    
+    }, 1000)
+  
+  }
+
+}
+// Obsolete function but useful for reference
+function populateTableBckup(){
+
+  var table = $("#table3").DataTable({
+    "pageLength": 15,
+    dom: "Bfrtip",
+    buttons: [
+      { extend: 'print', exportOptions:
+        { columns: ':visible' }
+      },
+      { extend: 'excel', exportOptions:
+        { columns: ':visible' }
+      }
+    ]
+  });
+
+  var current_date = moment(start_date); // 01/01/2016
 
   var count = 1;
   
   for(var i = 1; i <= parseInt(monthdiff + 3); i++){
 
+    var data = getData(current_date);
+
     for (var j = 0; j < indicators.length; j++){
 
       for (var k = 0; k < age_category.length; k++){
-
+        table.row.add( [count,"Zomba", sessionStorage.currentLocation,
+            months[parseInt(moment(current_date).month())], moment(current_date).year(),
+            indicators[j], age_category[k], 0]).draw();
+            console.log(table);
+/**
         var row = table.insertRow(table.rows.length);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -66,29 +169,29 @@ function populateTable(){
         cell6.innerHTML = indicators[j];
         cell7.innerHTML = age_category[k];
         cell8.innerHTML = 0;
-         
+*/
         count = count + 1;
 
       }
 
     }
-    current_date.add(1, 'months');
+    current_date.add(1, 'months'); // 01/02/2016
     
   }
 }
 $(document).ready(function(){
-  populateTable();
-  $('#table3').DataTable( {
-        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
-   });
+  $('#site_name').html(sessionStorage.currentLocation);
+  $('#start_date').html(moment(start_date).format("MMM YYYY"));
+  $('#end_date').html(moment(end_date).format("MMM YYYY"));
+  table = $("#table3").DataTable({"pageLength": 15});
+  getData(moment(start_date).format("YYYY-MM-DD"));
 });
 
-function getData(age_group){
-  var link = url + '/cohort_disaggregated';
+// Obsolete function but useful for reference
+function getDataBack(date, callback){
+  var link = url + '/anc_cohort_disaggregated';
   link += "?date=" + sessionStorage.sessionDate;
-  link += "&quarter=" + quarter;
   link += "&start_date=" + start_date;
-  link += "&end_date=" + end_date;
   link += "&rebuild_outcome=false";
   link += '&program_id=' + sessionStorage.programID;
 
@@ -99,8 +202,7 @@ function getData(age_group){
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
       var obj = JSON.parse(this.responseText);
       console.log(obj);
-      //age_groups.shift();
-      //loadData(obj, age_group);
+      callback(obj)
     }
   };
   xhttp.open("GET", link, true);
@@ -109,16 +211,16 @@ function getData(age_group){
   xhttp.send();
 }
 
-function initializeGet(){
-    getData(age_category[0]);
-}
-
 function monthDiff(d1, d2) {
-    var months;
-    months = (d2.getFullYear() - d1.getFullYear()) * 12;
-    months -= d1.getMonth() + 1;
-    months += d2.getMonth();
-    return months <= 0 ? 0 : months;
-}
+  
+  var months;
+  
+  months = (d2.getFullYear() - d1.getFullYear()) * 12;
+  
+  months -= d1.getMonth() + 1;
+  
+  months += d2.getMonth();
+  
+  return months <= 0 ? 0 : months;
 
-//initializeGet();
+}

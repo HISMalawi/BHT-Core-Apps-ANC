@@ -609,15 +609,9 @@ function enrollPatient() {
 
     if (http.readyState == 4) {
 
-      if (http.status == 201) {
-
-        console.log('am here niggar');
+      if (http.status == 201 || http.status == 409) {
 
         createPatientState();
-
-      } else if (http.status == 409) {
-
-        console.log('Username already exists');
 
       } else {
 

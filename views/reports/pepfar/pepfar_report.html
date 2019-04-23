@@ -1,24 +1,24 @@
 <html>
 <head>
-<link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
-  <script language="javascript" type="text/javascript" src="/javascripts/jquery.js"></script>
+  <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
+  <!--script language="javascript" type="text/javascript" src="/javascripts/jquery.js"></script-->
   <link rel="stylesheet" href="/assets/css/custom.css">
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<link rel="stylesheet" href="/apps/ART/assets/css/datatable/jquery.dataTables.min.css" type="text/css">
-<link rel="stylesheet" href="/apps/ART/assets/css/datatable/scroller.dataTables.min.css" type="text/css">
+  <link rel="stylesheet" href="/apps/ART/assets/css/datatable/jquery.dataTables.min.css" type="text/css">
+  <link rel="stylesheet" href="/apps/ART/assets/css/datatable/scroller.dataTables.min.css" type="text/css">
 
-<script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
 
-<!-- pring report start .......................................................................... -->
-<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/buttons.flash.min.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/jszip.min.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/pdfmake.min.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/vfs_fonts.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/buttons.html5.min.js"></script>
-<script type="text/javascript" src="/assets/js/datatables/buttons.print.min.js"></script>
+  <!-- pring report start .......................................................................... -->
+  <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.flash.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/jszip.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/pdfmake.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/vfs_fonts.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.print.min.js"></script>
   <script type="text/javascript" src="/assets/js/moment.js"></script>
   <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
   <script type="text/javascript" src="/apps/ANC/assets/js/pepfar_disaggregated.js"></script>
@@ -70,6 +70,13 @@
       padding-right: 30px;
     }
 
+    .dataTables_filter {
+      display: none !important;
+    }
+    .dataTables_length {
+      display: none !important;
+    }
+
 </style>
 </head>
 
@@ -95,7 +102,7 @@
             ANC Site Name
           </td>
           <td colspan="3" style=" font-style: italic;">
-            &nbsp;
+            <span id="site_name"></span>
           </td>
         </tr>
         <tr>
@@ -104,13 +111,13 @@
             Start Date:
           </td>
           <td style="font-style: italic;">
-            &nbsp;
+            <span id="start_date"></span>
           </td>
           <td style="width: 25%; font-weight: bold;" align="right">
             End Date:
           </td>
           <td style="font-style: italic;">
-            &nbsp;
+            <span id="end_date"></span>
           </td>
         </tr>
 
@@ -122,30 +129,19 @@
 
   <div style="height: 730px;overflow: auto;">
 <table id="table3" class="table2" cellpadding="0" cellspacing="0" style="margin-top: 0px;border: 1px solid darkslategray;">
-      <tr>
+    <thead>
+    <tr>
         <td style="border-right: 1px solid ;width: 15px;text-align: center;"class="headers">#</td>
         <td class="headers">District</td>
-        <td class='headers'>Site</td>
+        <td class='headers' style="width: 20%">Site</td>
         <td class='headers'>Month</td>
         <td class='headers'>Year</td>
         <td class='headers'>ANC Indicator</td>
         <td class='headers'>Age Category</td>
         <td class='headers'>Value</td>
       </tr>
-      <div id="table-body">
+    </thead>
 
-      </div>
-
-      <!--tr class="header">
-        <td style="border-right: 1px solid darkslategray;border-bottom: 1px solid darkslategray; background: #f8f8ff;width: 15px;text-align: center;">&nbsp;</td>
-        <td ><span id="district_name">&nbsp;</span></td>
-        <td ><span id="facility_name">&nbsp;</span></td>
-        <td ><span id="month">&nbsp;</span></td>
-        <td ><span id="year<%=i%>">&nbsp;</span></td>
-        <td ><span id="indicator<%=i%>">&nbsp;</span></td>
-        <td ><span id="age">&nbsp;</span></td>
-        <td ><span id="value">&nbsp;</span></td>
-      </tr-->
 </table>
     </div>
 </div>
