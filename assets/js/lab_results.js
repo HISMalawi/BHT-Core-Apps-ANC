@@ -56,7 +56,7 @@ var concept_map = {
     "positive": 703,
     "negative": 664,
     "unknown": 1067,
-    "inconsistence": 9436,
+    "inconclusive": 9436,
     "trace" : 6698
   }
 
