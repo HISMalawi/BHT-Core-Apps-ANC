@@ -3,7 +3,7 @@
   <head>
     <title>Drug sets</title>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <link rel="stylesheet" href="/assets/css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/apps/ANC/assets/css/drug_sets.css">
 
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script>
@@ -14,43 +14,34 @@
     <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/drug_sets.js"></script>
 
-<style>
-  .helper {
-    display: block;
-    float:right;
-    background-color: #DEDEDE;
-  }
 
-  .drug-col{
-    width: 50%;
-    position: relative;
-  }
-  .dur-col {
-    width: 15%;
-    float: left;
-  }
-
-
-</style>
 </head>
   <body id="mateme">
     <div id="container">
+      <div id="confirmatory-test-popup-div"></div>
+      <div id="confirmatory-frequency-popup-div"></div>
+      <div id="confirmatory-test-cover"></div>
       <div id="content">
         <form>
-          <input type="text" name="name" id="name" helpText="Enter drug set name" 
-            tt_onload="showCategory2('Add drug sets');" />
-          <input type="text" name="description" id="desc" helpText="Drug set description" 
-            tt_onload="showCategory2('Add drug sets');"/>
+          <input field_type="alpha" name="name" id="name" helpText="Enter drug set name" 
+            tt_onload="showCategory2('Add drug sets');" tt_onUnload="buildParams(this);"
+            validationRule="^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$" allowFreeText=true
+            validationMessage="Enter a valid drug set name." />
+          <input field_type="alpha" name="description" id="desc" helpText="Drug set description" 
+            tt_onload="showCategory2('Add drug sets');" tt_onUnload="buildParams(this);" 
+            validationRule="^([a-zA-Z]{2,100})'?-?([a-zA-Z]{1,100})$" allowFreeText=true
+            validationMessage="Enter a valid drug set name." />
 
           <select id="drugs" name="drugs" tt_onLoad="$('keyboard').style.display = 'none';
             changeNextButton(); showCategory2('Add drug sets'); populateDrugs(); clearCachedDrugs();" 
             helpText="Select drugs to add"  tt_pageStyleClass="longSelectList" multiple="multiple">
 
         </select>
-          <input type="text" name="drug_set" id="drug_set" helpText="Drug set description" 
-            tt_onload="showCategory2('Add drug sets'); $('clearButton').style.display = 'none';
-              listSelectedDrugs();" 
-            tt_pageStyleClass="NoKeyboard">
+
+          <input type="text" name="summary"
+            tt_onLoad="__$('keyboard').style.display = 'none';changeSubmitButton(); listSelectedDrugs();"
+            tt_pageStyleClass="NoControls" helpText="" optional="true"/>
+
         </form>
       </div>
     </div>

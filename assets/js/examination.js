@@ -643,7 +643,7 @@ function ajaxifyInput() {
 
   __$("touchscreenInput" + tstCurrentPage).style.display = "none";
 
-  __$("inputFrame" + tstCurrentPage).style.maxHeight = (screen.height / 3.1) + "px";
+  __$("inputFrame" + tstCurrentPage).style.maxHeight = ((screen.height / 3.1) - 70) + "px";
 
   __$("viewport").style.width = 0.47 * screen.width + "px";
 
@@ -721,9 +721,9 @@ function ajaxifyInput() {
 
   frame2.setAttribute("class", "inputFrameClass");
 
-  frame2.style.height = (screen.height / 2.7) + "px";
+  frame2.style.height = ((screen.height / 2.7) - 20) + "px";
 
-  frame2.style.maxHeight = (screen.height / 2.7) + "px";
+  frame2.style.maxHeight = ((screen.height / 2.7) - 20) + "px";
 
   __$("page" + tstCurrentPage).appendChild(frame2);
 
@@ -735,7 +735,7 @@ function ajaxifyInput() {
 
   view3.style.position = "absolute";
 
-  view3.style.top = ((screen.height / 6.5) + (screen.height / 3.4) + 20) + "px";
+  view3.style.top = ((screen.height / 6.5) + (screen.height / 3.4) - 67) + "px";
 
   view3.style.left = "26px";
 
@@ -743,7 +743,7 @@ function ajaxifyInput() {
 
   view3.style.marginLeft = 0.005 * screen.width + "px";
 
-  view3.style.maxHeight = (screen.height / 2.6) + "px";
+  view3.style.maxHeight = ((screen.height / 2.6) - 20) + "px";
 
   view3.style.borderStyle = "solid";
 
@@ -946,13 +946,13 @@ function ajaxifyInput() {
 
   view4.style.position = "absolute";
 
-  view4.style.top = ((screen.height / 6.5) + (screen.height / 3.4) + 20) + "px";
+  view4.style.top = ((screen.height / 6.5) + (screen.height / 3.4) - 67) + "px";
 
   view4.style.left = 0.5 * screen.width + "px";
 
   view4.style.width = 0.46 * screen.width + "px";
 
-  view4.style.maxHeight = (screen.height / 2.5) + "px";
+  view4.style.maxHeight = ((screen.height / 2.5) - 20) + "px";
 
   view4.style.borderStyle = "solid";
 

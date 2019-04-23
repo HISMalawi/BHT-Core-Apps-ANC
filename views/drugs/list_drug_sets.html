@@ -1,0 +1,110 @@
+<script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<!-- <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/standard.js" defer="true"></script> -->
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/yes_no_ctrls.js"></script>
+<link rel="stylesheet" href="/assets/css/yes_no_ctrls.css" type="text/css">
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
+<script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
+<script type="text/javascript" src="/apps/ART/assets/js/arv_number.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/assets/js/httpUtils.js"></script>
+<script type="text/javascript" src="/apps/ANC/assets/js/list_drug_sets.js"></script>
+<script type="text/javascript" src="/assets/js/alertifyjs/alertify.js"></script>
+<script type="text/javascript" src="/assets/js/does_connection_exist.js"></script>
+
+<link rel="stylesheet" href="/assets/css/alertifyjs/css/alertify.css" type="text/css">
+
+<script>
+  var tt_cancel_destination = "/";
+</script>
+
+<style>
+#clearButton { display: none; }
+
+.main-table {
+  display: table;
+  width: 100%;
+}
+
+.table-row {
+  display: table-row;
+}
+
+.table-cell {
+  display: table-cell;
+}
+
+.left-cell {
+  width: 30%;
+  float: left;
+}
+
+.set-tables {
+  width: 100%;
+  border-collapse: separate;
+  margin: 5px;
+  border-spacing: 20px;
+  color: black;
+}
+
+.set-names {
+  border-style: solid;
+  border-width: 1px;
+  text-align: center;
+  line-height: 20px;
+  height: 50px;
+  padding: 10px;
+  box-shadow: 5px 10px #888888;
+}
+
+#cell-right {
+  width: 68%;
+  float: right;
+  vertical-align: top;
+  height: 575px;
+  border-style: solid;
+  border-width: 0px 0px 0px 1px;
+
+}
+
+.drugs {
+  border: solid 1px;
+  width: 98%;
+  border-radius: 9px;
+  box-shadow: 5px 10px #888888;
+}
+
+.drugs th {
+  text-align: left;
+}
+
+
+#cell-left {
+  width: 30%;
+  float: left;
+}
+
+#inputFrame0 {
+  overflow: auto;
+}
+
+
+</style>
+
+
+<body id="mateme">
+  <div id="container">
+    <div id="content">
+
+      <form>
+      
+        <input type="text" name="summary"
+          tt_onLoad="__$('keyboard').style.display = 'none';setUpDrugSetPage();"
+          tt_pageStyleClass= "NoControls" helpText="Drug Sets" optional = "true"/>
+
+      </form>
+
+   </div>
+ </div>
+</body>

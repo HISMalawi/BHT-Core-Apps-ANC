@@ -611,6 +611,8 @@ function enrollPatient() {
 
       if (http.status == 201) {
 
+        console.log('am here niggar');
+
         createPatientState();
 
       } else if (http.status == 409) {
@@ -698,7 +700,7 @@ function changeSubmitFunction(){
 
   var nextButton = document.getElementById('nextButton');
 
-  nextButton.setAttribute('onmousedown', 'createPatientState()');
+  nextButton.setAttribute('onmousedown', 'enrollPatient()');
 
 }
 

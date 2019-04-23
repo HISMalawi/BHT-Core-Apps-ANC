@@ -69,9 +69,33 @@
       "available": true,
       "activitiesIcon": "/assets/images/registration.png",
       "url": "/apps/ART/views/encounters/hiv_clinic_registration.html"
+    },
+    "hiv reception": {
+      "available": true,
+      "activitiesIcon": "/assets/images/reception.png",
+      "url": "/apps/ART/views/encounters/hiv_reception.html"
+    },
+    "hiv staging": {
+      "available": true,
+      "activitiesIcon": "/assets/images/hiv-staging.png",
+      "url": "/apps/ART/views/encounters/hiv_staging.html"
+    },
+    "hiv clinic consultation": {
+      "available": true,
+      "activitiesIcon": "/assets/images/consultation.png",
+      "url": "/apps/ART/views/encounters/hiv_clinic_consultation.html"
+    },
+    "art adherence": {
+      "available": true,
+      "activitiesIcon": "/assets/images/adherence.png",
+      "url": "/apps/ART/views/encounters/adherence.html"
+    },
+    "Lab orders": {
+      "available": true,
+      "activitiesIcon": "/assets/images/lab.png",
+      "url": "/views/patient/labs.html"
     }
   },
-
   "activities": {
     "url": "/apps/ANC/views/activities.html",
     "tasks": [
@@ -88,7 +112,11 @@
       ["TREATMENT", "treatment"],
       ["APPOINTMENT", "appointment"],
       ["VITALS", "vitals"],
-      ["HIV CLINIC REGISTRATION", "hiv clinic registration"]
+      ["HIV CLINIC REGISTRATION", "hiv clinic registration"],
+      ["ART ADHERENCE","art adherence"],
+      ["HIV CLINIC CONSULTATION","hiv clinic consultation"],
+      ["HIV RECEPTION VISITS","hiv reception"],
+      ["HIV STAGING VISITS","hiv staging"]
     ]
   },
     
