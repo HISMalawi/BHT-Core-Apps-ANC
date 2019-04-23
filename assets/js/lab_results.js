@@ -55,7 +55,7 @@ var preg_test_done = false;
 var concept_map = {
     "positive": 703,
     "negative": 664,
-    "unknown": 1064,
+    "unknown": 1067,
     "inconsistence": 9436,
     "trace" : 6698
   }
