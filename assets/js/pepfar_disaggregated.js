@@ -14,9 +14,11 @@ var apiURL = sessionStorage.apiURL;
 
 var url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1";
 
-var age_category = ["<10", "10-14", "15-19",
+var decompose_url = "/apps/ANC/views/reports/decompose.html?ids=";
+
+  var age_category = ["<10", "10-14", "15-19",
     "20-24", "25-29", "30-34", "35-39", "40-49",
-    "50+", "Unknown"];
+    "50+", "Unknown", "All"];
 
 var indicators = ["Already on ART", "Known at entry positive",
     "Known status", "New ANC client", "Newly identified negative",
@@ -77,8 +79,6 @@ function populateTable(start_date){
 
 function addRows(data, current_date){
     
-  console.log(data);
-
   for(var i = 0; i < indicators.length; i++){
 
     var indicator = indicators[i];
@@ -89,9 +89,11 @@ function addRows(data, current_date){
       
       var value = data[moment(current_date).format("MMM YYYY")][indicator][age];
 
+      var span = "<a href='"+decompose_url+encodeURIComponent(JSON.stringify(value))+"'>"+value.length+"</a>"
+
       table.row.add( [count,"Zomba", sessionStorage.currentLocation,
         months[parseInt(moment(current_date).month())], moment(current_date).year(),
-        indicators[i], age_category[j], value.length]).draw();
+        indicators[i], age_category[j], span]).draw();
 
       count = count + 1;
 
@@ -118,67 +120,7 @@ function getData(current_date){
   }
 
 }
-// Obsolete function but useful for reference
-function populateTableBckup(){
 
-  var table = $("#table3").DataTable({
-    "pageLength": 15,
-    dom: "Bfrtip",
-    buttons: [
-      { extend: 'print', exportOptions:
-        { columns: ':visible' }
-      },
-      { extend: 'excel', exportOptions:
-        { columns: ':visible' }
-      }
-    ]
-  });
-
-  var current_date = moment(start_date); // 01/01/2016
-
-  var count = 1;
-  
-  for(var i = 1; i <= parseInt(monthdiff + 3); i++){
-
-    var data = getData(current_date);
-
-    for (var j = 0; j < indicators.length; j++){
-
-      for (var k = 0; k < age_category.length; k++){
-        table.row.add( [count,"Zomba", sessionStorage.currentLocation,
-            months[parseInt(moment(current_date).month())], moment(current_date).year(),
-            indicators[j], age_category[k], 0]).draw();
-            console.log(table);
-/**
-        var row = table.insertRow(table.rows.length);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        var cell4 = row.insertCell(3);
-        var cell5 = row.insertCell(4);
-        var cell6 = row.insertCell(5);
-        var cell7 = row.insertCell(6);
-        var cell8 = row.insertCell(7);
-
-        // Add some text to the new cells:
-        cell1.innerHTML = count;
-        cell2.innerHTML = "Zomba";
-        cell3.innerHTML = sessionStorage.currentLocation;
-        cell4.innerHTML = months[parseInt(moment(current_date).month())];
-        cell5.innerHTML = moment(current_date).year();
-        cell6.innerHTML = indicators[j];
-        cell7.innerHTML = age_category[k];
-        cell8.innerHTML = 0;
-*/
-        count = count + 1;
-
-      }
-
-    }
-    current_date.add(1, 'months'); // 01/02/2016
-    
-  }
-}
 $(document).ready(function(){
   $('#site_name').html(sessionStorage.currentLocation);
   $('#start_date').html(moment(start_date).format("MMM YYYY"));
@@ -186,30 +128,6 @@ $(document).ready(function(){
   table = $("#table3").DataTable({"pageLength": 15});
   getData(moment(start_date).format("YYYY-MM-DD"));
 });
-
-// Obsolete function but useful for reference
-function getDataBack(date, callback){
-  var link = url + '/anc_cohort_disaggregated';
-  link += "?date=" + sessionStorage.sessionDate;
-  link += "&start_date=" + start_date;
-  link += "&rebuild_outcome=false";
-  link += '&program_id=' + sessionStorage.programID;
-
-  rebuild_outcome = false;
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
-      var obj = JSON.parse(this.responseText);
-      console.log(obj);
-      callback(obj)
-    }
-  };
-  xhttp.open("GET", link, true);
-  xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
-  xhttp.setRequestHeader('Content-type', "application/json");
-  xhttp.send();
-}
 
 function monthDiff(d1, d2) {
   
