@@ -103,6 +103,23 @@
     table td {
       padding: 5px;
     }
+    #report-cover {
+      position: absolute;
+      background-color: black;
+      width: 100%;
+      height: 102%;
+      left: 0%;
+      top: 0%;
+      z-index: 990;
+      opacity: 0.65;
+    }
+
+    #spinner {
+      position: absolute;
+      top: 150px;
+      left: 40%;
+      z-index: 991;
+    }
     </style>
   </head>
   <body data-gr-c-s-loaded="true">
@@ -402,7 +419,7 @@
                             <tr>
                               <td></td>
                               <td style="font-style:italic;">
-                                TotalHIV+ (19+21)
+                                TotalHIV+ (24+26)
                               </td>
                               <td class="valueCell">
                                 <a id="a-m-total-hiv-positive" href="">
@@ -972,7 +989,7 @@
                             <tr>
                               <td></td>
                               <td style="font-style:italic;">
-                                TotalHIV+ (19+21)
+                                TotalHIV+ (24+26)
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
                                 <a id="a-c-total-hiv-positive" href="">
@@ -1238,4 +1255,7 @@
 
 </script>
 
-</body></html>
+</body>
+<img src="/apps/ART/assets/images/formloader.gif" id="spinner" />
+<div id="report-cover"></div>
+</html>

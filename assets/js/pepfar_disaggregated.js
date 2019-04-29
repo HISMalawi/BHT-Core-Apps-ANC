@@ -39,6 +39,20 @@ var table = null;
   
 var count = 1;
 
+$(document).ready(function(){
+
+  $('#site_name').html(sessionStorage.currentLocation);
+  
+  $('#start_date').html(moment(start_date).format("MMM YYYY"));
+  
+  $('#end_date').html(moment(end_date).format("MMM YYYY"));
+  
+  table = $("#table3").DataTable({"pageLength": 15});
+   
+  getData(moment(start_date).format("YYYY-MM-DD"));
+
+});
+
 function populateTable(start_date){
 
   var link = url + '/anc_cohort_disaggregated';
@@ -107,7 +121,7 @@ function getData(current_date){
   
   populateTable(current_date)
   
-  if(current_date < end_date){
+  if(current_date < moment(end_date).add(-1, 'months').format("YYYY-MM-DD")){
     
     setTimeout(function(){
     
@@ -120,14 +134,6 @@ function getData(current_date){
   }
 
 }
-
-$(document).ready(function(){
-  $('#site_name').html(sessionStorage.currentLocation);
-  $('#start_date').html(moment(start_date).format("MMM YYYY"));
-  $('#end_date').html(moment(end_date).format("MMM YYYY"));
-  table = $("#table3").DataTable({"pageLength": 15});
-  getData(moment(start_date).format("YYYY-MM-DD"));
-});
 
 function monthDiff(d1, d2) {
   

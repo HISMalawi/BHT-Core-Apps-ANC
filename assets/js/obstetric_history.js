@@ -36,9 +36,11 @@ var x = [];
       
 var observations = [];
 
+var prev_complications = {};
+
 concepts_hash = {
-    'Yes': 1066,
-    'No': 1065,
+    'Yes': 1065,
+    'No': 1066,
     'pre_eclampsia': 7941,
     'hemorrhage': 7977,
     'eclampsia': 7156,
@@ -315,19 +317,16 @@ function postObstetricObs(encounter){
         
     }
     
-    if (observations.length > 0){
+    for(key in prev_complications){
 
+      if (prev_complications[key] !== ""){
+        
+        obs.observations.push({concept_id: key, value_coded: prev_complications[key]});
 
-      for(var i = 0; i < observations.length; i++){
-
-        pushed.push(observations[i]["concept_id"]);
-
-        obs.observations.push(observations[i]);
-            
       }
 
     }
-  
+ 
   }catch(e){
           
     console.log(e);
@@ -3149,13 +3148,14 @@ function handleCustomResult(result, id, n, dom_id) {
 
         __$(this.getAttribute("target")).value = this.getAttribute("value");
 
-        observations.push({
+        if (prev_complications[concepts_hash[this.getAttribute("target")]] == undefined){
 
-          concept_id: concepts_hash[this.getAttribute("target")],
+          prev_complications[concepts_hash[this.getAttribute("target")]] = "";
 
-          value_coded: concepts_hash[this.getAttribute("value")]
+        }
 
-        });
+        prev_complications[concepts_hash[this.getAttribute("target")]] = concepts_hash[this.getAttribute("value")];
+
 
         if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/Yes/i)) {
 
@@ -3379,3 +3379,21 @@ setInterval(function () {
   //console.log(mother_age);
 
 }, 200);
+
+setInterval(function(){
+  try{
+    
+    if (prev_complications["7156"] !== undefined){
+
+      if (prev_complications["7941"] == 1066){
+
+        delete prev_complications["7156"];
+
+      }
+
+    }
+
+  }catch(e){
+    console.log(e);
+  }
+}, 300);

@@ -52,6 +52,10 @@ $(document).ready(function(){
     var url = apiProtocol + "://" + apiURL + ":" + apiPort 
     url += "/api/v1/programs/"+programID+"/reports/cohort"
     url += "?name=q1&start_date="+date;
+
+    document.getElementById('spinner').style = 'display: inline;';
+    
+    document.getElementById('report-cover').style = 'display: inline;';
     
     var xhttp = new XMLHttpRequest();
     
@@ -60,6 +64,10 @@ $(document).ready(function(){
       if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
             
         try{
+          
+          document.getElementById('spinner').style = 'display: none;';
+          
+          document.getElementById('report-cover').style = 'display: none;';
                 
           results = JSON.parse(this.responseText);
 

@@ -50,6 +50,9 @@ $(document).ready(function(){
     var url = apiProtocol + "://" + apiURL + ":" + apiPort 
     url += "/api/v1/programs/"+programID+"/reports/monthly"
     url += "?name=q1&start_date="+date;
+  
+    document.getElementById('spinner').style = 'display: inline;';
+    document.getElementById('report-cover').style = 'display: inline;';
     
     var xhttp = new XMLHttpRequest();
     
@@ -60,6 +63,10 @@ $(document).ready(function(){
         try{
 
           results = JSON.parse(this.responseText);
+          
+          document.getElementById('spinner').style = 'display: none;';
+          
+          document.getElementById('report-cover').style = 'display: none;';
 
           // Total ANC visits
 

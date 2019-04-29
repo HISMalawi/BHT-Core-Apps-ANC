@@ -142,6 +142,10 @@ function calculateEDOD(){
 
     }
 
+    gestation = "N/A";
+    
+    edod = "N/A";
+
     if($("touchscreenInput" + tstCurrentPage).value.trim().length > 0 &&
       $("touchscreenInput" + tstCurrentPage).value.trim() != "Unknown"){
 

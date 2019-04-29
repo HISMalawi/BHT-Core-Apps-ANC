@@ -67,16 +67,17 @@ listAllDrugs();
 $(document).ready(function(){
 
   console.log(Object.keys(drug_sets).length);
-
-  if (Object.keys(drug_sets).length > 0){
+  setTimeout(function(){
+    if (Object.keys(drug_sets).length > 0){
       
-    loadDrugSets();
+      loadDrugSets();
+      
+    }else{
+        
+      loadAllDrugs();
     
-  }else{
-      
-    loadAllDrugs();
-  
-  }
+    }
+  }, 1000);
   
   resize();
   
@@ -164,7 +165,7 @@ function submitTreatmentEncounter(){
 
   if (parseInt(Object.keys(selectedDrugs).length) < 1){
 
-    showMessage(" Please dispense drugs to continue.");
+    showMessage("Please dispense drugs to continue.");
     return;
 
   }
@@ -1434,7 +1435,6 @@ function setDuration() {
 }
 
 function loadDrugSets(){
-
     clearTimeout(clicksChecker);
   
     __$("switcher").innerHTML = "";
@@ -1928,10 +1928,11 @@ function showMessage(aMessage, withCancel, timed) {
   if(typeof(tstMessageBar) == "undefined"){
       document.getElementById("container").innerHTML += "<div id='messageBar' class='messageBar'></div>";
       
-      tstMessageBar = document.getElementById('messageBar');
   }
   
-  var messageBar = tstMessageBar;
+  tstMessageBar = document.getElementById('messageBar');
+  
+  //var messageBar = tstMessageBar;
   messageBar.innerHTML = aMessage +
   "<br />" + (typeof(withCancel) != "undefined" ? (withCancel == true ?
       "<button onmousedown='tstMessageBar.style.display = \"none\"; " +

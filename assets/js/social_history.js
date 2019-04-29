@@ -32,6 +32,8 @@ var validationInterval = '';
 
 var observations = [];
 
+var social_history = {};
+
 function submitSocialHistoryEncounter() {
   
   var currentTime = moment().format(' HH:mm:ss');
@@ -61,9 +63,15 @@ function postSocialHistoryObs(encounter) {
     
     encounter_id: encounter.encounter_id,
     
-    observations: observations
+    observations: []
   
-  }; 
+  };
+  
+  for(key in social_history){
+
+    obs.observations.push({concept_id: key, value_coded: concept_hash[social_history[key]]});
+
+  }
 
   submitParameters(obs, "/observations", "nextPage")  
 
@@ -370,12 +378,13 @@ function handleResultData(result, id, n, dom_id) {
 
     li.onmousedown = function(){
 
-      __$(this.getAttribute("target")).value = this.getAttribute("value");
+      if (social_history[concept_hash[this.getAttribute('target')]] == undefined){
 
-      observations.push(
-        {concept_id: concept_hash[this.getAttribute('target')], 
-        value_coded: concept_hash[this.getAttribute('value')]}
-      );
+        social_history[concept_hash[this.getAttribute('target')]] = "";
+
+      }
+
+      social_history[concept_hash[this.getAttribute('target')]] = this.getAttribute("value");
 
       updateTouchscreenInput(this);
 
@@ -437,7 +446,7 @@ function addValidationInterval(){
 
     var arr = ["smoker", "alcohol", "civil_status"];
 
-
+/**
     var check = 0
 
     for (var i = 0; i < arr.length; i ++){
@@ -451,9 +460,9 @@ function addValidationInterval(){
       }
 
     }
+*/
 
-
-    if (check > 0){
+    if (Object.keys(social_history).length < arr.length){
 
       __$("nextButton").onmousedown = function(){
 
