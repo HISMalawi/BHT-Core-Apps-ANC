@@ -35,7 +35,7 @@
       "activitiesIcon": "/assets/images/diagnosis.png",
       "url": "/apps/ANC/views/encounters/examination.html"
     },
-    "treatment": {
+    "anc treatment": {
       "available": true,
       "activitiesIcon": "/assets/images/dispensing.png",
       "url": "/apps/ANC/views/encounters/anc_prescription.html"
@@ -60,7 +60,7 @@
       "activitiesIcon": "/assets/images/social_history.png",
       "url": "/apps/ANC/views/encounters/social_history.html"
     },
-    "dispensing": {
+    "anc dispensing": {
       "available": true,
       "activitiesIcon": "/assets/images/prescription/medication.png",
       "url": "/apps/ANC/views/encounters/ttv.html"
@@ -85,38 +85,44 @@
       "activitiesIcon": "/assets/images/consultation.png",
       "url": "/apps/ART/views/encounters/hiv_clinic_consultation.html"
     },
+    "treatment": {
+      "available": true,
+      "activitiesIcon": "/assets/images/prescription.png",
+      "url": "/apps/ART/views/encounters/prescription.html"
+    },
+    "dispensing": {
+      "available": true,
+      "activitiesIcon": "/assets/images/dispensing.png",
+      "url": "/views/patient/dispensing.html"
+    },
     "art adherence": {
       "available": true,
       "activitiesIcon": "/assets/images/adherence.png",
       "url": "/apps/ART/views/encounters/adherence.html"
-    },
-    "Lab orders": {
-      "available": true,
-      "activitiesIcon": "/assets/images/lab.png",
-      "url": "/views/patient/labs.html"
     }
   },
   "activities": {
     "url": "/apps/ANC/views/activities.html",
     "tasks": [
-      ["ANC VISIT TYPE", "anc visit type"], 
-      ["OBSTETRIC HISTORY", "obstetric history"],
-      ["MEDICAL HISTORY", "medical history"],
-      ["SURGICAL HISTORY", "surgical history"],
-      ["SOCIAL HISTORY", "social history"],
-      ["LAB RESULTS", "lab results"],
-      ["CURRENT PREGNANCY", "current pregnancy"],
-      ["ANC EXAMINATION", "anc examination"],
-      ["DISPENSING", "TTV Dispensation"],
-      ["ART_FOLLOWUP", "art_followup"],
-      ["TREATMENT", "treatment"],
-      ["APPOINTMENT", "appointment"],
-      ["VITALS", "vitals"],
-      ["HIV CLINIC REGISTRATION", "hiv clinic registration"],
-      ["ART ADHERENCE","art adherence"],
-      ["HIV CLINIC CONSULTATION","hiv clinic consultation"],
-      ["HIV RECEPTION VISITS","hiv reception"],
-      ["HIV STAGING VISITS","hiv staging"]
+      ["ANC Visit Type", "anc visit type"], 
+      ["Obstetric History", "obstetric history"],
+      ["Medical History", "medical history"],
+      ["Surgical History", "surgical history"],
+      ["Scocial History", "social history"],
+      ["Lab Results", "lab results"],
+      ["Current Pregnancy", "current pregnancy"],
+      ["ANC Examination", "anc examination"],
+      ["TTV Vaccination", "TTV Dispensation"],
+      ["ART Follow Up", "art_followup"],
+      ["Give drugs", "anc treatment"],
+      ["Manage appointment", "appointment"],
+      ["Vitals", "vitals"],
+      ["HIV Clinic Registration", "hiv clinic registration"],
+      ["ART adherence","art adherence"],
+      ["Drug Dispensations","dispensing"],
+      ["Prescriptions","treatment"],
+      ["HIV Clinic Consultations", "hiv clinic consultation"],
+      ["HIV reception visits", "hiv reception"]
     ]
   },
     
@@ -129,14 +135,7 @@
       "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
     },
     {
-      "activitiesName": "Lab activities",
-      "available": false,
-      "activitiesIcon": "/assets/images/lab.png",
-      "activitiesDescription": "Print Patient Visit Summary",
-      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
-    },
-    {
-      "activitiesName": "Demographics (Print)",
+      "activitiesName": "Visit Summary (Print)",
       "available": false,
       "activitiesIcon": "/assets/images/print.png",
       "activitiesDescription": "Print Patient Demographics",
