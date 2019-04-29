@@ -316,7 +316,7 @@ function submitDispenseEncounter(drugOrders){
 
   var encounter = {
 
-    encounter_type_name: 'ANC DISPENSING',
+    encounter_type_name: 'DISPENSE',
 
     encounter_type_id:  54,
 

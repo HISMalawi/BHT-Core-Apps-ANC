@@ -377,7 +377,7 @@ function createListPad(e, cell) {
   var keypad_attributes = [
     "Once a day (OD)",
     "Twice a day (BD)",
-    "Three times a day (TDS)",
+    "Three a day (TDS)",
     "Four times a day (QID)",
     "Five times a day (5X/D)",
     "Six times a day (Q4HRS)",
