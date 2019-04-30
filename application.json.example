@@ -108,7 +108,7 @@
       ["Obstetric History", "obstetric history"],
       ["Medical History", "medical history"],
       ["Surgical History", "surgical history"],
-      ["Scocial History", "social history"],
+      ["Social History", "social history"],
       ["Lab Results", "lab results"],
       ["Current Pregnancy", "current pregnancy"],
       ["ANC Examination", "anc examination"],
@@ -122,7 +122,8 @@
       ["Drug Dispensations","dispensing"],
       ["Prescriptions","treatment"],
       ["HIV Clinic Consultations", "hiv clinic consultation"],
-      ["HIV reception visits", "hiv reception"]
+      ["HIV reception visits", "hiv reception"],
+      ["HIV staging visits","hiv staging"]
     ]
   },
     

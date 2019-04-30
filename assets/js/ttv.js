@@ -42,7 +42,7 @@ function submitTreatmentEncounter() {
   
     var encounter = {
         
-      encounter_type_name: 'ANC TREATMENT',
+      encounter_type_name: 'TREATMENT',
       
       encounter_type_id:  25,
       
@@ -95,7 +95,7 @@ function submitDispenseEncounter(drugOrders){
 
   var encounter = {
         
-    encounter_type_name: 'ANC DISPENSING',
+    encounter_type_name: 'DISPENSING',
     
     encounter_type_id:  54,
     
