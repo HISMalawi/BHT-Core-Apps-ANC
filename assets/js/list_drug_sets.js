@@ -196,8 +196,33 @@ function setUpDrugSetPage() {
   
   function voidDrugSet(set_id) {
     
-    showMessage("Functionality not working.");
+    var url = 'http://' + apiURL + ':' + apiPort + '/api/v1/drug_sets/' + set_id;
+    url += "/?date=" + sessionStorage.sessionDate;
+    
+    var req = new XMLHttpRequest();
+        
+    req.onreadystatechange = function () {
 
+      if (this.readyState == 4 && this.status == 204) {
+        
+        location.reload(); 
+                
+      }
+      
+    };
+        
+    try {
+      
+      req.open('DELETE', url, true);
+      
+      req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+      
+      req.send(null);
+      
+    } catch (e) {
+
+    }
+    
   }
   
   function buildDrugs(container, drugs) {
