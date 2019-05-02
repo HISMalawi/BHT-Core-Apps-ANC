@@ -11,6 +11,21 @@
     -->
     <script type="text/javascript" src="/public/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js"></script>
     <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <link rel="stylesheet" href="/apps/ART/assets/css/datatable/jquery.dataTables.min.css" type="text/css">
+  <link rel="stylesheet" href="/apps/ART/assets/css/datatable/scroller.dataTables.min.css" type="text/css">
+
+  <script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
+
+  <!-- pring report start .......................................................................... -->
+  <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.flash.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/jszip.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/pdfmake.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/vfs_fonts.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.print.min.js"></script>
     <script type="text/javascript" src="/assets/js/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
@@ -182,7 +197,7 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content" style="margin: 0; max-height: 100%;">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <!--button type="button" class="close" onclick="location.reload();" data-dismiss="modal">&times;</button-->
               <h4 class="modal-title"> View Patient</span></h4>
             </div>
             
@@ -204,7 +219,7 @@
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">
+              <button type="button" class="btn btn-default" data-dismiss="modal" onmousedown="clearHash();">
                 Close
               </button>
             </div>

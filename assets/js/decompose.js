@@ -146,6 +146,7 @@ function getEncounters(id) {
   isPaused = true;
   
   var url = 'http://' + apiURL + ':' + apiPort + '/api/v1/encounters?paginate=false&patient_id=' + id //+ '&date=' + value;
+  url += '&program_id=' + programID; //+ '&date=' + value;
   
   var req = new XMLHttpRequest();
   
@@ -188,7 +189,6 @@ function expand(id){
   
   if(id.trim().length > 0){
   
-    console.log(id);
   
     if(__$(id).style.display == "none"){
   
@@ -427,10 +427,8 @@ $(document).ready(function(){
     getEncounters(i);
 
     function populateModal(){
-       console.log(isPaused); 
       if (isPaused) {
         
-        console.log(encounter_hash);
         setTimeout(function(){populateModal()},100);
       
       } else {
@@ -444,7 +442,6 @@ $(document).ready(function(){
         obs.innerHTML = "";
 
         for(key in encounter_hash){
-          console.log(key);
 
           encounter_dates_btn  = "<button type='button' id='" + key + "' value='" + key +"' ";
           encounter_dates_btn += "class='btn btn-primary btn-sm' style='width: 98%;  margin: 1%; border-radius: 0%; height: 50px;'";
