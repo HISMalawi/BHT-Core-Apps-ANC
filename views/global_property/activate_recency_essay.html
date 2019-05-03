@@ -14,7 +14,9 @@
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript">
-    
+      
+      tt_cancel_destination = "/";
+
       function addYesNoToRecency() {
         
         var tar = document.getElementById("inputFrame" + tstCurrentPage);
@@ -73,7 +75,7 @@
       <div id="content">
         <form>
           <input type="text" name="recency-essay"
-            tt_onLoad="__$('keyboard').style.display = 'none'; 
+            tt_onLoad="__$('keyboard').style.display = 'none'; __$('clearButton').style.display = 'none';
               addYesNoToRecency(); changeNext();" optional="true" 
             tt_onUnload=""
             tt_pageStyleClass= "NoControls" helpText="Recency essay" />

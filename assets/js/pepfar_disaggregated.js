@@ -39,6 +39,8 @@ var table = null;
   
 var count = 1;
 
+var district = "";
+
 $(document).ready(function(){
 
   $('#site_name').html(sessionStorage.currentLocation);
@@ -46,6 +48,10 @@ $(document).ready(function(){
   $('#start_date').html(moment(start_date).format("MMM YYYY"));
   
   $('#end_date').html(moment(end_date).format("MMM YYYY"));
+
+  $.getJSON("/apps/ANC/assets/data/facilities.json", function(json) {
+    district = json[sessionStorage.currentLocation]["District"]; // this will show the info it in firebug console
+  });
   
   table = $("#table3").DataTable({"pageLength": 15});
    
@@ -105,7 +111,7 @@ function addRows(data, current_date){
 
       var span = "<a href='"+decompose_url+encodeURIComponent(JSON.stringify(value))+"'>"+value.length+"</a>"
 
-      table.row.add( [count,"Zomba", sessionStorage.currentLocation,
+      table.row.add( [count,district, sessionStorage.currentLocation,
         months[parseInt(moment(current_date).month())], moment(current_date).year(),
         indicators[i], age_category[j], span]).draw();
 
