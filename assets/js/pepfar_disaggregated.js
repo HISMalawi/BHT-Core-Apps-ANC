@@ -53,7 +53,13 @@ $(document).ready(function(){
     district = json[sessionStorage.currentLocation]["District"]; // this will show the info it in firebug console
   });
   
-  table = $("#table3").DataTable({"pageLength": 15});
+  table = $("#table3").DataTable({"pageLength": 15,
+            dom: 'Bfrtip',
+            buttons: [
+              { extend: 'excel', text: 'Export excel', className: 'blue'}
+            ]
+          });
+  table.buttons().container().prependTo('#print');
    
   getData(moment(start_date).format("YYYY-MM-DD"));
 

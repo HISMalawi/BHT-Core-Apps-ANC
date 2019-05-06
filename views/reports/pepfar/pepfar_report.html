@@ -70,8 +70,7 @@
     #print {
       margin-right: 30px;
       padding:0px;
-      padding-left: 30px;
-      padding-right: 30px;
+      float: right;
     }
 
     .dataTables_filter {
@@ -155,9 +154,9 @@
           <button id="btnNext" class="green right" onclick="location='/';">
             <span>Finish</span>
           </button>
-          <button id="print" class="btn btn-success buttons blue" onmousedown="javascript:printPDF();">
-            <span>Print</span>
-          </button>
+          <span id="print" class="">
+            <!--span>Print</span-->
+          </span>
         </div>
       </footer>
 
