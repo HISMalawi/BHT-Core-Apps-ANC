@@ -46,13 +46,24 @@
   }
   </script>
     <style media="print">
-      button {
-        display: none;
-      }
-      #main {
-        height: 600px;
-      }
-    </style>
+        @page {
+          size: auto;   /* auto is the current printer page size */
+          margin: 0mm;  /* this affects the margin in the printer settings */
+          font-size: 10px;
+          height: 100%;
+        }
+  
+        .footer {
+          display: none;
+        }
+        #main {
+          height: 100% !important;
+          overflow: hidden !important;
+        }
+        a[href]:after {
+          content: none !important;
+        }
+      </style>
     <style>
 
         .err-rows {
@@ -462,7 +473,7 @@
           <button id="btnNext" class="green right" onclick="location='/';">
             <span>Finish</span>
           </button>
-          <button id="print" class="btn btn-success buttons blue" onmousedown="javascript:printPDF();">
+          <button id="print" class="btn btn-success buttons blue" onmousedown="window.print();">
             <span>Print</span>
           </button>
         </div>
