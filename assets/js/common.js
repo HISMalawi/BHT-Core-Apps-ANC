@@ -141,6 +141,10 @@ function getUrlParams() {
 
 function getSurgicalHistory() {
 
+  if (patientID == null || patientID == ""){
+    return;
+  }
+
   var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
   url += '/programs/'+programID+'/patients/'+patientID+'/surgical_history';
 
