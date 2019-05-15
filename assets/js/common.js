@@ -141,7 +141,7 @@ function getUrlParams() {
 
 function getSurgicalHistory() {
 
-  if (patientID == null || patientID == ""){
+  if (patientID == null || patientID == "" || patientID == "null"){
     return;
   }
 

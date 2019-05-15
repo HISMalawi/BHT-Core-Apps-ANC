@@ -1,0 +1,162 @@
+<html>
+<head>
+  <link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
+  <!--script language="javascript" type="text/javascript" src="/javascripts/jquery.js"></script-->
+  <link rel="stylesheet" href="/assets/css/custom.css">
+
+  <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <link rel="stylesheet" href="/apps/ART/assets/css/datatable/jquery.dataTables.min.css" type="text/css">
+  <link rel="stylesheet" href="/apps/ART/assets/css/datatable/scroller.dataTables.min.css" type="text/css">
+
+  <script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
+
+  <!-- pring report start .......................................................................... -->
+  <script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.flash.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/jszip.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/pdfmake.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/vfs_fonts.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="/assets/js/datatables/buttons.print.min.js"></script>
+  <script type="text/javascript" src="/assets/js/moment.js"></script>
+  <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+  <script type="text/javascript" src="/apps/ANC/assets/js/incomplete_visits.js"></script>
+
+  <title>Report</title>
+
+  <style>
+    body {
+      margin-left: 0px !important;
+    }
+
+    table{
+        width: 94% !important;
+        margin: auto;
+    }
+    table td a {
+      text-decoration: none;
+      color: darkslategray;
+    }
+    .table2 td{
+        padding: 5px;
+        border: 1px dotted #f8f8ff;
+        color: darkslategrey;
+        font-size: 0.9em;
+        line-height: 1.65;
+    }
+
+    .table1 td{
+        padding: 2px;
+        border-top: 1px solid gray;
+        border-right: 1px solid gray;
+        color: darkslategrey;
+        line-height: 1.65;
+    }
+    .headers{
+        background: #d3d3d3;
+        font-weight: bold;
+        border-right: 1px solid gray !important;
+        border-top: 1px solid gray !important;
+        border-bottom: 1px solid gray !important;
+    }
+    #btnNext {
+      margin: 5px 0px 0px; 
+      padding: 0px; 
+      padding-left: 25px;
+      padding-right: 25px;
+      float: right;
+    }
+    #print {
+      margin-right: 30px;
+      padding:0px;
+      float: right;
+    }
+
+    .dataTables_filter {
+      display: none !important;
+    }
+    .dataTables_length {
+      display: none !important;
+    }
+
+</style>
+</head>
+
+<body>
+<div>
+  <div>
+<table  class="table1" style="width: 100%; -moz-user-select: none;margin-bottom: 10px;">
+  <tr>
+
+        <th style="font-size: 1.5em; color: #eee; background-color: #999; padding: 5px;">
+          ANC C<span style="font-size: 0.8em">LINIC</span> -
+          I<span style="font-size: 0.8em">NCOMPLETE</span> V<span style="font-size: 0.8em">ISITS</span>
+          R<span style="font-size: 0.8em">EPORT</span>
+        </th>
+
+  </tr>
+
+  <tr>
+    <td style="border: 1px solid #999;">
+      <table width="100%" cellspacing="0" cellpadding="5">
+        <tr>
+          <td style="width: 25%; font-weight: bold;border-left: 1px solid gray;">
+            ANC Site Name
+          </td>
+          <td colspan="3" style=" font-style: italic;">
+            <span id="site_name"></span>
+          </td>
+        </tr>
+        <tr>
+
+          <td style="width: 25%; font-weight: bold;border-left: 1px solid gray;">
+            Start Date:
+          </td>
+          <td style="font-style: italic;">
+            <span id="start_date"></span>
+          </td>
+          <td style="width: 25%; font-weight: bold;" align="right">
+            End Date:
+          </td>
+          <td style="font-style: italic;">
+            <span id="end_date"></span>
+          </td>
+        </tr>
+
+      </table>
+  </td>
+</tr>
+</table>
+  </div>
+
+  <div style="height: 730px;overflow: auto;">
+<table id="table3" class="table2" cellpadding="0" cellspacing="0" style="margin-top: 0px;border: 1px solid darkslategray;">
+    <thead>
+    <tr>
+        <td style="border-right: 1px solid ;width: 15px;text-align: center;"class="headers">#</td>
+        <td class="headers">Patient Name</td>
+        <td class='headers' style="width: 20%">Patient ID</td>
+        <td class='headers'>Visit Number</td>
+        <td class='headers'>Last Visit Date</td>
+        <td class='headers'></td>
+      </tr>
+    </thead>
+
+</table>
+    </div>
+</div>
+
+<footer class="footer">
+        <div class="container-footer">
+          <button id="btnNext" class="green right" onclick="location='/';">
+            <span>Finish</span>
+          </button>
+          <span id="print" class="">
+            <!--span>Print</span-->
+          </span>
+        </div>
+      </footer>
+
+</body>
+</html>

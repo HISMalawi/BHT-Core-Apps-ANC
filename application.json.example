@@ -1,49 +1,24 @@
 {
   "encounters": {
-   "vitals": {
+    "anc dispensing": {
+      "available": true,
+      "activitiesIcon": "/assets/images/prescription/medication.png",
+      "url": "/apps/ANC/views/encounters/ttv.html"
+    },
+    "vitals": {
       "available": true,
       "activitiesIcon": "/assets/images/vitals.png",
       "url": "/views/patient/vitals.html"
-    },
-    "appointment": {
-      "available": true,
-      "activitiesIcon": "/assets/images/appointment.png",
-      "url": "/views/patient/appointment.html"
-    },
-    "obstetric history": {
-      "available": true,
-      "activitiesIcon": "/assets/images/obstetric_history.png",
-      "url": "/apps/ANC/views/encounters/obstetric_history.html"
-    },
-    "current pregnancy": {
-      "available": true,
-      "activitiesIcon": "/assets/images/current_preg.png",
-      "url": "/apps/ANC/views/encounters/current_pregnancy.html"
-    },
-    "lab results": {
-      "available": true,
-      "activitiesIcon": "/assets/images/lab.png",
-      "url": "/apps/ANC/views/encounters/lab_results.html"
-    },
-    "art_followup": {
-      "available": true,
-      "activitiesIcon": "/assets/images/pmtct.png",
-      "url": "/apps/ANC/views/encounters/pmtct.html"
-    },
-    "anc examination": {
-      "available": true,
-      "activitiesIcon": "/assets/images/diagnosis.png",
-      "url": "/apps/ANC/views/encounters/examination.html"
-    },
-    "anc treatment": {
-      "available": true,
-      "activitiesIcon": "/assets/images/dispensing.png",
-      "url": "/apps/ANC/views/encounters/anc_prescription.html"
     },
     "anc visit type": {
       "available": true,
       "activitiesIcon": "/assets/images/registration.png",
       "url": "/apps/ANC/views/encounters/visit_type.html"
+    },
+    "obstetric history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/obstetric_history.png",
+      "url": "/apps/ANC/views/encounters/obstetric_history.html"
     },
     "medical history": {
       "available": true,
@@ -60,10 +35,35 @@
       "activitiesIcon": "/assets/images/social_history.png",
       "url": "/apps/ANC/views/encounters/social_history.html"
     },
-    "anc dispensing": {
+    "lab results": {
       "available": true,
-      "activitiesIcon": "/assets/images/prescription/medication.png",
-      "url": "/apps/ANC/views/encounters/ttv.html"
+      "activitiesIcon": "/assets/images/lab.png",
+      "url": "/apps/ANC/views/encounters/lab_results.html"
+    },
+    "current pregnancy": {
+      "available": true,
+      "activitiesIcon": "/assets/images/current_preg.png",
+      "url": "/apps/ANC/views/encounters/current_pregnancy.html"
+    },
+    "anc examination": {
+      "available": true,
+      "activitiesIcon": "/assets/images/diagnosis.png",
+      "url": "/apps/ANC/views/encounters/examination.html"
+    },
+    "appointment": {
+      "available": true,
+      "activitiesIcon": "/assets/images/appointment.png",
+      "url": "/views/patient/appointment.html"
+    },
+    "anc treatment": {
+      "available": true,
+      "activitiesIcon": "/assets/images/dispensing.png",
+      "url": "/apps/ANC/views/encounters/anc_prescription.html"
+    },
+    "art_followup": {
+      "available": true,
+      "activitiesIcon": "/assets/images/pmtct.png",
+      "url": "/apps/ANC/views/encounters/pmtct.html"
     },
     "hiv clinic registration": {
       "available": true,
@@ -104,6 +104,8 @@
   "activities": {
     "url": "/apps/ANC/views/activities.html",
     "tasks": [
+      ["TTV Vaccination", "anc dispensing"],
+      ["Vitals", "vitals"],
       ["ANC Visit Type", "anc visit type"], 
       ["Obstetric History", "obstetric history"],
       ["Medical History", "medical history"],
@@ -112,18 +114,16 @@
       ["Lab Results", "lab results"],
       ["Current Pregnancy", "current pregnancy"],
       ["ANC Examination", "anc examination"],
-      ["TTV Vaccination", "TTV Dispensation"],
-      ["ART Follow Up", "art_followup"],
-      ["Give drugs", "anc treatment"],
       ["Manage appointment", "appointment"],
-      ["Vitals", "vitals"],
+      ["Give drugs", "anc treatment"],
+      ["ARV Follow Up", "art_followup"],
       ["HIV Clinic Registration", "hiv clinic registration"],
       ["ART adherence","art adherence"],
-      ["Drug Dispensations","dispensing"],
-      ["Prescriptions","treatment"],
-      ["HIV Clinic Consultations", "hiv clinic consultation"],
-      ["HIV reception visits", "hiv reception"],
-      ["HIV staging visits","hiv staging"]
+      ["ART Drug Dispensations","dispensing"],
+      ["ART Prescriptions","treatment"],
+      ["ART Clinic Consultations", "hiv clinic consultation"],
+      ["ART reception visits", "hiv reception"],
+      ["ART staging visits","hiv staging"]
     ]
   },
     
