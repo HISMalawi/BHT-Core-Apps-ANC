@@ -499,9 +499,20 @@ getPrescriptions();
 
 function nextPage(obs){
 
+  var iframe = document.getElementById('print-iframe');
+
+  var container = document.getElementById('container');
+
   var url = "/programs/"+programID+"/patients/" + patientID + "/labels/visits"
+  
   url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
-  document.location = url;
+  
+  iframe.src = url;
+  
+  iframe.style.display = "block";
+
+  container.style.display = "none";
+  //document.location = url;
   
   setTimeout('next();', 2000);
   
