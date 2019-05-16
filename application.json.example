@@ -129,7 +129,7 @@
     
   "others": [
     {
-      "activitiesName": "National ID (Print)",
+      "activitiesName": "National Health ID (Print)",
       "available": false,
       "activitiesIcon": "/assets/images/barcode.png",
       "activitiesDescription": "Print Patient National ID",
