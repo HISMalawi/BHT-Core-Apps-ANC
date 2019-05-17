@@ -121,9 +121,9 @@
       ["ART adherence","art adherence"],
       ["ART Drug Dispensations","dispensing"],
       ["ART Prescriptions","treatment"],
-      ["ART Clinic Consultations", "hiv clinic consultation"],
-      ["ART reception visits", "hiv reception"],
-      ["ART staging visits","hiv staging"]
+      ["HIV Clinic Consultations", "hiv clinic consultation"],
+      ["HIV reception visits", "hiv reception"],
+      ["HIV staging visits","hiv staging"]
     ]
   },
     
