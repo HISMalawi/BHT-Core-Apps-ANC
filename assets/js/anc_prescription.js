@@ -275,7 +275,7 @@ function postDrugOrders(encounter){
     
     }
     
-    quantity = eq_daily_dose * dose;
+    quantity = duration * dosesPerDay(frequency);
     
     drug_order = {
     
@@ -503,7 +503,7 @@ function nextPage(obs){
 
   var container = document.getElementById('container');
 
-  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/visits"
+  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/visits?date=?"+sessionStorage.sessionDate;
   
   url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
   

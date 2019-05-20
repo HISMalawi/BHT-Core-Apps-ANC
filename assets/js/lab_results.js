@@ -657,9 +657,19 @@ function postLabResultsObs(encounter) {
 }
 
 function nextPage(obs){
-  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/lab_results"
+  
+  iframe = document.getElementById("print-iframe");
+
+  var url = "/programs/"+programID+"/patients/" + patientID + "/labels/lab_results?date=" + sessionStorage.sessionDate;
+  
   url = apiProtocol + "://" + apiURL + ":" + apiPort + "/api/v1" + url;
-  document.location = url;
+
+  iframe.src = url;
+
+  iframe.style.display = "block";
+
+  document.getElementById("container").style.display = "none";
+  //document.location = url;
   
   setTimeout('red();', 2000);
   
