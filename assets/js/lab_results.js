@@ -108,6 +108,8 @@ function isSubsequentVisit(){
 
         var obj = JSON.parse(this.responseText);
 
+        console.log(obj);
+
         subseq_visit = obj["subsequent_visit"];
 
         preg_test_done = obj["pregnancy_test"];
@@ -1161,5 +1163,81 @@ function inputIsValid() {
   
   return true;
 
+}
+var x = setInterval(function(){
+
+  var yesButton =  document.getElementById('yes_btn');
+
+  if (yesButton == null){
+    return;
+  }
+
+  yesButton.removeAttribute("onmousedown");
+
+  yesButton.onmousedown = function(){
+
+    clearInterval(x);
+
+    var selected_lab_values = getSelectedLabTests().split(" ").filter(Boolean);
+          
+    var selected_urine_values = getSelectedUrineTests().split(" ").filter(Boolean);
+
+    if (selected_lab_values.length > 0){
+            
+      var field_name = $("touchscreenInput"+tstCurrentPage).name
+    
+      if (selected_lab_values[selected_lab_values.length - 1] === field_name || 
+              
+        selected_urine_values[selected_urine_values.length - 1] === field_name ){
+              
+          if (selected_lab_values[selected_lab_values.length - 1] === "urine"){
+                
+            if (selected_urine_values.length > 0){
+                  
+              if (selected_urine_values[selected_urine_values.length - 1] === field_name) {
+                
+                submitLabResultsEncounter();
+                
+              }else{
+                    
+                gotoNextPage();
+                  
+              }
+            
+            }else{
+                  
+              submitLabResultsEncounter();
+                
+            }
+          
+          }else if (selected_lab_values[selected_lab_values.length - 1] === "hiv_status"){
+              
+            checkCurrentHIVResult();
+          
+          }else{
+
+            submitLabResultsEncounter();
+          
+          }
+        
+      }else{
+
+        gotoNextPage();
+        
+      }
+    
+    }else{
+        
+      submitLabResultsEncounter();
+    
+    }
+  
+  }
+}, 200)
+
+var yesButton =  document.getElementById('yes_btn');
+
+if (yesButton !== null){
+  clearInterval(x);
 }
 

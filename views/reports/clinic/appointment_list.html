@@ -96,7 +96,7 @@ function buildDataTable(e) {
   var tr = document.createElement('tr');
   theader.appendChild(tr);
 
-  var headers = ['ARV#','First name','Last name', 'Gender','birthdate','Current address','&nbsp;'];
+  var headers = ['Identifier','First name','Last name', 'Gender','birthdate','Current address','&nbsp;'];
   
   for(var i = 0 ; i < headers.length ; i++){
     var th = document.createElement('th');
@@ -134,7 +134,6 @@ function initDataTable() {
 
 
 function getList(sdate) {
-  console.log(sdate);
   var url = apiProtocol + "://" + apiURL + ":" + apiPort;
   url += "/api/v1/programs/"+ sessionStorage.programID + "/booked_appointments?date="+sdate;
   url += "&paginate=false";
@@ -143,7 +142,6 @@ function getList(sdate) {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
       var obj = JSON.parse(this.responseText);
-      console.log(obj);
       loadClients(obj);
     }
   };
