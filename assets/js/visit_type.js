@@ -10,52 +10,18 @@ var patientID = sessionStorage.patientID;
 
 var programID = sessionStorage.programID;
 
-var past_visits = {}
-
 var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
-function getAncVisitNumber() {
+var past_visits = "";
 
-  var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
-  url += '/programs/'+programID+'/patients/'+patientID+'/anc_visit';
+if (sessionStorage.ancVisitNumbers !== "null" && 
+  sessionStorage.ancVisitNumbers !== "" && 
+  sessionStorage.ancVisitNumbers !== "undefined"){
 
-  var req = new XMLHttpRequest();
-
-  req.onreadystatechange = function(){
-
-    if (this.readyState == 4) {
-
-      if (this.status == 200) {
-
-        var results = JSON.parse(this.responseText);
-
-        past_visits = JSON.stringify(results["visit_number"]);
-
-      }else {
-
-        past_visits = {};
-
-      }
-
-    }
-
-  };
-
-  try {
-
-    req.open('GET', url, true);
-
-    req.setRequestHeader('Authorization',sessionStorage.getItem('authorization'));
-
-    req.send(null);
-
-  } catch (e) {
-  
-    console.log(e);
-
-  }
+  past_visits = sessionStorage.ancVisitNumbers.split(",")
 
 }
+
 
 function disablePastVisits(){
 
@@ -72,8 +38,6 @@ function disablePastVisits(){
   }
 
 }
-
-getAncVisitNumber();
 
 function submitVisitTypeEncounter(){
 

@@ -42,17 +42,51 @@ var previous_hiv_test = false;
 
 var hiv_status = "";
 
-var prev_test_results = "";
+if (sessionStorage.patientHIVStatus !== "null"){
+  
+  hiv_status = sessionStorage.patientHIVStatus;
+
+}
+
+var prev_test_results = sessionStorage.previousHIVTestResult;
 
 var art_status = ""
 
+if (sessionStorage.patientOnART !== "null"){
+  
+  art_status = sessionStorage.patientOnART;
+
+}
+
 var art_num = ""
+
+if (sessionStorage.patientARVNumber !== "null"){
+  
+  art_num = sessionStorage.patientARVNumber;
+
+}
+
+var art_start_date = "";
+
+if (sessionStorage.patientARVStartDate !== "null"){
+  
+  art_start_date = sessionStorage.patientARVStartDate;
+
+}
     
 var tested_here_before = "";
 
 var subseq_visit = false;
 
+if (sessionStorage.subsequentVisit === "true"){
+  subseq_visit = true;
+}
+
 var preg_test_done = false;
+
+if (sessionStorage.pregnancyTestDone === "true"){
+  preg_test_done = true;
+}
 
 var concept_map = {
     "positive": 703,
@@ -91,86 +125,6 @@ function askRecencyEssay(){
   return recency_essay
 
 }
-
-function isSubsequentVisit(){
-
-  var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
-  url += '/programs/'+programID+'/patients/'+patientID+'/subsequent_visit';
-  url += '?date='+sessionStorage.sessionDate;
-
-  var xhttp = new XMLHttpRequest();
-        
-  xhttp.onreadystatechange = function () {
-          
-    if (this.readyState == 4 && this.status == 200) {
-      
-      try{
-
-        var obj = JSON.parse(this.responseText);
-
-        console.log(obj);
-
-        subseq_visit = obj["subsequent_visit"];
-
-        preg_test_done = obj["pregnancy_test"];
-
-        prev_test_results = obj["hiv_status"];
-
-      }catch(e){
-
-        console.log(e);
-
-      }
-      
-    }
-        
-  };
-  
-  xhttp.open("GET", url, true);
-        
-  xhttp.setRequestHeader('Authorization', authToken);
-        
-  xhttp.setRequestHeader('Content-type', "application/json");
-        
-  xhttp.send();
-
-}
-
-function getPatientHIVStatus(){
-  
-  var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
-  url += '/programs/'+programID+'/patients/'+patientID+'/art_hiv_status';
-
-  var xhttp = new XMLHttpRequest();
-        
-  xhttp.onreadystatechange = function () {
-          
-    if (this.readyState == 4 && this.status == 200) {
-            
-      var obj = JSON.parse(this.responseText);
-      
-      hiv_status = obj['hiv_status'];
-      
-      art_status = obj['art_status']
-    
-      art_num = obj['arv_number']
-          
-    }
-        
-  };
-  
-  xhttp.open("GET", url, true);
-        
-  xhttp.setRequestHeader('Authorization', authToken);
-        
-  xhttp.setRequestHeader('Content-type', "application/json");
-        
-  xhttp.send();
-      
-}
-
-getPatientHIVStatus();
-isSubsequentVisit();
 
 Object.defineProperty(Date.prototype, "format", {
   value: function (format) {
@@ -316,8 +270,8 @@ function removeHIVOption(){
     
     if ((prev_test_done !== undefined && prev_test_done.toLowerCase() === 'yes' && 
       prev_hiv_test_res.toLowerCase() === 'positive') || compare_dates || 
-      (hiv_status !== null && hiv_status.toLowerCase() === 'positive') ||
-      ((prev_test_results !== undefined && prev_test_results !== "") && prev_test_results.toLowerCase() === 'positive')){
+      (hiv_status.toLowerCase() === 'positive') ||
+      ((prev_test_results !== "") && prev_test_results.toLowerCase() === 'positive')){
 
       x = tt_currentUnorderedListOptions.firstChild.attributes["tstvalue"].value;
 
@@ -461,7 +415,7 @@ function postLabResultsObs(encounter) {
     
   };
 
-  if (prev_test_results !== undefined){
+  if (prev_test_results !== ""){
 
     tested_here_before = prev_test_results;
   
@@ -471,8 +425,7 @@ function postLabResultsObs(encounter) {
 
   }
 
-  if (hiv_status !== null && 
-    (tested_here_before !== null && tested_here_before.toLowerCase() !== "positive")){
+  if (tested_here_before !== null && tested_here_before.toLowerCase() !== "positive"){
 
     if(hiv_status !== "" && hiv_status.toLowerCase() === 'positive'){
 
@@ -948,19 +901,19 @@ function showARTSummary(){
     displayText += "HIV Status : <span class='value'>"+hiv_status.toUpperCase()+"</span><br />";
 
 
-    if (art_status !== null && art_status.toLowerCase() === 'yes'){
+    if (art_status.toLowerCase() === 'yes'){
     
       displayText += "On ART : &nbsp;&nbsp;&nbsp;&nbsp;<span class='value'>"+art_status.toUpperCase()+"</span><br />";
 
-      if(art_start_date !== null){
+      if(art_start_date !== ""){
             
         displayText += "ART Start Date : &nbsp;&nbsp;&nbsp;&nbsp;<span class='value'>"+art_start_date+"</span> <br />";
 
       }
 
-      if (arv_num !== null){
+      if (art_num !== ""){
             
-        displayText += "ARV Number : <span class='value'> "+ arv_num.toString() +" </span> <br />";
+        displayText += "ARV Number : <span class='value'> "+ art_num.toString() +" </span> <br />";
             
       }
 
@@ -975,7 +928,7 @@ function showARTSummary(){
 function artHIVStatus(){
 
   
-  if (hiv_status !== null && hiv_status.toLowerCase() === 'positive'){
+  if (hiv_status.toLowerCase() === 'positive'){
 
     return true;
 
@@ -1121,7 +1074,7 @@ function initializeDate(){
 
 function hideBackButton(){
 
-  if (hiv_status === null || hiv_status === "" || hiv_status.toLowerCase() !== "positive"){
+  if (hiv_status === "" || hiv_status.toLowerCase() !== "positive"){
 
     $('backButton').style.display = 'none';
 

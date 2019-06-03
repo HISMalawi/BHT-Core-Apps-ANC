@@ -72,8 +72,16 @@ function postARTFollowUpObs(encounter) {
 }
 
 function nextPage(obs){
+  var pmtct = yesNo_Hash["PMTCT"]["Proceed to PMTCT"];
   
-  nextEncounter(patientID, programID);
+  if (pmtct.toLowerCase() === "yes"){
+    nextEncounter(patientID, programID);
+  }else if(pmtct.toLowerCase() === "no"){
+
+    window.location.href = "/views/patient_dashboard.html?patient_id=" + sessionStorage.patientID;
+    return;
+
+  }
 
 }
 
@@ -123,7 +131,7 @@ function submitFunction(){
     
     reason = $('reason_for_not_starting_art').value;
     
-    if (reason == '' || reason == null) {
+    if (reason === '' || reason === null) {
       
       showMessage("You must enter a value to continue");
       

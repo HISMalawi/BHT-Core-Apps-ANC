@@ -9,8 +9,12 @@ var apiPort = sessionStorage.apiPort;
 var apiURL = sessionStorage.apiURL;
 
 var hysterectomy = false;
-  
-getSurgicalHistory();
+
+if (parseInt(programID) === 12){
+
+  getSurgicalHistory();
+
+}
 
 $(document).ready(function(){
   // Verify patient gender
