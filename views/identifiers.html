@@ -52,27 +52,67 @@
       var program_id = sessionStorage.programID;
 
       function ajaxRequest() {
-        var url = 'http://' + apiURL + ':' + apiPort 
-        url += '/api/v1/programs/'+program_id+'/patients/' + id;
-        var req = new XMLHttpRequest();
-        req.onreadystatechange = function () {
 
-          if (this.readyState == 4) {
-            if (this.status == 200) {
-              var results = JSON.parse(this.responseText);
-              document.getElementById("date-lmp").innerHTML = ((results.date_of_lnmp !== "") ? results.date_of_lnmp : "No LMP Date Available");
-              document.getElementById("fundus-by-lmp").innerHTML = ((results.fundus !== "") ? results.fundus : "")  
-              document.getElementById("anc-visits").innerHTML = ((results.anc_visits !== "") ? results.anc_visits : "No ANC visit Number Available");
-              document.getElementById("current-outcome").innerHTML =  ((results.current_outcome !== "") ? results.current_outcome : "No Outcome Available");
+        var lmp_date = document.getElementById("date-lmp");
+        var fundus = document.getElementById("fundus-by-lmp");  
+        var visits = document.getElementById("anc-visits");
+        var cur_outcome = document.getElementById("current-outcome");
+
+        if (sessionStorage.dateOfLMP !== "" && sessionStorage.fundusByLMP !== "" 
+          && sessionStorage.totalANCVisits !== "" && sessionStorage.currentOutcome !== ""){
+
+          lmp_date.innerHTML = sessionStorage.dateOfLMP;
+
+          fundus.innerHTML = sessionStorage.fundusByLMP;
+          
+          visits.innerHTML = sessionStorage.totalANCVisits;
+          
+          cur_outcome.innerHTML = sessionStorage.currentOutcome;
+
+        }else{
+
+          var url = 'http://' + apiURL + ':' + apiPort 
+        
+          url += '/api/v1/programs/'+program_id+'/patients/' + id;
+        
+          var req = new XMLHttpRequest();
+        
+          req.onreadystatechange = function () {
+
+            if (this.readyState == 4) {
+              if (this.status == 200) {
+                var results = JSON.parse(this.responseText);
+
+                document.getElementById("date-lmp").innerHTML = ((results.date_of_lnmp !== "") ? results.date_of_lnmp : "No LMP Date Available");
+                
+                document.getElementById("fundus-by-lmp").innerHTML = ((results.fundus !== "") ? results.fundus : "")  
+                
+                document.getElementById("anc-visits").innerHTML = ((results.anc_visits !== "") ? results.anc_visits : "No ANC visit Number Available");
+                
+                document.getElementById("current-outcome").innerHTML =  ((results.current_outcome !== "") ? results.current_outcome : "No Outcome Available");
+              
+              }
+            
             }
+          
+          };
+        
+          try {
+            
+            req.open('GET', url, true);
+            
+            req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+            
+            req.send(null);
+          
+          } catch (e) {
+          
+            console.log(e);
+
           }
-        };
-        try {
-          req.open('GET', url, true);
-          req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
-          req.send(null);
-        } catch (e) {
+        
         }
+
       }
 
       ajaxRequest();
