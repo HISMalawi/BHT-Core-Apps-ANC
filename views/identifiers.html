@@ -34,7 +34,8 @@
         </span> 
         <span id="date-lmp"></span> 
       </div>
-      <div class="addresses"><span class="headers"><strong>Fundus by LMP:</strong></span>&nbsp;<span id="fundus-by-lmp"></span></div>
+      <!--div class="addresses"><span class="headers"><strong>Fundus by LMP:</strong></span>&nbsp;<span id="fundus-by-lmp"></span></div-->
+      <div class="addresses"><span class="headers"><strong>Gestation:</strong></span>&nbsp;<span id="gestation"></span></div>
       <div class="addresses"><span class="headers"><strong>ANC Visits:</strong></span>&nbsp;<span id="anc-visits"></span></div>
       <div class="addresses"><span class="headers"><strong>Current Outcome:</strong></span>&nbsp;<span id="current-outcome"></span></div>
     
@@ -61,7 +62,8 @@
             if (this.status == 200) {
               var results = JSON.parse(this.responseText);
               document.getElementById("date-lmp").innerHTML = ((results.date_of_lnmp !== "") ? results.date_of_lnmp : "No LMP Date Available");
-              document.getElementById("fundus-by-lmp").innerHTML = ((results.fundus !== "") ? results.fundus : "")  
+              //document.getElementById("fundus-by-lmp").innerHTML = ((results.fundus !== "") ? results.fundus : "")  
+              document.getElementById("gestation").innerHTML = ((results.gestation !== "") ? results.gestation + " weeks" : "")  
               document.getElementById("anc-visits").innerHTML = ((results.anc_visits !== "") ? results.anc_visits : "No ANC visit Number Available");
               document.getElementById("current-outcome").innerHTML =  ((results.current_outcome !== "") ? results.current_outcome : "No Outcome Available");
             }
