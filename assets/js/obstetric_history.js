@@ -227,7 +227,7 @@ function postObstetricObs(encounter){
 
           if (condition_at_birth !== undefined && condition_at_birth !== "?") {
         
-            obs.observations.push({concept_id: 1053, value_text: condition_at_birth});
+            obs.observations.push({concept_id: 7998, value_text: condition_at_birth});
 
           }
 
@@ -2319,7 +2319,7 @@ function loadInputWindow() {
           "Year of birth": ["number", min_birth_year, abs_max_birth_year, abs_max_birth_year],
           "Place of birth": ["list", "Health facility", "In transit", "TBA", "Home"],
           "Gestation (weeks)": ["number", 5, 42, 42],
-          "Method of delivery": ["list", "Spontaneous Vertex", "Caesarean Section", "Vacuum Extraction", "Breech", "Forceps", "Others"],
+          "Method of delivery": ["list", "Spontaneous Vertex", "Caesarean Section", "Vacuum extraction delivery", "Breech", "Forceps", "Others"],
           "Condition at birth": ["list", "Alive", "Macerated Still Birth (MSB)", "Fresh Still Birth (FSB)"],
           "Birth weight": ["number", 1, 5],
           "Alive Now": ["list", "Yes", "No"],
