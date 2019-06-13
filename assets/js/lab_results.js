@@ -1241,3 +1241,83 @@ if (yesButton !== null){
   clearInterval(x);
 }
 
+function checkPreEclampsiaCondition(){
+  
+  if (sessionStorage.referToUrineTest == "true"){
+    urineTestAlert();
+  }
+
+}
+
+function urineTestAlert(){
+  var popUpBox = document.getElementById('ut-popup-div');
+  var coverDIV = document.getElementById('ut-cover-div');
+
+  if(coverDIV == undefined) {
+    var coverDIV = document.createElement('div')
+    coverDIV.setAttribute('id','ut-cover-div');
+    var popUpBox = document.createElement('div')
+    popUpBox.setAttribute('id','ut-popup-div');
+
+    var hmtlBody = document.getElementsByTagName("body")[0];
+    hmtlBody.appendChild(popUpBox);
+    hmtlBody.appendChild(coverDIV);
+  }
+
+  coverDIV.style = 'display: inline;top: 0px;';
+  popUpBox.style  = 'display: inline;top: 10px;';
+  popUpBox.innerHTML = null;
+
+  var message = "<p>Client is at risk of pre-eclampsia.</p>";
+  message += "Select urine test to conduct urine protein test.";
+
+  var p = document.createElement('p');
+  p.innerHTML = message;
+  cssText = 'text-align: center;color: red; font-weight: bold; font-size: 2.3em;';
+  cssText += 'margin-top: 10%;';
+  p.style = cssText;
+  popUpBox.appendChild(p);
+
+  /* ............... buttons ............................... */
+  var buttonContainer = document.createElement('div');
+  buttonContainer.setAttribute('class','buttonContainer');
+  popUpBox.appendChild(buttonContainer);
+
+  var buttonContainerRow = document.createElement('div');
+  buttonContainerRow.setAttribute('class','buttonContainerRow');
+  buttonContainer.appendChild(buttonContainerRow);
+
+  var cells = ['Remind later','Select Urine Test'];
+
+  for(var i = 0 ; i < cells.length ; i++){
+    var buttonContainerCell = document.createElement('div');
+    buttonContainerCell.setAttribute('class','buttonContainerCell');
+    buttonContainerCell.setAttribute('style','width: 100px;');
+    buttonContainerCell.innerHTML = cells[i];
+
+    if(i == 0) {
+      buttonContainerCell.setAttribute('id','buttonContainerCell-red');
+      buttonContainerCell.setAttribute('onmousedown','closeUTAlert();');
+    }else if(i == 1) {
+      buttonContainerCell.setAttribute('id','buttonContainerCell-blue');
+      buttonContainerCell.setAttribute('onmousedown','closeUTAlert();selectUrineTest();');
+    }
+
+    buttonContainerRow.appendChild(buttonContainerCell);
+  }
+}
+
+function closeUTAlert() {
+  var div = document.getElementById('ut-popup-div')
+  div.innerHTML = null;
+  div.style = 'display: none;';
+  document.getElementById('ut-cover-div').style = 'display: none;';
+}
+
+function selectUrineTest(){
+  urine = __$("urine");
+  id = (parseInt(urine.index) - 1);
+  urine_test = __$(id);
+  updateTouchscreenInputForSelect(__$('optionValue'+id), urine_test);
+}
+

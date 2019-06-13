@@ -1,5 +1,8 @@
 var programID = sessionStorage.programID;
 
+sessionStorage.referToUrineTest = false;
+
+
 function validateANCBP(){
 
   try{
@@ -45,6 +48,9 @@ function validateANCBP(){
       if (bp_systolic >= 140 && bp_diastolic >= 90) {
 
         message = "Client is at risk of pre-eclampsia, refer for urine protein test.";
+
+        sessionStorage.setItem("referToUrineTest", true);
+
 
         document.getElementById("error").innerHTML = message;
 

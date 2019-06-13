@@ -29,6 +29,69 @@
       #print-iframe {
         display: none;
       }
+      #ut-popup-div {
+        display: none;
+        background-color: #F4F4F4;
+        border: 2px solid #E0E0E0;
+        border-radius: 15px;
+        height: 92%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        width: 95%;
+        left: 2%;
+        z-index: 991;
+      }
+
+      #ut-cover-div {
+        display: none;
+        position: absolute;
+        background-color: black;
+        width: 100%;
+        height: 102%;
+        left: 0%;
+        top: 0%;
+        z-index: 990;
+        opacity: 0.65;
+      }
+      .buttonContainer {
+        width: 97%;
+        display: table;
+        position: absolute;
+        bottom: 0px;
+        padding: 10px;
+        border-collapse: separate;
+        border-spacing: 5px 10px;
+      }
+
+      .buttonContainerRow {
+        display: table-row;
+      }
+
+      .buttonContainerCell {
+        display: table-cell;
+        border-width: 1px;
+        border-style: solid;
+        text-align: center;
+        vertical-align: middle;
+        box-shadow: 0 8px 6px -6px black;
+        height: 100px;
+        font-weight: bold;
+        font-size: 20px;
+        color: white;
+      }
+
+      #buttonContainerCell-green {
+        background-color: rgb(34, 139, 34);
+      }
+
+      #buttonContainerCell-blue {
+        background-color: rgb(79, 148, 205);
+      }
+
+      #buttonContainerCell-red {
+        background-color: tomato;
+      }
     </style>
     
   </head>
@@ -96,7 +159,8 @@
           <select condition="" multiple="multiple" 
             helpText="Available Lab Tests" optional="true" 
             id="available_test_results" name="available_test_results" 
-            tt_onLoad="showCategory2('Lab results');changeSubmitFunction();removeHIVOption();" 
+            tt_onLoad="showCategory2('Lab results');changeSubmitFunction();
+              removeHIVOption();checkPreEclampsiaCondition();" 
             tt_pageStyleClass="NoKeyboard">
 
               <option value="hiv_status" id="hiv">HIV</option>
@@ -104,7 +168,7 @@
               <option value="syphilis">Syphilis</option>
               <option value="malaria">Malaria</option>
               <option value="blood_group">Blood Group</option>
-              <option value="urine">Urine</option>
+              <option id="urine" value="urine">Urine</option>
           
           </select>
 
