@@ -23,6 +23,12 @@ $(document).ready(function(){
 
     }
 
+    if (sessionStorage.patientGender == "M"){
+      
+      window.location = "/apps/ANC/views/encounters/no_males.html"
+
+    }
+
     if (hysterectomy === true){
 
       window.location = "/apps/ANC/views/encounters/no_hysterectomy.html"
