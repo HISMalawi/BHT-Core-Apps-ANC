@@ -31,9 +31,16 @@ var YesNoConcepts = {
   "no" : 1066
 };
 
+var NegPosConcepts = {
+  664 : "Negative",
+  703 : "Positive"
+};
+
+lab_results = {};
+  
 function fetchFundusByLMP() {
 
-  var url = 'http://' + apiURL + ':' + apiPort 
+  var url = apiProtocol +'://' + apiURL + ':' + apiPort 
   url += '/api/v1/programs/'+programID+'/patients/'+patient_id;
   
   var req = new XMLHttpRequest();
@@ -48,7 +55,7 @@ function fetchFundusByLMP() {
 
         if (results.fundus !== null || results.fundus !== undefined){
 
-          fundus_by_lmp = results.fundus;
+          fundus_by_lmp = results.gestation;
 
         }
         
@@ -1107,3 +1114,72 @@ function validateFundalHeight(){
 }
 
 setTimeout("selectNone()", 50);
+
+function getLabResults(){
+
+  var url = apiProtocol +'://' + apiURL + ':' + apiPort; 
+  url += '/api/v1/encounters/?program_id='+programID+'&patient_id='+patient_id;
+  url += '&encounter_type_id=32&date='+sessionStorage.sessionDate;
+
+  var req = new XMLHttpRequest();
+  
+  req.onreadystatechange = function () {
+
+    if (this.readyState == 4 && this.status == 200) {
+        
+      var results = JSON.parse(this.responseText);
+
+      try{
+
+        observations = results[0].observations;
+
+        for(var i = 0; i < observations.length; i++){
+          
+          concept = observations[i]["concept"]["concept_names"][0]["name"];
+
+          lab_results[concept] = NegPosConcepts[observations[i]["value_coded"]];
+          
+        }
+        
+        
+      }catch(e){
+        
+        console.log(e);
+
+      }
+        
+    }
+  
+  };
+  try {
+
+    req.open('GET', url, true);
+    
+    req.setRequestHeader('Authorization', sessionStorage.getItem('authorization'));
+    
+    req.send(null);
+  
+  } catch (e) {
+
+    console.log(e);
+
+  }
+
+}
+
+getLabResults();
+
+function autoSelectDiagnosis(){
+
+  if (lab_results["Malaria Test Result"] !== undefined && 
+    lab_results["Malaria Test Result"].toLowerCase() == "positive"){
+
+    var malaria = jQuery("li[tstvalue='123']");
+    
+    id = malaria[0].id;
+    
+    updateTouchscreenInputForSelect(__$('optionValue' + id), malaria);
+
+  }
+
+}
