@@ -96,6 +96,7 @@ function isSubsequentVisit(){
 
   var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
   url += '/programs/'+programID+'/patients/'+patientID+'/subsequent_visit';
+  url += '?date='+sessionStorage.sessionDate;
 
   var xhttp = new XMLHttpRequest();
         
