@@ -401,6 +401,18 @@ function checkCondiditions(){
 
 }
 
+function checkVisit(){
+
+  console.log("am here");
+
+  if (subseq_visit && preg_test_done){
+
+    gotoNextPage();
+
+  }
+
+}
+
 function addYesNoToLabTests() {
         
   var tar = document.getElementById("inputFrame" + tstCurrentPage);

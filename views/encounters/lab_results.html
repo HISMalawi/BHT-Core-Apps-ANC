@@ -112,7 +112,7 @@
           <input type="text" name="lab-results" condition="checkCondiditions();"
             tt_onLoad="__$('keyboard').style.display = 'none'; 
               $('clearButton').style.display = 'none'; hideBackButton(); 
-              addYesNoToLabTests(); addHIVOption();" optional="true" 
+              addYesNoToLabTests(); addHIVOption(); setTimeout(checkVisit(), 3000);" optional="true" 
             tt_onUnload="updatePreviousHIVTestDoneResponse();"
             tt_pageStyleClass= "NoControls" helpText="Lab Results" />
 
