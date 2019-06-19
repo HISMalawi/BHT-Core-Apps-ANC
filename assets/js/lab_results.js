@@ -154,6 +154,8 @@ function getPatientHIVStatus(){
       art_status = obj['art_status']
     
       art_num = obj['arv_number']
+
+      art_start_date = obj['arv_start_date']
           
     }
         
@@ -402,8 +404,6 @@ function checkCondiditions(){
 }
 
 function checkVisit(){
-
-  console.log("am here");
 
   if (subseq_visit && preg_test_done){
 
@@ -955,10 +955,10 @@ function showARTSummary(){
 
   var displayText = "<div>"
 
+
   if (hiv_status.toLowerCase() === 'positive'){
   
     displayText += "HIV Status : <span class='value'>"+hiv_status.toUpperCase()+"</span><br />";
-
 
     if (art_status !== null && art_status.toLowerCase() === 'yes'){
     
@@ -970,9 +970,9 @@ function showARTSummary(){
 
       }
 
-      if (arv_num !== null){
+      if (art_num !== null){
             
-        displayText += "ARV Number : <span class='value'> "+ arv_num.toString() +" </span> <br />";
+        displayText += "ARV Number : <span class='value'> "+ art_num.toString() +" </span> <br />";
             
       }
 
