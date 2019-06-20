@@ -2,6 +2,14 @@
   jQuery(document).ready(function($) {
   }) 
 </script-->
+
+<script src="/assets/js/HighCharts/highcharts.js"></script>
+<script src="/assets/js/HighCharts/highcharts-3d.js"></script>
+<script src="/assets/js/HighCharts/exporting.js"></script>
+<script src="/assets/js/HighCharts/export-data.js"></script>
+<script src="/assets/js/moment.js"></script>
+
+<script type="text/javascript" src="/assets/js/post_parameters.js"></script>
 <style type="text/css">
   body {
     -moz-user-select:none;
@@ -59,13 +67,17 @@
     background:url(../images/btn_yellow.png) right repeat;
     border: 3px inset #000;
   }
-
+  #chart-column {
+    width: 50%;
+    height: 315px;
+    float: left;
+  }
 
 </style>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="/apps/ANC/assets/js/overview.js"></script>
 
-<div id="tab" style="background-color: #fff; border-top: 1px #fff solid; margin-top: 0px;">
+<!--div id="tab" style="background-color: #fff; border-top: 1px #fff solid; margin-top: 0px; width: 50%; float: left;">
   <h2 style="text-align: center; color: #6281a7; margin-top: -2px; margin-bottom: 0px;">Current Visit Statistics</h2>
   <table id="stats" style="height: 315px; margin-bottom: 8px;" cellpadding="5">
     <tr style="color: #fff; background-color: #6281a7;">
@@ -105,4 +117,6 @@
         <td><span id="year_5"></span></td>
       </tr>
   </table>
-</di>
+</div -->
+<div class="overview-main-container-cell" id="chart-column">
+</div>
