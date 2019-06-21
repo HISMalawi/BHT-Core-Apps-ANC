@@ -17,8 +17,12 @@ var today = {};
 var year = {};
 
 $(document).ready(function(){
-  
-  function getCurrentStatistics(){
+  getCurrentStatistics();
+  //buildChart([ 0, 1, 2 ],[ 0, 0, 2],[ "Me", "Today", "This Year" ]);
+  buildVisitsPie();
+});
+
+function getCurrentStatistics(){
     
     var url = apiProtocol + "://" + apiURL + ":" + apiPort 
     url += "/api/v1/programs/"+programID+"/reports/visits"
@@ -51,49 +55,7 @@ $(document).ready(function(){
           visit_5 = [user[">5"], today[">5"], year[">5"]]
 
           buildChart(visit_1,visit_2,visit_3,visit_4,visit_5,[ "Me", "Today", "This Year" ])
-/**
-          var i = 1;
-
-          var k = 1;
-
-          var j = 1;
-
-          if (user !== undefined){
-
-            for(u in user){
-
-              document.getElementById('user_'+k).innerText = user[u];
-
-              k = k + 1;
-
-            }
-
-          }
-
-          if (today !== undefined){
-
-            for(t in today){
-
-              document.getElementById('today_'+j).innerText = today[t];
-  
-              j = j + 1;
-  
-            }
-
-          }
-        
-          if (year !== undefined){
-
-            for(y in year){
-
-              document.getElementById('year_'+i).innerText = year[y];
-
-              i = i + 1;
-
-            }
-
-          }
-*/        
+ 
         } catch(e){
 
           console.log(e);
@@ -113,10 +75,6 @@ $(document).ready(function(){
     xhttp.send();
 
   }
-
-  getCurrentStatistics();
-  //buildChart([ 0, 1, 2 ],[ 0, 0, 2],[ "Me", "Today", "This Year" ]);
-});
 
 function buildChart(one,two,three,four,five, days) {
   // Build the chart
@@ -166,5 +124,36 @@ function buildChart(one,two,three,four,five, days) {
           });
   
       }
+      
+  function buildVisitsPie(){
+
+    // Build the chart
+    Highcharts.chart('container', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+        text: 'Complete/Incomplete Visits'
+      },
+      plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer'
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        data: [
+            { name: 'Complete visits', y: 60 },
+            { name: 'Incomplete visits', y: 40 }
+        ]
+      }]
+    });
+  }
 
       

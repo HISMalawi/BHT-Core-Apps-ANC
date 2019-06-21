@@ -73,50 +73,99 @@
     float: left;
   }
 
+  #container {
+    height: 300px;
+  }
+  
+  #today-stats {
+    width: 50%;
+    height: 315px;
+    float: left;
+  }
+
+  .card {
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16),0 2px 10px 0 rgba(0,0,0,.12);
+    border: 0;
+    font-weight: 400;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    background-color: #fff;
+    text-align: center;
+  }
+  .green-card {
+    background-color: #00c851 !important
+  }
+  .blue-card {
+    background-color: #33b5e5 !important
+  }
+  .info-box-content {
+    padding: 10px 10px 10px 0;
+    margin-left: 20px;
+  }
+
+  .info-box-text {
+    display: block;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 400;
+    color: #fff;
+  }
+  .info-box-number {
+    font-weight: 300;
+    font-size: 21px;
+    padding-top: 20px;
+    color: #fff;
+  }
+
+  .overview-main-container-header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+
+
+
 </style>
 <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 <script type="text/javascript" src="/apps/ANC/assets/js/overview.js"></script>
-
-<!--div id="tab" style="background-color: #fff; border-top: 1px #fff solid; margin-top: 0px; width: 50%; float: left;">
-  <h2 style="text-align: center; color: #6281a7; margin-top: -2px; margin-bottom: 0px;">Current Visit Statistics</h2>
-  <table id="stats" style="height: 315px; margin-bottom: 8px;" cellpadding="5">
-    <tr style="color: #fff; background-color: #6281a7;">
-      <th style="text-align:left;">Total with: </th>
-      <th id="username">Me</th>
-      <th>Today</th>
-      <th>This Year</th>
-    </tr>
-      <tr class="even">
-        <td style="text-align:left;">1 visit</td>
-        <td><span id="user_1"></span></td>
-        <td><span id="today_1"></span></td>
-        <td><span id="year_1"></span></td>
-      </tr>
-      <tr class="odd">
-        <td style="text-align:left;">2 visits</td>
-        <td><span id="user_2"></span></td>
-        <td><span id="today_2"></span></td>
-        <td><span id="year_2"></span></td>
-      </tr>
-      <tr class="even">
-        <td style="text-align:left;">3 visits</td>
-        <td><span id="user_3"></span></td>
-        <td><span id="today_3"></span></td>
-        <td><span id="year_3"></span></td>
-      </tr>
-      <tr class="odd">
-        <td style="text-align:left;">4 visits</td>
-        <td><span id="user_4"></span></td>
-        <td><span id="today_4"></span></td>
-        <td><span id="year_4"></span></td>
-      </tr>
-      <tr class="even">
-        <td style="text-align:left;"> >5 visits</td>
-        <td><span id="user_5"></span></td>
-        <td><span id="today_5"></span></td>
-        <td><span id="year_5"></span></td>
-      </tr>
-  </table>
-</div -->
 <div class="overview-main-container-cell" id="chart-column">
+</div>
+<div class="overview-main-container-cell" id="today-stats">
+  <div class="overview-main-container-header">
+    Today's Statistics
+  </div>
+  <div>
+  <div id="appointment-stats" style="width:40%; float: left; margin-left: 40px;">
+    <div class="card green-card">
+      <div class="info-box-content">
+        <span class="info-box-text">Expected visits</span>
+        <span class="info-box-number" id="appointments">0</span>
+      </div>
+    </div>
+  </div>
+  <div id="edod-stats" style="width:40%; float: left; margin-left: 20px;">
+    <div class="card blue-card">
+  <div class="card-body">
+    <div class="info-box-content">
+      <span class="info-box-text">Expected deliveries</span>
+      <span class="info-box-number" id="deliveries">0</span>
+    </div>
+  </div>
+</div>
+  </div>
+  </div>
+  <div id="container">
+  </div>
 </div>
