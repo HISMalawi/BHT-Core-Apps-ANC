@@ -18,8 +18,9 @@ var year = {};
 
 $(document).ready(function(){
   getCurrentStatistics();
-  //buildChart([ 0, 1, 2 ],[ 0, 0, 2],[ "Me", "Today", "This Year" ]);
-  buildVisitsPie();
+  getTodaysAppointments();
+  getTodaysDeliveries();
+  getCompleteIncompleteVisits()
 });
 
 function getCurrentStatistics(){
@@ -125,7 +126,7 @@ function buildChart(one,two,three,four,five, days) {
   
       }
       
-  function buildVisitsPie(){
+  function buildVisitsPie(complete, incomplete){
 
     // Build the chart
     Highcharts.chart('container', {
@@ -149,11 +150,77 @@ function buildChart(one,two,three,four,five, days) {
       },
       series: [{
         data: [
-            { name: 'Complete visits', y: 60 },
-            { name: 'Incomplete visits', y: 40 }
+            { name: 'Complete visits', y: complete },
+            { name: 'Incomplete visits', y: incomplete }
         ]
       }]
     });
+  }
+
+  function getTodaysAppointments() {
+    
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+    url += "/api/v1/programs/"+ sessionStorage.programID + "/booked_appointments?"
+    url += "date="+ sessionStorage.sessionDate + "&paginate=false";
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+        var obj = JSON.parse(this.responseText);
+        document.getElementById("appointments").innerHTML = obj.length;
+      }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+  }
+
+  function getTodaysDeliveries() {
+    
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+    url += "/api/v1/anc/deliveries?"
+    url += "date="+ sessionStorage.sessionDate + "&paginate=false";
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+        var obj = JSON.parse(this.responseText);
+        document.getElementById("deliveries").innerHTML = obj.length;
+      }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
+  }
+
+  function getCompleteIncompleteVisits() {
+    
+    var url = apiProtocol + "://" + apiURL + ":" + apiPort;
+    url += "/api/v1/anc/visits?"
+    url += "date="+ sessionStorage.sessionDate + "&paginate=false";
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && (this.status == 201 || this.status == 200)) {
+        var obj = JSON.parse(this.responseText);
+        complete_visits = parseInt(obj["complete"]);
+        incomplete_visits = parseInt(obj["incomplete"]);
+        total_visits = complete_visits + incomplete_visits;
+
+        complete = (complete_visits / total_visits) * 100;
+        incomplete = 100 - complete;
+
+        console.log(incomplete);
+        buildVisitsPie(complete,incomplete);
+        //document.getElementById("deliveries").innerHTML = obj.length;
+      }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader('Authorization', sessionStorage.getItem("authorization"));
+    xhttp.setRequestHeader('Content-type', "application/json");
+    xhttp.send();
   }
 
       
