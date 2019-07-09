@@ -207,13 +207,7 @@ function buildChart(one,two,three,four,five, days) {
         var obj = JSON.parse(this.responseText);
         complete_visits = parseInt(obj["complete"]);
         incomplete_visits = parseInt(obj["incomplete"]);
-        total_visits = complete_visits + incomplete_visits;
-
-        complete = (complete_visits / total_visits) * 100;
-        incomplete = 100 - complete;
-
-        console.log(incomplete);
-        buildVisitsPie(complete,incomplete);
+        buildVisitsPie(complete_visits,incomplete_visits);
         //document.getElementById("deliveries").innerHTML = obj.length;
       }
     };
