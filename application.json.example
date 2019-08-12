@@ -143,6 +143,20 @@
       "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
     },
     {
+      "activitiesName": "Lab Results (Print)",
+      "available": false,
+      "activitiesIcon": "/assets/images/print.png",
+      "activitiesDescription": "Print Patient Lab Results",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    },
+    {
+      "activitiesName": "Patient History (Print)",
+      "available": false,
+      "activitiesIcon": "/assets/images/print.png",
+      "activitiesDescription": "Print Patient History",
+      "comment": "these are examples, add another application with this template at the end of these curly braces by adding a comma and copying this template"
+    },
+    {
       "activitiesName": "Demographics (Edit)",
       "available": false,
       "activitiesIcon": "/assets/images/edit.png",
@@ -168,3 +182,4 @@
     }
   ]
 }
+
