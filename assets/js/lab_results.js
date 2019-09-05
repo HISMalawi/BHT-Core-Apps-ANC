@@ -390,8 +390,9 @@ function checkPreviousHIVTest(){
 }
 
 function checkCondiditions(){
+  console.log(subseq_visit);
 
-  if (subseq_visit && preg_test_done){
+  if (subseq_visit){
 
     return false;
 

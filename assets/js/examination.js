@@ -989,7 +989,7 @@ function ajaxifyInput() {
    
 function addAbsoluteMax(){
         
-  jQuery('#touchscreenInput'+ tstCurrentPage).attr("absoluteMax", fundus_by_lmp);
+  jQuery('#touchscreenInput'+ tstCurrentPage).attr("absoluteMax", getEquivalentFundalWeeks(__$('enter_fundal_height').value));
     
 }
 
@@ -1182,4 +1182,121 @@ function autoSelectDiagnosis(){
 
   }
 
+}
+
+function getEquivalentFundalWeeks(fundal_height){
+  
+  var fundus_weeks = 0
+      
+  if (fundal_height <= 12){
+        
+    fundus_weeks = 13;
+    
+  }else if (fundal_height == 13){
+  
+    fundus_weeks = 14
+  
+  }else if (fundal_height == 14){
+  
+    fundus_weeks = 16
+  
+  }else if (fundal_height == 15){
+  
+    fundus_weeks = 17
+  
+  }else if (fundal_height == 16){
+  
+    fundus_weeks = 18
+  
+  }else if (fundal_height == 17){
+  
+    fundus_weeks = 19
+  
+  }else if (fundal_height == 18){
+  
+    fundus_weeks = 20
+  
+  }else if (fundal_height == 19){
+  
+    fundus_weeks = 21
+  
+  }else if (fundal_height == 20){
+  
+    fundus_weeks = 22
+  
+  }else if (fundal_height == 21){
+  
+    fundus_weeks = 24
+  
+  }else if (fundal_height == 22){
+  
+    fundus_weeks = 25
+  
+  }else if (fundal_height == 23){
+  
+    fundus_weeks = 26
+  
+  }else if (fundal_height == 24){
+  
+    fundus_weeks = 27
+  
+  }else if (fundal_height == 25){
+  
+    fundus_weeks = 28
+  
+  }else if (fundal_height == 26){
+  
+    fundus_weeks = 29
+  
+  }else if (fundal_height == 27){
+  
+    fundus_weeks = 30
+  
+  }else if (fundal_height == 28){
+  
+    fundus_weeks = 32
+  
+  }else if (fundal_height == 29){
+  
+    fundus_weeks = 33
+  
+  }else if (fundal_height == 30){
+  
+    fundus_weeks = 34
+  
+  }else if (fundal_height == 31){
+  
+    fundus_weeks = 35
+  
+  }else if (fundal_height == 32){
+  
+    fundus_weeks = 36
+  
+  }else if (fundal_height == 33){
+  
+    fundus_weeks = 37
+  
+  }else if (fundal_height == 34){
+  
+    fundus_weeks = 38
+  
+  }else if (fundal_height == 35){
+  
+    fundus_weeks = 39
+  
+  }else if (fundal_height == 36){
+  
+    fundus_weeks = 40
+  
+  }else if (fundal_height == 37){
+  
+    fundus_weeks = 42
+  
+  }else if (fundal_height > 37){
+  
+    fundus_weeks = 42
+  
+  }
+
+  return fundus_weeks
 }
