@@ -14,7 +14,7 @@ var past_visits = {}
 
 var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
-function getAncVisitNumber() {
+setTimeout(function() {
 
   var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
   url += '/programs/'+programID+'/patients/'+patientID+'/anc_visit';
@@ -30,6 +30,20 @@ function getAncVisitNumber() {
         var results = JSON.parse(this.responseText);
 
         past_visits = JSON.stringify(results["visit_number"]);
+
+        for(var i = 0; i < past_visits.length; i++){
+
+          element = __$(past_visits[i]);
+
+          if(element){
+      
+            element.className = "keyboardButton gray";
+      
+            element.onmousedown = function(){}
+      
+          }
+      
+        }
 
       }else {
 
@@ -55,7 +69,7 @@ function getAncVisitNumber() {
 
   }
 
-}
+}, 200);
 
 function disablePastVisits(){
 
@@ -73,7 +87,7 @@ function disablePastVisits(){
 
 }
 
-getAncVisitNumber();
+//setTimeout(getAncVisitNumber(), 2000);
 
 function submitVisitTypeEncounter(){
 
