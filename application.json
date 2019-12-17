@@ -5,38 +5,80 @@
       "activitiesIcon": "/assets/images/vitals.png",
       "url": "/views/patient/vitals.html"
     },
-    "treatment": {
-      "available": true,
-      "activitiesIcon": "/assets/images/prescription.png",
-      "url": "/apps/ANC/views/encounters/prescription.html"
-    },
     "appointment": {
       "available": true,
       "activitiesIcon": "/assets/images/appointment.png",
       "url": "/views/patient/appointment.html"
     },
-    "dispensing": {
+    "obstetric history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/obstetric_history.png",
+      "url": "/apps/ANC/views/encounters/obstetric_history.html"
+    },
+    "current pregnancy": {
+      "available": true,
+      "activitiesIcon": "/assets/images/current_preg.png",
+      "url": "/apps/ANC/views/encounters/current_pregnancy.html"
+    },
+    "lab results": {
+      "available": true,
+      "activitiesIcon": "/assets/images/lab.png",
+      "url": "/apps/ANC/views/encounters/lab_results.html"
+    },
+    "art_followup": {
+      "available": true,
+      "activitiesIcon": "/assets/images/pmtct.png",
+      "url": "/apps/ANC/views/encounters/pmtct.html"
+    },
+    "anc examination": {
+      "available": true,
+      "activitiesIcon": "/assets/images/diagnosis.png",
+      "url": "/apps/ANC/views/encounters/examination.html"
+    },
+    "treatment": {
       "available": true,
       "activitiesIcon": "/assets/images/dispensing.png",
-      "url": "/views/patient/dispensing.html"
+      "url": "/apps/ANC/views/encounters/anc_prescription.html"
     },
-    "Lab orders": {
-    "available": true,
-    "activitiesIcon": "/assets/images/lab.png",
-    "url": "/views/patient/labs.html"
+    "anc visit type": {
+      "available": true,
+      "activitiesIcon": "/assets/images/registration.png",
+      "url": "/apps/ANC/views/encounters/visit_type.html"
+    },
+    "medical history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/medical_history.png",
+      "url": "/apps/ANC/views/encounters/medical_history.html"
+    },
+    "surgical history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/surgical_history.png",
+      "url": "/apps/ANC/views/encounters/surgical_history.html"
+    },
+    "social history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/social_history.png",
+      "url": "/apps/ANC/views/encounters/social_history.html"
+    },
+    "dispensing": {
+      "available": true,
+      "activitiesIcon": "/assets/images/prescription/medication.png",
+      "url": "/apps/ANC/views/encounters/ttv.html"
     }
   },
   "activities": {
     "url": "/apps/ANC/views/activities.html",
     "tasks": [
-      ["ANC Visit Type", "anc visit type"],
+      ["ANC VISIT TYPE", "anc visit type"], 
       ["OBSTETRIC HISTORY", "obstetric history"],
       ["MEDICAL HISTORY", "medical history"],
       ["SURGICAL HISTORY", "surgical history"],
       ["SOCIAL HISTORY", "social history"],
       ["LAB RESULTS", "lab results"],
       ["CURRENT PREGNANCY", "current pregnancy"],
-      ["OBSERVATIONS", "anc examination"]
+      ["ANC EXAMINATION", "anc examination"],
+      ["DISPENSING", "TTV Dispensation"],
+      ["ART_FOLLOWUP", "art_followup"]
     ]
   },
     
