@@ -112,66 +112,50 @@ function submitExaminationsEncounter(){
 
 function postExaminationObs(encounter){
   
-  var obs = {
+    var entered_observations = [];
    
+    entered_observations.push({ concept_id: 6686, value_coded: YesNoConcepts[$('ultrasound').value] });
+    entered_observations.push({ concept_id: 9637, value_coded: YesNoConcepts[$('enter_fetal_movement').value]});
+    entered_observations.push({ concept_id: 9562, value_coded: YesNoConcepts[$('fetal_movement_felt').value]});
+   
+    if(values_hash['region'].length > 0)
+      entered_observations.push({concept_id: 7433, value_text: values_hash['region']});
+
+    if(parseFloat($('enter_fundal_height').value) > 0)
+      entered_observations.push({concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value)});
+
+    if($('fetal_heart_beat').value.length > 0)
+     entered_observations.push({concept_id: 7979, value_text: $('fetal_heart_beat').value});
+
+    if(parseInt($('last_fmf').value) > 0)
+     entered_observations.push({ concept_id: 9563, value_numeric: parseInt($('last_fmf').value) });
+
+  obs = {
     encounter_id: encounter.encounter_id,
-   
-    observations: [
-   
-      { concept_id: 6686, value_coded: YesNoConcepts[$('ultrasound').value] },
-   
-      { concept_id: 7433, value_text: values_hash['region'] },
-   
-      { concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value) },
-   
-      { concept_id: 7979, value_text: $('fetal_heart_beat').value },
-   
-      { concept_id: 9637, value_coded: YesNoConcepts[$('enter_fetal_movement').value] },
-   
-      { concept_id: 9562, value_coded: YesNoConcepts[$('fetal_movement_felt').value] },
-   
-      { concept_id: 9563, value_numeric: parseInt($('last_fmf').value) }
-   
-    ]
-  
+    observations: entered_observations
   }
 
   if(values_hash['district'] !== '') {
-    
     obs.observations.push({ concept_id: 7837, value_text: values_hash['district'] });
- 
   }
 
   if ($('ultrasound').value === 'yes') {
-      
     obs.observations.push(
-        
       { concept_id: 7142, value_text: $('multiple_gestation').value },
-      
       { concept_id: 7919, value_text: $('liquor').value },
-      
       { concept_id: 7836, value_text: $('lie').value },
-      
       { concept_id: 9654, value_coded: YesNoConcepts[($('fetal_heart_movement_seen').value)] },
-      
     )
-  
   }
 
   if ($('fetal_heart_beat').value == 'Heard'){
-    
-    obs.observations.push({ concept_id: 7839, value_numeric: parseInt($('fetal_heart_rate').value) },)
-
+    obs.observations.push({ concept_id: 7839, value_numeric: parseInt($('fetal_heart_rate').value) });
   }
   
   if(diagnosis_obs.length > 0){
-    
     for(var i = 0; i < diagnosis_obs.length; i++){
-      
       obs.observations.push(diagnosis_obs[i]);
-    
     }
-  
   }
   
   submitParameters(obs, "/observations", "nextPage")

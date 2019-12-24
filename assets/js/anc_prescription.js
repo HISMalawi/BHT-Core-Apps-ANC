@@ -162,12 +162,9 @@ function getDrugSets(){
 }
 
 function submitTreatmentEncounter(){
-
   if (parseInt(Object.keys(selectedDrugs).length) < 1){
-
     showMessage("Please dispense drugs to continue.");
     return;
-
   }
         
   var currentTime = moment().format(' HH:mm:ss');
@@ -176,15 +173,10 @@ function submitTreatmentEncounter(){
   encounter_datetime += currentTime;
   
   var encounter = {
-  
     encounter_type_name: 'TREATMENT',
-  
     encounter_type_id:  25,
-  
     patient_id: patientID,
-  
     encounter_datetime: encounter_datetime
-  
   }
   
   submitParameters(encounter, "/encounters", "postDrugOrders");
@@ -192,11 +184,8 @@ function submitTreatmentEncounter(){
 }
 
 function postDrugOrders(encounter){
-
   var drug_orders_params = {encounter_id: encounter.encounter_id, 
-
     drug_orders: []
-
   }
   
   var orders = [];
@@ -204,107 +193,70 @@ function postDrugOrders(encounter){
   for (selected_drug in selectedDrugs){
   
     var drug_id = selected_drug.match(/\d+/)[0];
-  
     drug_name = __$("row_"+selected_drug).getAttribute("d-name"); 
-  
     var frequency = __$("row_frequency_" + selected_drug).innerHTML;
-  
     var duration = parseInt(__$("row_duration_" + selected_drug).innerHTML);
-  
+    
     dose = __$("row_" + selected_drug).getAttribute("dose");
-  
     units = __$("row_" + selected_drug).getAttribute("units"); //to be edited.
   
     var instructions = "";
-
     var start_date = new Date(sessionStorage.sessionDate);
-
     var start_date_formated = getFormattedDate(start_date);
-
     var auto_expire_date = start_date.setDate(start_date.getDate() + duration);
-
     var auto_expire_date_formated = getFormattedDate(new Date(auto_expire_date));
 
     var eq_daily_dose = parseFloat(dose) * dosesPerDay(frequency)
 
     if (frequency.toUpperCase() == "VARIABLE") {
-
       if (instructions == "") {
-
         instructions = drug.name+":";
-
         if (dose[0] !== "" && parseFloat(dose[0]) == 0){
-
           instructions += " IN THE MORNING (QAM):"+dose[0]+" "+units;
-
         }else if (dose[1] !== "" && parseFloat(dose[1]) == 0){
-
           instructions += " ONCE A DAY AT NOON (QNOON):"+dose[1]+" "+units;
-
         }else if (dose[2] !== "" && parseFloat(dose[2]) == 0){
-
           instructions += " IN THE EVENING (QPM):"+dose[2]+" "+units;
-
         }else if (does[3] !== "" && parseFloat(dose[3]) == 0){
-
           instructions += " ONCE A DAY AT NIGHT (QHS):"+dose[3]+" "+units;
-
         }
-
         instructions += " for "+duration+" days";
-
       }
-
       if (Array.isArray(dose)){
-
         total_dose = dose.reduce((a, b) => a + b, 0);
-
         dose = total_dose;
-
       }
-  
       eq_daily_dose = dose || eq_daily_dose;
-  
     }else {
-  
       if (instructions === ""){
-  
         instructions = drug_name+": "+dose+" "+units+" "+frequency+" for "+duration+" days";
-  
       }
-    
+
+      if(isNaN(eq_daily_dose)) {
+        dose = dosesPerDay(frequency);
+        eq_daily_dose = parseFloat(dose) * dosesPerDay(frequency);
+      }
+
     }
     
     quantity = duration * dosesPerDay(frequency);
     
     drug_order = {
-    
       drug_inventory_id: drug_id,
-    
       dose: dose,
-    
       equivalent_daily_dose: eq_daily_dose,
-    
       frequency: frequency,
-    
       start_date: start_date_formated,
-    
       auto_expire_date: auto_expire_date_formated,
-    
       instructions: instructions,
-    
       units: units
-    
     }
 
     drug_orders_params.drug_orders.push(drug_order);
-
-    drug_quantity_hash[drug_id] = {concept_id: 2834, order_id: "", value_numeric: quantity, person_id: patientID}
-
+    drug_quantity_hash[drug_id] = {concept_id: 2834, value_numeric: quantity, person_id: patientID}
   }
   
   submitParameters(drug_orders_params, "/drug_orders", "submitDispenseEncounter");
-  
 }
 
 function submitDispenseEncounter(drugOrders){
@@ -367,11 +319,8 @@ function updateDrugOrder(){
   for(var key in drug_quantity_hash){
   
     drug_order.dispensations.push({date: sessionStorage.sessionDate, 
-  
       drug_order_id: drug_quantity_hash[key]['order_id'], 
-  
       quantity: drug_quantity_hash[key]['value_numeric']}
-  
       );
   
   }
@@ -401,65 +350,36 @@ function getFormattedDate(set_date) {
 }
 
 function dosesPerDay(frequency){
-
   var frequency = frequency.toUpperCase();
 
   if (frequency == "ONCE A DAY (OD)"){
-
     return 1;
-
   }else if (frequency == "TWICE A DAY (BD)"){
-  
     return 2;
-  
   }else if (frequency == "THREE A DAY (TDS)"){
-  
     return 3;
-  
   }else if (frequency == "FOUR TIMES A DAY (QID)"){
-  
     return 4;
-  
   }else if(frequency == "FIVE TIMES A DAY (5X/D)"){
-  
     return 5;
-  
   }else if (frequency == "SIX TIMES A DAY (Q4HRS)"){
-  
     return 6;
-   
   }else if (frequency == "IN THE MORNING (QAM)"){
-  
     return 1;
-  
   }else if (frequency == "ONCE A DAY AT NOON (QNOON)"){
-  
     return 1;
-  
   }else if (frequency == "IN THE EVENING (QPM)"){
-  
     return 1;
-  
   }else if (frequency == "ONCE A DAY AT NIGHT (QHS)"){
-  
     return 1;
-  
   }else if (frequency.upcase == "EVERY OTHER DAY (QOD)"){
-  
     return 0.5;
-  
   }else if(frequency == "ONCE A WEEK (QWK)"){
-  
     return parseFloat(1 / 7);
-  
   }else if (frequency == "ONCE A MONTH"){
-  
     return parseInt(1 / 28);
-  
   }else if (frequency == "TWICE A MONTH"){
-  
     return parseInt(1 / 14);
-  
   } 
   
 }
