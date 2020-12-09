@@ -122,7 +122,6 @@ function postExaminationObs(encounter){
    
       { concept_id: 7433, value_text: values_hash['region'] },
    
-      { concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value) },
    
       { concept_id: 7979, value_text: $('fetal_heart_beat').value },
    
@@ -133,9 +132,16 @@ function postExaminationObs(encounter){
       { concept_id: 9563, value_numeric: parseInt($('last_fmf').value) }
    
     ]
-  
-  }
+    
 
+
+  }
+    //when unknown fundal height 
+    if ($('enter_fundal_height').value.toLowerCase() === 'unknown'){
+      obs.observations.push({ concept_id: 7835, value_coded: 1067, value_numeric: 0 });
+    }else{
+      obs.observations.push({ concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value) });
+    }
   if(values_hash['district'] !== '') {
     
     obs.observations.push({ concept_id: 7837, value_text: values_hash['district'] });
