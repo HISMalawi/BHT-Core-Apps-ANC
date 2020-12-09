@@ -169,9 +169,11 @@ function postExaminationObs(encounter){
   }
 
   if ($('fetal_heart_beat').value == 'Heard'){
-    
-    obs.observations.push({ concept_id: 7839, value_numeric: parseInt($('fetal_heart_rate').value) },)
-
+    if ($('fetal_heart_rate').value.toLowerCase() === 'unknown'){
+      obs.observations.push({ concept_id: 7839, value_coded: 1067, value_numeric: 0 });
+    }else{
+      obs.observations.push({ concept_id: 7839, value_numeric: parseInt($('fetal_heart_rate').value) });
+    }
   }
   
   if(diagnosis_obs.length > 0){
