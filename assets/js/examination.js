@@ -129,7 +129,6 @@ function postExaminationObs(encounter){
    
       { concept_id: 9562, value_coded: YesNoConcepts[$('fetal_movement_felt').value] },
    
-      { concept_id: 9563, value_numeric: parseInt($('last_fmf').value) }
    
     ]
     
@@ -141,6 +140,11 @@ function postExaminationObs(encounter){
       obs.observations.push({ concept_id: 7835, value_coded: 1067, value_numeric: 0 });
     }else{
       obs.observations.push({ concept_id: 7835, value_numeric: parseInt($('enter_fundal_height').value) });
+    }
+    if ($('last_fmf').value.toLowerCase() === 'unknown'){
+      obs.observations.push({ concept_id: 9563, value_coded: 1067, value_numeric: 0 });
+    }else{
+      obs.observations.push({ concept_id: 9563, value_numeric: parseInt($('last_fmf').value) });
     }
   if(values_hash['district'] !== '') {
     
