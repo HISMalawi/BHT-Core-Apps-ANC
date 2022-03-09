@@ -58,7 +58,7 @@
                 timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()"
               field_type="date" helpText="Last Normal Menstrual Period"
             id="lnmp" name="previous_hiv_test"
-            tt_onUnload="clearTimeout(timedEvent);getLocations();"
+            tt_onUnload="clearTimeout(timedEvent);"
             tt_pageStyleClass="exclude" type="text"/>
 
             <input type="text" name="Estimate LMP" id="estimate_lmp" 
@@ -67,7 +67,11 @@
               tt_onUnload="estimateDates(__$('touchscreenInput' + tstCurrentPage).value);"
               max="6" absoluteMax="10" />
 
-          <select id="planned_delivery_place" name="planned_delivery_place"
+          <select 
+            id="planned_delivery_place" 
+            objectType="location"
+            ajaxURL="/locations?name="
+            name="planned_delivery_place"
             tt_onLoad="showCategory2('Current pregnancy');addHereButton();" 
             helpText="Planned delivery place" tt_onUnload="">
 

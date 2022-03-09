@@ -657,11 +657,11 @@ function submitCurrentPregnancyEncounter(){
 }
 
 function postCurrentPregnancyObs(encounter){
+  const TST_PLACE_OF_DELIEVERY_PAGE = 2
 
   var obs = {
 
     encounter_id: encounter.encounter_id,
-
     observations: [
 
       { concept_id: 5596, value_datetime: moment(edod).format('YYYY-MM-DD').substr(1) },
@@ -670,7 +670,7 @@ function postCurrentPregnancyObs(encounter){
 
       { concept_id: 968, value_datetime: $('lnmp').value.split("-").reverse().join("-") },
 
-      { concept_id: 7974, value_text: $('planned_delivery_place').value },
+      { concept_id: 7974, value_text: tstPageValues[TST_PLACE_OF_DELIEVERY_PAGE] },
 
       { concept_id: 2066, value_coded: YesNoConcepts[$('bed_net_available_for_use').value] },
 
