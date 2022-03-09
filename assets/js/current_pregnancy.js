@@ -722,6 +722,7 @@ function addHereButton(){
     button.style.cssFloat = "right";
   
     button.onclick = function(){
+      __$("touchscreenInput" + tstCurrentPage).value = ''
       setCurrentLocation()
       __$("touchscreenInput" + tstCurrentPage).value = sessionStorage.currentLocation;
     }
