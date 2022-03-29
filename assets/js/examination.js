@@ -130,13 +130,13 @@ function postExaminationObs(encounter){
     if(parseInt($('last_fmf').value) > 0)
      entered_observations.push({ concept_id: 9563, value_numeric: parseInt($('last_fmf').value) });
 
-  obs = {
-    encounter_id: encounter.encounter_id,
-    observations: entered_observations
-  }
+    obs = {
+      encounter_id: encounter.encounter_id,
+      observations: entered_observations
+    }
 
 
-  }
+  
     //when unknown fundal height 
     if ($('enter_fundal_height').value.toLowerCase() === 'unknown'){
       obs.observations.push({ concept_id: 7835, value_coded: 1067, value_numeric: 0 });
