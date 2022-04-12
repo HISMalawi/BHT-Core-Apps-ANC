@@ -6,7 +6,7 @@ var DataCleaningTemplate = (() => {
     let reportTitle = ''
     let columns = []
     let dataParams = {}
-    let ancSite = 'Unknown'
+    let ancSite = sessionStorage.currentLocation
     let dataTableOptions = {}
 
     const getRequest = async function (url) {
@@ -122,12 +122,9 @@ var DataCleaningTemplate = (() => {
 
     const generateTable = function (parentElementID, params={}) {
         reportTitle = params.reportTitle || 'ANC Report'
-        startDate = params.startDate || ''
-        endDate = params.endDate || ''
         dataParams = params.dataParams
         dataTableOptions = params.dataTableOptions || {}
         columns = params.columns || []
-        rows = params.rows || []
         return buildTemplate(parentElementID, params.dataUrl, params.dataParser)
     }
     return {

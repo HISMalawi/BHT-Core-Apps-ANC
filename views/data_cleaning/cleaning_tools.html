@@ -36,8 +36,8 @@
 <script>
     $(document).ready(function(){
         const windowUrl = new URL(window.location.href);
-        const start_date = windowUrl.searchParams.get("start_date");
-        const end_date = windowUrl.searchParams.get("end_date");
+        const startDate = windowUrl.searchParams.get("start_date");
+        const endDate = windowUrl.searchParams.get("end_date");
         const tool = windowUrl.searchParams.get("tool")
 
         const CLEANING_TOOLS = {
@@ -46,8 +46,8 @@
                 dataUrl: "anc_data_cleaning_tools",
                 dataParams: {
                     program_id: 12,
-                    start_date,
-                    end_date,
+                    start_date: startDate,
+                    end_date: endDate,
                     date: sessionStorage.sessionDate,
                     tool_name: 'INCOMPLETE VISITS'
                 },
@@ -76,8 +76,8 @@
                 dataUrl: "anc_data_cleaning_tools",
                 dataParams: {
                     program_id: 12,
-                    start_date,
-                    end_date,
+                    start_date: startDate,
+                    end_date: endDate,
                     date: sessionStorage.sessionDate,
                     tool_name: 'DUPLICATE ENCOUNTERS'
                 },
