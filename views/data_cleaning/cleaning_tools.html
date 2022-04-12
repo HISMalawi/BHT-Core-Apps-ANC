@@ -1,0 +1,121 @@
+<html>
+<head>
+<link rel="stylesheet" href="/assets/css/maindashboard/footer.css">
+<!--script language="javascript" type="text/javascript" src="/javascripts/jquery.js"></script-->
+<link rel="stylesheet" href="/assets/css/custom.css">
+<link rel="stylesheet" media="screen" href="/assets/css/extra_buttons.css" />
+
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<link rel="stylesheet" href="/apps/ART/assets/css/datatable/jquery.dataTables.min.css" type="text/css">
+<link rel="stylesheet" href="/apps/ART/assets/css/datatable/scroller.dataTables.min.css" type="text/css">
+<link rel="stylesheet" href="/apps/ART/assets/css/datatable/scroller.dataTables.min.css" type="text/css">
+
+<script type="text/javascript" src="/assets/js/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/dataTables.fixedHeader.min.js"></script>
+
+<!-- pring report start .......................................................................... -->
+<script type="text/javascript" src="/assets/js/datatables/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/buttons.flash.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/jszip.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/pdfmake.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/vfs_fonts.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/buttons.html5.min.js"></script>
+<script type="text/javascript" src="/assets/js/datatables/buttons.print.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment.js"></script>
+<script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+<script type="text/javascript" src="/apps/ANC/assets/js/data_cleaning_template.js"></script>
+<title>Report</title>
+<style>
+    .dt-button {
+        font-size: 1.3rem;
+        padding: 10px;
+        color: white;
+        background-color: deepskyblue;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        const windowUrl = new URL(window.location.href);
+        const start_date = windowUrl.searchParams.get("start_date");
+        const end_date = windowUrl.searchParams.get("end_date");
+        const tool = windowUrl.searchParams.get("tool")
+
+        const CLEANING_TOOLS = {
+            'INCOMPLETE_VISITS' : {
+                reportTitle: 'INCOMPLETE VISITS',
+                dataUrl: "anc_data_cleaning_tools",
+                dataParams: {
+                    program_id: 12,
+                    start_date,
+                    end_date,
+                    date: sessionStorage.sessionDate,
+                    tool_name: 'INCOMPLETE VISITS'
+                },
+                dataTableOptions: {
+                    tableID: 'data-table'
+                },
+                columns: [
+                    "#",
+                    "National ID",
+                    "Name",
+                    "Visit date",
+                    "Incomplete count",
+                ],
+                dataParser: function (data) {
+                    return data.map((d, i) => [
+                        i+1, 
+                        d.n_id,
+                        d.name,
+                        d.visit_date,
+                        d.visit_no
+                    ]) 
+                }
+            },
+            'DUPLICATE_ENCOUNTERS' : {
+                reportTitle: 'DUPLICATE ENCOUNTERS',
+                dataUrl: "anc_data_cleaning_tools",
+                dataParams: {
+                    program_id: 12,
+                    start_date,
+                    end_date,
+                    date: sessionStorage.sessionDate,
+                    tool_name: 'DUPLICATE ENCOUNTERS'
+                },
+                dataTableOptions: {
+                    tableID: 'data-table'
+                },
+                columns: [
+                    "#",
+                    "National ID",
+                    "Given name",
+                    "Family name",
+                    "Name",
+                    "Total",
+                ],
+                dataParser: function (data) {
+                    return data.map((d, i) => [
+                        i+1, 
+                        d.identifier,
+                        d.given_name,
+                        d.family_name,
+                        d.name,
+                        d.total
+                    ]) 
+                }
+            }
+        }
+        DataCleaningTemplate.generateTable('report-body', CLEANING_TOOLS[tool])
+    })
+</script>
+</head>
+<body>
+    <div id="report-body"></div>
+    <footer class="footer">
+        <div class="container-footer">
+          <button id="btnNext" class="green right" onclick="location='/';">
+            <span>Finish</span>
+          </button>
+        </div>
+    </footer>
+</body>
+</html>
