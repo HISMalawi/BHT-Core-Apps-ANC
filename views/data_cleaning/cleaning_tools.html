@@ -55,6 +55,13 @@
         const endDate = windowUrl.searchParams.get("end_date");
         const tool = windowUrl.searchParams.get("tool")
 
+        function showBtn(patientID) {
+            return `<button 
+                style="padding:0.2em;font-size:1.2rem;font-weight:bold;"
+                onmousedown="document.location='/views/patient_dashboard.html?patient_id=${patientID}'">
+                Show
+            </button>`
+        }
         const CLEANING_TOOLS = {
             'INCOMPLETE_VISITS' : {
                 reportTitle: 'INCOMPLETE VISITS',
@@ -75,6 +82,7 @@
                     "Name",
                     "Visit date",
                     "Incomplete count",
+                    "Action"
                 ],
                 dataParser: function (data) {
                     return data.map((d, i) => [
@@ -82,8 +90,9 @@
                         d.n_id,
                         d.name,
                         d.visit_date,
-                        d.visit_no
-                    ]) 
+                        d.visit_no,
+                        showBtn(d.patient_id)
+                    ])
                 }
             },
             'DUPLICATE_ENCOUNTERS' : {
@@ -106,6 +115,7 @@
                     "Family name",
                     "Name",
                     "Total",
+                    "Action"
                 ],
                 dataParser: function (data) {
                     return data.map((d, i) => [
@@ -114,7 +124,8 @@
                         d.given_name,
                         d.family_name,
                         d.name,
-                        d.total
+                        d.total,
+                        showBtn(d.patient_id)
                     ]) 
                 }
             }
