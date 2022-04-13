@@ -22,8 +22,20 @@ var DataCleaningTemplate = (() => {
         }
     }
 
+    const showLoading = function () {
+        document.getElementById('loading-cover').style = "display:inline"
+    }
+
+    const hideLoading = function () {
+        document.getElementById('loading-cover').style = "display:none"
+    }
+
     const headerTemplate = function () {
         return `
+            <div id="loading-cover">
+                <div style="position:absolute;background-color:black;width:100%;height:102%;left:0%;top:0%;z-index:990;opacity:0.65;"> </div>
+                <img src="/assets/images/formloader.gif" style="position:absolute;top:150px;left:40%;z-index:991;"/>
+            </div>
             <table class="table1" style="width: 100%; -moz-user-select: none;margin-bottom: 10px;">
                 <tr>
                     <th style="font-size: 1.5em; color: #eee; background-color: #999; padding: 5px;">
@@ -109,13 +121,16 @@ var DataCleaningTemplate = (() => {
                 }
             ]
         })
+        showLoading()
         getRequest(url).then((data) => {
             if (data) {
                 parser(data).forEach((row) => {
                     dataTable.row.add(row).draw()
                 })
+                hideLoading()
             }
         }).catch((error) => {
+            hideLoading()
             alert(error)
         })
     }
