@@ -49,7 +49,7 @@ var DataCleaningTemplate = (() => {
                 <div style="position:absolute;background-color:black;width:100%;height:102%;left:0%;top:0%;z-index:990;opacity:0.65;"> </div>
                 <img src="/assets/images/formloader.gif" style="position:absolute;top:150px;left:40%;z-index:991;"/>
             </div>
-            <table class="table1" style="width: 100%; -moz-user-select: none;margin-bottom: 10px;">
+            <table style="width: 100%; -moz-user-select: none;margin-bottom: 10px;">
                 <tr>
                     <th style="font-size: 1.5em; color: #eee; background-color: #999; padding: 5px;">
                         ${reportTitle}
@@ -94,6 +94,7 @@ var DataCleaningTemplate = (() => {
         const tbody = document.createElement('tbody')
         const tr = document.createElement('tr')
         table.id = tableID
+        table.style = "text-align:center;padding:5px;font-size:0.9em;line-height:1.65;color:darkslategrey;margin-top: 0px;border: 1px solid darkslategray;"
         table.classList = dataTableOptions.tableClasses || []
         for (const index in columns) {
             const th = document.createElement('th')
