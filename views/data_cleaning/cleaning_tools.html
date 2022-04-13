@@ -63,6 +63,42 @@
             </button>`
         }
         const CLEANING_TOOLS = {
+            'ENCOUNTERS_AFTER_DEATH': {
+                reportTitle: 'ENCOUNTERS AFTER DEATH',
+                dataUrl: "anc_data_cleaning_tools",
+                dataParams: {
+                    program_id: 12,
+                    start_date: startDate,
+                    end_date: endDate,
+                    date: sessionStorage.sessionDate,
+                    report_name: 'ENCOUNTERS AFTER DEATH'
+                },
+                dataTableOptions: {
+                    tableID: 'data-table'
+                },
+                columns: [
+                    "#",
+                    "National ID",
+                    "First name",
+                    "Last name",
+                    "Date of death",
+                    "Recent encounter date",
+                    "Count",
+                    "Action"
+                ],
+                dataParser: function (data) {
+                    return data.map((d, i) => [
+                        i+1,
+                        d.identifier,
+                        d.given_name,
+                        d.family_name,
+                        d.patient_died_date,
+                        d.minimum_encounter_datetime,
+                        d.total_encounters,
+                        showBtn(d.patient_id)
+                    ])
+                }
+            },
             'INCOMPLETE_VISITS' : {
                 reportTitle: 'INCOMPLETE VISITS',
                 dataUrl: "anc_data_cleaning_tools",
