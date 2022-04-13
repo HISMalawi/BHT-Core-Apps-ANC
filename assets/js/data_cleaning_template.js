@@ -22,6 +22,16 @@ var DataCleaningTemplate = (() => {
         }
     }
 
+    const showError = function (msg) {
+        const errorSection = document.getElementById('error-section')
+        document.getElementById('error-msg').innerText = msg
+        errorSection.style = "display:inline"
+    }
+
+    const hideError = function() {
+        document.getElementById('error-section').style = "display:none"
+    }
+
     const showLoading = function () {
         document.getElementById('loading-cover').style = "display:inline"
     }
@@ -32,6 +42,9 @@ var DataCleaningTemplate = (() => {
 
     const headerTemplate = function () {
         return `
+            <div id="error-section" style="display:none"> 
+                <div id="error-msg" style="font-size:18px;padding:10px;color: white;background:#ED4337;text-align:center;font-weight:bold;"></div>
+            </div>
             <div id="loading-cover">
                 <div style="position:absolute;background-color:black;width:100%;height:102%;left:0%;top:0%;z-index:990;opacity:0.65;"> </div>
                 <img src="/assets/images/formloader.gif" style="position:absolute;top:150px;left:40%;z-index:991;"/>
@@ -121,6 +134,7 @@ var DataCleaningTemplate = (() => {
                 }
             ]
         })
+        hideError()
         showLoading()
         getRequest(url).then((data) => {
             if (data) {
@@ -131,7 +145,7 @@ var DataCleaningTemplate = (() => {
             }
         }).catch((error) => {
             hideLoading()
-            alert(error)
+            showError(error)
         })
     }
 
