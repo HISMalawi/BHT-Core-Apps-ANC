@@ -63,6 +63,38 @@
             </button>`
         }
         const CLEANING_TOOLS = {
+            'MALES_WITH_ANC_ENCOUNTERS' : {
+                reportTitle: 'MALES WITH ANC ENCOUNTERS',
+                dataUrl: "anc_data_cleaning_tools",
+                dataParams: {
+                    program_id: 12,
+                    start_date: startDate,
+                    end_date: endDate,
+                    date: sessionStorage.sessionDate,
+                    report_name: 'MALES WITH ANC ENCOUNTERS'
+                },
+                dataTableOptions: {
+                    tableID: 'data-table'
+                },
+                columns: [
+                    "#",
+                    "National ID",
+                    "First name",
+                    "Last name",
+                    "Total Encounters",
+                    "Action"
+                ],
+                dataParser: function (data) {
+                    return data.map((d, i) => [
+                        i+1,
+                        d.identifier,
+                        d.given_name,
+                        d.family_name,
+                        d.total_encounters,
+                        showBtn(d.patient_id)
+                    ])
+                }
+            },
             'ENCOUNTERS_AFTER_DEATH': {
                 reportTitle: 'ENCOUNTERS AFTER DEATH',
                 dataUrl: "anc_data_cleaning_tools",
