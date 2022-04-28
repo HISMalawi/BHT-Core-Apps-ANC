@@ -108,6 +108,33 @@ var counts = {};
 
 var gravida_value = "";
 
+var defaultNextAction = ''
+var lastGravida = 0
+
+function fetchGravidaValue() {
+  GET({
+    url: apiProtocol + '://' + apiURL + ':' + apiPort + '/api/v1/observations',
+    async: true,
+    headers: {
+      'Authorization': sessionStorage.authorization
+    }
+  },
+  {
+    person_id: patientID,
+    concept_id: 1755,
+    date: sessionDate
+  },
+  function (data) {
+    if (data.length > 0) {
+      lastGravida = data[0].value_numeric;
+      document.getElementById('touchscreenInput'+tstCurrentPage).value = lastGravida + 1;
+    }
+  },
+  function (error) {
+    console.error(error)
+  })
+}
+
 function submitButton(){
   
   var nextButton = document.getElementById('nextButton');
@@ -122,7 +149,11 @@ function nextRoute(){
 
   gravida_value = gravida;
 
-  if (gravida !== "" && parseInt(gravida) === 1){
+  if (lastGravida && gravida && parseInt(gravida) <= parseInt(lastGravida)) { 
+
+    TT_ALERT.alertMessage(`Please enter value greater than last Gravida of ${lastGravida}`);
+
+  } else if (gravida !== "" && parseInt(gravida) === 1){
 
     submitObstetricEncounter();
 

@@ -14,7 +14,9 @@
     <script type="text/javascript" src="/assets/js/generic_ajaxrequest.js"></script>
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
+    <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/obstetric_history.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/alert_utils.js"></script>
   </head>
 
   <body id="mateme">
@@ -29,6 +31,7 @@
               helpText="Gravida" id="gravida" 
               name="gravida" 
               tt_onLoad="submitButton();
+                setTimeout(function() { fetchGravidaValue(); }, 200)
                 __$('zero').style.display = 'none';
                 showCategory2('Obstetric history');" 
               tt_pageStyleClass="NumbersOnly"
