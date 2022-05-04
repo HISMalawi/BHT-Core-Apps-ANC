@@ -27,6 +27,14 @@ var TT_ALERT = (() => {
         btn.style.padding = style.btnPadding || '5px';
         btn.style.minHeight = style.btnMinHeight || '54px';
         btn.style.minWidth = style.btnMinWidth || '75px';
+        btn.style.backgroundColor = style.btnBackgroundColor || '#a7cfdf';
+        btn.style.backgroundImage = 'linear-gradient(to bottom, #a7cfdf, #23538a)';
+        btn.style.textShadow = '-1px -1px 0 rgba(0,0,0,0.3)';
+        btn.style.textDecoration = "none"
+        btn.style.borderRadius = '3px';
+        btn.style.fontFamily = 'Arial, Helvetica, sans-serif';
+        btn.style.fontWeight = 'bold';
+        btn.style.border = '1px solid #7eb9d0';
         btn.onclick = action
         return btn
     }
