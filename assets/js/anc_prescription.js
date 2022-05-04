@@ -80,7 +80,6 @@ $(document).ready(function(){
   }, 1000);
   
   resize();
-  
 });
 
 function getDrugs(){
@@ -162,11 +161,6 @@ function getDrugSets(){
 }
 
 function submitTreatmentEncounter(){
-  if (parseInt(Object.keys(selectedDrugs).length) < 1){
-    showMessage("Please dispense drugs to continue.");
-    return;
-  }
-        
   var currentTime = moment().format(' HH:mm:ss');
   
   var encounter_datetime = moment(sessionStorage.sessionDate).format('YYYY-MM-DD'); 
@@ -178,9 +172,25 @@ function submitTreatmentEncounter(){
     patient_id: patientID,
     encounter_datetime: encounter_datetime
   }
-  
+
+  if (parseInt(Object.keys(selectedDrugs).length) < 1) {
+    TT_ALERT.confirmMessage("Are you sure you want to continue without selecting any drugs?", 
+    function() {
+      submitParameters(encounter, "/encounters", "addNoTreatmentObs");
+    });
+    return;
+  }
   submitParameters(encounter, "/encounters", "postDrugOrders");
-  
+}
+
+function addNoTreatmentObs(encounter){
+  var obs = {
+    encounter_id: encounter.encounter_id,
+    observations: [
+      { concept_id: 1276, value_coded: 1066, person_id: patientID }
+    ]
+  };
+  submitParameters(obs, "/observations", "next");
 }
 
 function postDrugOrders(encounter){
