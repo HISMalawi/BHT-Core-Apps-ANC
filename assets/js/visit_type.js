@@ -90,7 +90,6 @@ function disablePastVisits(){
 //setTimeout(getAncVisitNumber(), 2000);
 
 function submitVisitTypeEncounter(){
-
   if (!validateVisitNumber()){
 
     return;
@@ -159,7 +158,7 @@ function validateVisitNumber(){
 
   }
 
-  if (parseInt(visit_number) > 12){
+  if (parseInt(visit_number) < 1 || parseInt(visit_number) > 12){
     
     showMessage("Visit number out of range: (1 - 12)");
 
