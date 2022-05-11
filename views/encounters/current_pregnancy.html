@@ -54,7 +54,7 @@
           
           <form>
             <input type="hidden" name="week_of_first_visit" id="week_of_first_visit"/>
-            <input tt_onLoad="showCategory2('Current pregnancy');
+            <input tt_onLoad="removeHereButton(); showCategory2('Current pregnancy');
                 timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()"
               field_type="date" helpText="Last Normal Menstrual Period"
             id="lnmp" name="previous_hiv_test"
@@ -64,6 +64,7 @@
             <input type="text" name="Estimate LMP" id="estimate_lmp" 
               condition="$('lnmp').value == 'Unknown'" helpText="Gestation (months)"
               field_type="number" tt_pageStyleClass="NumbersOnly" 
+              tt_onLoad="removeHereButton()"
               tt_onUnload="estimateDates(__$('touchscreenInput' + tstCurrentPage).value);"
               max="6" absoluteMax="10" />
 
