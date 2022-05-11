@@ -14,6 +14,8 @@ var past_visits = {}
 
 var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
 
+var latest_visit_number = 0;
+
 setTimeout(function() {
 
   var url = 'http://'+apiURL+':'+apiPort+'/api/v1';
@@ -29,30 +31,13 @@ setTimeout(function() {
 
         var results = JSON.parse(this.responseText);
 
-        past_visits = JSON.stringify(results["visit_number"]);
+        var numbers = results["visit_number"]
 
-        for(var i = 0; i < past_visits.length; i++){
-
-          element = __$(past_visits[i]);
-
-          if(element){
-      
-            element.className = "keyboardButton gray";
-      
-            element.onmousedown = function(){}
-      
-          }
-      
+        if (numbers.length) {
+          latest_visit_number = numbers[numbers.length - 1] 
         }
-
-      }else {
-
-        past_visits = {};
-
       }
-
     }
-
   };
 
   try {
@@ -71,21 +56,6 @@ setTimeout(function() {
 
 }, 200);
 
-function disablePastVisits(){
-
-  for(var i = 0; i < past_visits.length; i++){
-
-    if(__$(past_visits[i])){
-
-      __$(past_visits[i]).className = "keyboardButton gray";
-
-      __$(past_visits[i]).onmousedown = function(){}
-
-    }
-
-  }
-
-}
 
 //setTimeout(getAncVisitNumber(), 2000);
 
@@ -155,12 +125,11 @@ function validateVisitNumber(){
     showMessage("Please enter a valid number to continue.");
 
     return false;
-
   }
 
-  if (parseInt(visit_number) < 1 || parseInt(visit_number) > 12){
+  if (parseInt(visit_number) <= latest_visit_number || parseInt(visit_number) > 12){
     
-    showMessage("Visit number out of range: (1 - 12)");
+    showMessage("Visit number out of range: (" + (latest_visit_number + 1) + " - 12)");
 
     return false;
 
