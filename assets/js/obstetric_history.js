@@ -2961,7 +2961,7 @@ function buildParams() {
 }
 
 function loadSplitSelections() {
-
+  x = []
   //array format [url, input_id, helpText]
   var arr = [
 
