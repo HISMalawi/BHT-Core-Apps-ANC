@@ -1987,62 +1987,50 @@ function loadInputWindow() {
       __$("popup-header").innerHTML = current_popup;
 
       if (type && type == "age") {
-
-        var unit = document.createElement("select");
-        
-        unit.id = "unit";
-        
         var options = ["Hours", "Days", "Weeks", "Months", "years"]
+        var unit = document.createElement("div")
+        unit.id = 'unit'
+        options.forEach(function (option) {
+          var chkImg = document.createElement("img")
+          var btnSection = document.createElement('div')
+          var txtSpan = document.createElement('span')
+          chkImg.className = `interval_sec`
+          chkImg.style.width = '25px'
+          chkImg.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
+          txtSpan.innerText = option
+          txtSpan.style.fontSize = '20px'
+          txtSpan.style.paddingLeft = '25px'
+          btnSection.style.marginLeft = '60px'
+          btnSection.onmousedown = function () {
+            for(var element of document.getElementsByClassName(chkImg.className)) {
+              if (element.src.match(/checked/i)) {
+                element.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
+              }
+            }
+            chkImg.src = "/public/touchscreentoolkit/lib/images/checked.jpg"
+            unit.value = option
+          }
+          btnSection.appendChild(chkImg)
+          btnSection.appendChild(txtSpan)
+          unit.appendChild(btnSection)
+          unit.appendChild(document.createElement('br'))
+        })
 
-        unit.className = "button_blue";
-        
-        unit.innerHTML = "Months";
-        
         jQ(unit).css({
         
           "position": "absolute",
-        
-          "font-style": "italic",
-        
-          "font-size": "22px",
-        
-          "height": "47px",
-        
-          "width": "154px",
-        
-          "max-width": "154px",
-        
-          "top": "126px",
-        
-          "left": "6px",
-        
-          "padding-top": "8px",
-        
-          "-webkit-appearance": "none",
-        
-          "-moz-appearance": "none",
-        
-          "text-indent": "1px",
-        
-          "border": "none",
-        
-          "text-overflow": ''
+
+          "padding": "4px",
+          
+          "width": "100%",
+
+          "max-width": "300px",
+
+          "top": "125px", 
         
         });
 
         __$("left").appendChild(unit);
-
-        for (var i in options) {
-
-          var option = document.createElement("option");
-
-          option.value = options[i];
-
-          option.innerHTML = options[i];
-
-          unit.appendChild(option);
-
-        }
 
       }
 
