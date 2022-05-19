@@ -43,11 +43,13 @@ var TT_INPUT_DIALOG = (() => {
                 formParams.onfinish(formValue);
             }
         }
-        if (typeof formParams.isRequired) {
+
+        if (typeof formParams.isRequired === 'boolean') {
             if (!formValue) {
                 return setErrors(['Value cannot be empty'])
             }
         }
+
         if (typeof formParams.validation === 'function') { 
             var errors = formParams.validation(formValue);
             if (errors && Array.isArray(errors)) {
