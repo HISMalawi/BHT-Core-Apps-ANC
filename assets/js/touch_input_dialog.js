@@ -120,8 +120,8 @@ var TT_INPUT_DIALOG = (() => {
         modalFooter.style.paddingBottom = '14px';
         modalFooter.style.backgroundColor='#333333';
 
-        let cancelButton = newButton('Cancel', hideModal, 'red')
-        let okButton = newButton('Finish', onFinish, 'green')
+        let cancelButton = newButton('Cancel', hideModal, {btnColor: 'red', height: '70px'})
+        let okButton = newButton('Finish', onFinish, {btnColor: 'green', height: '70px'})
         cancelButton.style.float = 'left';
         okButton.style.float = 'right';
 
@@ -169,14 +169,16 @@ var TT_INPUT_DIALOG = (() => {
         return errorSection
     }
 
-    function newButton(name, action, color='blue') {
+    function newButton(name, action, style={}) {
         let btn = window.document.createElement('button')
         btn.id = name;
         btn.innerHTML = `<span>${name}</span>`;
-        btn.className = 'button navButton ' + color
-        btn.style.width= '150px';
-        btn.style.fontSize = '2rem';
+        btn.className = 'button navButton ' + style.btnColor
+        btn.style.height = style.height || '40px';
+        btn.style.width= style.width || '150px';
+        btn.style.fontSize = style.fontSize || '2rem';
         btn.onclick = action
+        btn.setAttribute('onmousedown', action)
         return btn
     }
 
@@ -210,10 +212,15 @@ var TT_INPUT_DIALOG = (() => {
     }
 
     function onNewValue(valueObj) {
+        var input = document.getElementById(INPUT_ID)
         if (typeof formParams.onvalue === 'function') {
             formParams.onvalue(valueObj)
         }
-        document.getElementById(INPUT_ID).value = valueObj.label
+        if (valueObj && valueObj.label) { 
+            input.value = valueObj.label
+        } else {
+            input.value = ''
+        }
         formValue = valueObj
         hideErrors()
     }
@@ -247,7 +254,84 @@ var TT_INPUT_DIALOG = (() => {
         presentModal()
     }
 
-    function tt_select(params={}) {
+    function getKeyboardValue(newInput, accumulator) {
+        let output = accumulator
+        if (newInput.match(/enter/i)) {
+            return `${output}\r\n`
+        }
+        if (newInput.match(/clear/i)) {
+            return ''
+        } else if (newInput.match(/delete|del/i)) {
+            // Override Unknown text with new input
+            if (output.match(/unknown/i) || output.match(/n\/a/i)) {
+                output = ''
+            } else {
+                output = output.substring(0, output.length - 1)
+            }
+        } else if (newInput.match(/space/i)) {
+            output = `${accumulator} `
+        } else if (newInput.match(/unknown/i)) {
+            output = 'Unknown'
+        } else if (newInput.match(/n\/a/i)) {
+            output = 'N/A'
+        } else {
+            // Override Unknown text with new input
+            if (output.match(/unknown/i) || output.match(/n\/a/i)) {
+                output = newInput
+            } else {
+                output = `${accumulator}${newInput}`
+            }
+        }
+        return output
+    }
+
+    function onKeybaordButton(btn) {
+        if (typeof btn === 'string') {
+            var curValue = formValue || { label: '', value: '' }
+            var value = getKeyboardValue(btn, curValue.label)
+            if (value) {
+                onNewValue({label: value, value })
+            } else {
+                onNewValue(null)
+            }
+        }
+    }
+
+    function buildKeyboard(layout) {
+        var keybaord = document.createElement('table')
+        var btnStyle = {
+            width: '110px',
+            height: '60px'
+        }
+        for (var i = 0; i < layout.length; i++) {
+            var tr = document.createElement('tr')
+            layout[i].forEach(function(btnName){
+                var td = document.createElement('td')
+                if (typeof btnName === 'string' && btnName) {
+                    td.appendChild(newButton(
+                        btnName, "window.TT_INPUT_DIALOG.onKeybaordButton('" + btnName + "')", 
+                        btnStyle)
+                    )
+                }
+                tr.appendChild(td)
+            })
+            keybaord.appendChild(tr)
+        }
+        return keybaord
+    }
+
+    function tt_number_input(params) {
+        var keyboard = buildKeyboard([
+            ['1', '2', '3'],
+            ['4', '5', '6'],
+            ['7', '8', '9'],
+            ['.', '0', 'Del']
+        ])
+        keyboard.style.margin = '6% auto'
+        insertToModal('Number input', keyboard.outerHTML, params)
+    }
+
+    function tt_select(params) {
         formParams = params
         // Don't waste my precious time and resources!!
         if (!hasOptions(formParams)) {
@@ -283,7 +367,9 @@ var TT_INPUT_DIALOG = (() => {
     return {
         onNewValue,
         hideModal,
+        insertToModal,
+        onKeybaordButton,
         tt_select,
-        insertToModal
+        tt_number_input,
     }
 })()
