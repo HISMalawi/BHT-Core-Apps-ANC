@@ -24,6 +24,10 @@ var TT_INPUT_DIALOG = (() => {
         document.getElementById(ERROR_ID).innerText = ''
     }
 
+    /**
+     * Displays error section with error message
+     * @param {*} errors 
+     */
     function setErrors(errors) {
         if (errors && Array.isArray(errors)) {
             document.getElementById(INPUT_ID).style.border = '2px solid red'
@@ -34,7 +38,10 @@ var TT_INPUT_DIALOG = (() => {
             throw 'Invalid errors parameter' + errors + ' is not an array';
         }
     }
-
+    /**
+     * Executes after the Modal finish button is clicked
+     * @returns 
+     */
     function onFinish() {
         var finish = function () {
             hideModal();
@@ -211,6 +218,10 @@ var TT_INPUT_DIALOG = (() => {
         return !params.options || params.options && Array.isArray(params.options)
     }
 
+    /**
+     * Updates value being tracked on the form and changes the current Input element value.
+     * @param {*} valueObj 
+     */
     function onNewValue(valueObj) {
         var input = document.getElementById(INPUT_ID)
         if (typeof formParams.onvalue === 'function') {
@@ -240,6 +251,12 @@ var TT_INPUT_DIALOG = (() => {
         }
     }
 
+    /**
+     * Entrypoint for presenting a modal with inner html content on the screen
+     * @param {*} title 
+     * @param {*} content 
+     * @param {*} config 
+     */
     function insertToModal(title, content, config) {
         formValue = null;
         var windowConfg = config.window || {}
@@ -254,6 +271,13 @@ var TT_INPUT_DIALOG = (() => {
         presentModal()
     }
 
+    /**
+     * Processes keys pressed on the keyboard by handling special keys
+     * and joining text between new input and previous input
+     * @param {*} newInput 
+     * @param {*} accumulator 
+     * @returns 
+     */
     function getKeyboardValue(newInput, accumulator) {
         let output = accumulator
         if (newInput.match(/enter/i)) {
@@ -285,6 +309,10 @@ var TT_INPUT_DIALOG = (() => {
         return output
     }
 
+    /**
+     * This is triggered when the user presses a key on the keyboard
+     * @param {*} btn 
+     */
     function onKeybaordButton(btn) {
         if (typeof btn === 'string') {
             var curValue = formValue || { label: '', value: '' }
@@ -296,7 +324,11 @@ var TT_INPUT_DIALOG = (() => {
             }
         }
     }
-
+    /**
+     * Generate a keyboard from an array of strings representing rows and values
+     * @param {*} layout 
+     * @returns 
+     */
     function buildKeyboard(layout) {
         var keybaord = document.createElement('table')
         var btnStyle = {
@@ -319,7 +351,10 @@ var TT_INPUT_DIALOG = (() => {
         }
         return keybaord
     }
-
+    /**
+     * Show popup for entering numbers only
+     * @param {*} params 
+     */
     function tt_number_input(params) {
         var keyboard = buildKeyboard([
             ['1', '2', '3'],
@@ -331,6 +366,11 @@ var TT_INPUT_DIALOG = (() => {
         insertToModal('Number input', keyboard.outerHTML, params)
     }
 
+    /**
+     * Show input pop for selecting values from a list
+     * @param {*} params 
+     * @returns 
+     */
     function tt_select(params) {
         formParams = params
         // Don't waste my precious time and resources!!
