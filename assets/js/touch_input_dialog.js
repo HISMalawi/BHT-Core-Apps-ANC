@@ -356,6 +356,7 @@ var TT_INPUT_DIALOG = (() => {
      * @param {*} params 
      */
     function tt_number_input(params) {
+        formParams = params
         var keyboard = buildKeyboard([
             ['1', '2', '3'],
             ['4', '5', '6'],
@@ -363,7 +364,12 @@ var TT_INPUT_DIALOG = (() => {
             ['.', '0', 'Del']
         ])
         keyboard.style.margin = '6% auto'
-        insertToModal('Number input', keyboard.outerHTML, params)
+        insertToModal('Number input', keyboard.outerHTML, {
+            window: {
+                height: '92%',
+                width: '50%'
+            }
+        })
     }
 
     /**
