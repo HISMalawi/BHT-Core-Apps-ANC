@@ -50,21 +50,6 @@
       "activitiesIcon": "/assets/images/medical_history.png",
       "url": "/apps/ANC/views/encounters/medical_history.html"
     },
-    "surgical history": {
-      "available": true,
-      "activitiesIcon": "/assets/images/surgical_history.png",
-      "url": "/apps/ANC/views/encounters/surgical_history.html"
-    },
-    "social history": {
-      "available": true,
-      "activitiesIcon": "/assets/images/social_history.png",
-      "url": "/apps/ANC/views/encounters/social_history.html"
-    },
-    "dispensing": {
-      "available": true,
-      "activitiesIcon": "/assets/images/prescription/medication.png",
-      "url": "/apps/ANC/views/encounters/ttv.html"
-    },
     "hiv clinic registration": {
       "available": true,
       "activitiesIcon": "/assets/images/registration.png",
@@ -94,6 +79,21 @@
       "available": true,
       "activitiesIcon": "/assets/images/lab.png",
       "url": "/views/patient/labs.html"
+    },
+    "surgical history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/surgical_history.png",
+      "url": "/apps/ANC/views/encounters/surgical_history.html"
+    },
+    "social history": {
+      "available": true,
+      "activitiesIcon": "/assets/images/social_history.png",
+      "url": "/apps/ANC/views/encounters/social_history.html"
+    },
+    "dispensing": {
+      "available": true,
+      "activitiesIcon": "/assets/images/prescription/medication.png",
+      "url": "/apps/ANC/views/encounters/ttv.html"
     }
   },
   "activities": {
@@ -108,6 +108,7 @@
       ["CURRENT PREGNANCY", "current pregnancy"],
       ["ANC EXAMINATION", "anc examination"],
       ["DISPENSING", "TTV Dispensation"],
+<<<<<<< Updated upstream
       ["ART_FOLLOWUP", "art_followup"],
       ["TREATMENT", "treatment"],
       ["APPOINTMENT", "appointment"],
@@ -117,6 +118,9 @@
       ["HIV CLINIC CONSULTATION","hiv clinic consultation"],
       ["HIV RECEPTION VISITS","hiv reception"],
       ["HIV STAGING VISITS","hiv staging"]
+=======
+      ["ART_FOLLOWUP", "art_followup"]
+>>>>>>> Stashed changes
     ]
   },
     
