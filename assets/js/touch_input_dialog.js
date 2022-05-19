@@ -24,6 +24,38 @@ var TT_INPUT_DIALOG = (() => {
         document.getElementById(ERROR_ID).innerText = ''
     }
 
+    function setErrors(errors) {
+        if (errors && Array.isArray(errors)) {
+            document.getElementById(INPUT_ID).style.border = '2px solid red'
+            var errorDiv = document.getElementById(ERROR_ID);
+            errorDiv.innerText = 'Errors: ' + errors.join(', ');
+            errorDiv.style.display = 'inline';
+        } else {
+            throw 'Invalid errors parameter' + errors + ' is not an array';
+        }
+    }
+
+    function onFinish() {
+        if (typeof formParams.isRequired) {
+            if (!formValue) {
+                return setErrors(['Value cannot be empty'])
+            }
+        }
+        if (typeof formParams.validation === 'function') { 
+            var errors = formParams.validation(formValue);
+            if (errors && Array.isArray(errors)) {
+                return setErrors(errors)
+            } else {
+                return setErrors(['An error has occured'])
+            }
+        }
+        hideModal();
+        // do a callback after modal is hidden
+        if (typeof formParams.onfinish === 'function') {
+            formParams.onfinish(formValue);
+        }
+    }
+
     function titleHeadElement(title) {
         let titleHead = document.createElement('b')
         titleHead.id = TITLE_ID
@@ -72,23 +104,7 @@ var TT_INPUT_DIALOG = (() => {
         modalFooter.style.backgroundColor='#333333';
 
         let cancelButton = newButton('Cancel', hideModal, 'red')
-        let okButton = newButton('Finish', function () {
-            if (typeof formParams.isRequired) {
-                if (!formValue) {
-                    return setErrors(['Value cannot be empty'])
-                }
-            }
-
-            if (typeof formParams.validation === 'function') { 
-                var errors = formParams.validation(formValue);
-                if (errors && Array.isArray(errors)) {
-                    return setErrors(errors)
-                } else {
-                    return setErrors(['An error has occured'])
-                }
-            }
-            hideModal();
-        }, 'green')
+        let okButton = newButton('Finish', onFinish, 'green')
         cancelButton.style.float = 'left';
         okButton.style.float = 'right';
 
@@ -173,17 +189,6 @@ var TT_INPUT_DIALOG = (() => {
         return modal
     }
 
-    function setErrors(errors) {
-        if (errors && Array.isArray(errors)) {
-            document.getElementById(INPUT_ID).style.border = '2px solid red'
-            var errorDiv = document.getElementById(ERROR_ID);
-            errorDiv.innerText = 'Errors: ' + errors.join(', ');
-            errorDiv.style.display = 'inline';
-        } else {
-            throw 'Invalid errors parameter' + errors + ' is not an array';
-        }
-    }
-
     function hasOptions(params) {
         return !params.options || params.options && Array.isArray(params.options)
     }
@@ -226,7 +231,7 @@ var TT_INPUT_DIALOG = (() => {
         presentModal()
     }
 
-    function listSelectionInput(params={}) {
+    function tt_select(params={}) {
         formParams = params
         // Don't waste my precious time and resources!!
         if (!hasOptions(formParams)) {
@@ -262,7 +267,7 @@ var TT_INPUT_DIALOG = (() => {
     return {
         onNewValue,
         hideModal,
-        listSelectionInput,
+        tt_select,
         insertToModal
     }
 })()
