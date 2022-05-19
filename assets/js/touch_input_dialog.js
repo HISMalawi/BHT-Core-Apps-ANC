@@ -370,17 +370,10 @@ var TT_INPUT_DIALOG = (() => {
         if (typeof btn === 'string') {
             var curValue = formValue || { label: '', value: '' }
             var value = getKeyboardValue(btn, curValue.label)
-            var newValue = {}
-            if (value) {
-                newValue = Object.assign(formValue || {}, {
-                    label: value, value: value
-                })
-            } else {
-                newValue = Object.assign(formValue || {}, {
-                    label: value, value: value
-                })
-            }
-            onNewValue(newValue)
+            onNewValue(Object.assign(formValue || {}, {
+                label: value || '', 
+                value: value || ''
+            }))
         }
     }
 
