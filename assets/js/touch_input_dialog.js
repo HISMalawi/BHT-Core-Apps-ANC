@@ -115,9 +115,9 @@ var TT_INPUT_DIALOG = (() => {
         modalFooter.style.position = 'absolute';
         modalFooter.style.left = 0;
         modalFooter.style.bottom = '-5px';
-        modalFooter.style.width = '98%';
-        modalFooter.style.minHeight = '40px';
-        modalFooter.style.padding = '15px';
+        modalFooter.style.width = '100%';
+        modalFooter.style.minHeight = '10px';
+        modalFooter.style.paddingBottom = '14px';
         modalFooter.style.backgroundColor='#333333';
 
         let cancelButton = newButton('Cancel', hideModal, 'red')
@@ -163,8 +163,7 @@ var TT_INPUT_DIALOG = (() => {
         let errorSection = document.createElement('span');
         errorSection.id = ERROR_ID;
         errorSection.style.display = 'none';
-        errorSection.style.color = 'red'
-        errorSection.style.margin = '1%';
+        errorSection.style.color = 'brown'
         errorSection.style.fontStyle = 'italic';
         errorSection.style.fontSize = '1.2em';
         return errorSection
