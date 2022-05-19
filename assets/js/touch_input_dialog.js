@@ -61,8 +61,6 @@ var TT_INPUT_DIALOG = (() => {
             var errors = formParams.validation(formValue);
             if (errors && Array.isArray(errors)) {
                 return setErrors(errors)
-            } else {
-                return setErrors(['An error has occured'])
             }
         }
         
@@ -187,6 +185,61 @@ var TT_INPUT_DIALOG = (() => {
         btn.onclick = action
         btn.setAttribute('onmousedown', action)
         return btn
+    }
+
+    /**
+     * Event handler for radion buttons
+     * @param {} options 
+     * @param {*} name 
+     * @param {*} onClick 
+     * @returns 
+     */
+    function onradioSelect(id, name) {
+        for(var element of document.getElementsByClassName(name)) {
+            if (element.src.match(/checked/i)) {
+              element.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
+            }
+        }
+        document.getElementById('chkImg_' + id).src = "/public/touchscreentoolkit/lib/images/checked.jpg"
+        let newValue = Object.assign(formValue || {
+            label: '', 
+            value: ''
+        }, {
+            interval: id
+        })
+        onNewValue(newValue)
+    }
+
+    /**
+     * Generates a list of radio button selections
+     * @param {*} options 
+     */
+    function radioOptions(options, name) {
+        var container = document.createElement("div")
+        options.forEach(function(option) {
+            var chkImg = document.createElement("img")
+            var btnSection = document.createElement('div')
+            var txtSpan = document.createElement('span')
+            txtSpan.id = 'chkTxt_' + option
+            chkImg.id = 'chkImg_' + option
+            chkImg.className = name
+            chkImg.style.width = '35px'
+            chkImg.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
+            txtSpan.innerText = option
+            txtSpan.style.fontWeight = 'bold'
+            txtSpan.style.fontSize = '24px'
+            txtSpan.style.paddingLeft = '25px'
+            btnSection.style.marginLeft = '60px'
+            btnSection.setAttribute(
+                'onmousedown', 
+                'TT_INPUT_DIALOG.onradioSelect("' + option + '","' + name + '")'
+            )
+            btnSection.appendChild(chkImg)
+            btnSection.appendChild(txtSpan)
+            container.appendChild(btnSection)
+            container.appendChild(document.createElement('br'))
+        })
+        return container
     }
 
     function updateModalWindow(innerContent, title, config) {
@@ -317,13 +370,20 @@ var TT_INPUT_DIALOG = (() => {
         if (typeof btn === 'string') {
             var curValue = formValue || { label: '', value: '' }
             var value = getKeyboardValue(btn, curValue.label)
+            var newValue = {}
             if (value) {
-                onNewValue({label: value, value })
+                newValue = Object.assign(formValue || {}, {
+                    label: value, value: value
+                })
             } else {
-                onNewValue(null)
+                newValue = Object.assign(formValue || {}, {
+                    label: value, value: value
+                })
             }
+            onNewValue(newValue)
         }
     }
+
     /**
      * Generate a keyboard from an array of strings representing rows and values
      * @param {*} layout 
@@ -351,9 +411,43 @@ var TT_INPUT_DIALOG = (() => {
         }
         return keybaord
     }
+
+    /**
+     * Generate popup selector for time estimate
+     * @param {*} params
+    */
+    function tt_time_estimate_input(params) {
+        formParams = params
+        var div = document.createElement('div')
+        var keyboard = buildKeyboard([
+            ['1', '2', '3'],
+            ['4', '5', '6'],
+            ['7', '8', '9'],
+            ['.', '0', 'Del']
+        ])
+        var intervalOptions = radioOptions([
+            "Hours",
+            "Days",
+            "Weeks",
+            "Months",
+            "years"
+        ], 'interval_selection')
+        keyboard.style.padding = '10px'
+        keyboard.style.float = 'right'
+        intervalOptions.style.float = 'left'
+        intervalOptions.style.marginTop = '2%'
+        div.appendChild(intervalOptions)
+        div.appendChild(keyboard)
+        insertToModal(params.title, div.outerHTML, {
+            window: {
+                width: '80%'
+            }
+        })
+    }
+
     /**
      * Show popup for entering numbers only
-     * @param {*} params 
+     * @param {*} params
      */
     function tt_number_input(params) {
         formParams = params
@@ -364,7 +458,7 @@ var TT_INPUT_DIALOG = (() => {
             ['.', '0', 'Del']
         ])
         keyboard.style.margin = '6% auto'
-        insertToModal('Number input', keyboard.outerHTML, {
+        insertToModal(params.title, keyboard.outerHTML, {
             window: {
                 height: '92%',
                 width: '50%'
@@ -414,8 +508,10 @@ var TT_INPUT_DIALOG = (() => {
         onNewValue,
         hideModal,
         insertToModal,
+        onradioSelect,
         onKeybaordButton,
         tt_select,
         tt_number_input,
+        tt_time_estimate_input
     }
 })()
