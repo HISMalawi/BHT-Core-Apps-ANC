@@ -36,6 +36,13 @@ var TT_INPUT_DIALOG = (() => {
     }
 
     function onFinish() {
+        var finish = function () {
+            hideModal();
+            // do a callback after modal is hidden
+            if (typeof formParams.onfinish === 'function') {
+                formParams.onfinish(formValue);
+            }
+        }
         if (typeof formParams.isRequired) {
             if (!formValue) {
                 return setErrors(['Value cannot be empty'])
@@ -49,11 +56,19 @@ var TT_INPUT_DIALOG = (() => {
                 return setErrors(['An error has occured'])
             }
         }
-        hideModal();
-        // do a callback after modal is hidden
-        if (typeof formParams.onfinish === 'function') {
-            formParams.onfinish(formValue);
+        
+        if (typeof formParams.onWarnBeforeFinish === 'function') {
+            var warning = formParams.onWarnBeforeFinish(formValue);
+            if (typeof warning === 'object' && typeof warning.message === 'string') {
+                return TT_ALERT.confirmMessage(warning.message, function() {
+                    if (typeof warning.callback === 'function') {
+                        warning.callback();
+                    }
+                    finish()
+                })
+            }
         }
+        finish()
     }
 
     function titleHeadElement(title) {
