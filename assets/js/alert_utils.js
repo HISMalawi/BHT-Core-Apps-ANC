@@ -20,7 +20,7 @@ var TT_ALERT = (() => {
         btn.id = name;
         btn.innerHTML = `<span>${name}</span>`;
         btn.style.width= style.btnWidth || '150px';
-        btn.style.fontSize = style.btnFontSize || '1em';
+        btn.style.fontSize = style.btnFontSize || '1.4em';
         btn.style.fontStyle = style.btnFontStyle || 'bold';
         btn.style.color = style.btnFontColor || 'white';
         btn.style.margin = style.btnFontMargin || '5px';
@@ -84,11 +84,11 @@ var TT_ALERT = (() => {
         var msgBody = document.createElement('div')
         msgBody.innerText = message;
         var footer = document.createElement('div')
-        footer.appendChild(alertBtn('OK', function () {
+        footer.appendChild(alertBtn('Yes', function () {
             callback();
             hideAlert();
         }));
-        footer.appendChild(alertBtn('Cancel', hideAlert));
+        footer.appendChild(alertBtn('No', hideAlert));
         alert.appendChild(msgBody);
         alert.appendChild(footer);
         alertDiv.appendChild(alert);
