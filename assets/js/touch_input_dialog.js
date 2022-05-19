@@ -18,11 +18,8 @@ var TT_INPUT_DIALOG = (() => {
     let DIALOG_CONTENT_ID = 'tt_input_dialog_content';
     let WINDOW_ID = 'tt_input_window'
 
-    function showErrors() {
-        document.getElementById(ERROR_ID).style.display = 'inline';
-    }
-
     function hideErrors() {
+        document.getElementById(INPUT_ID).style.border = '1px solid black'
         document.getElementById(ERROR_ID).style.display = 'none';
         document.getElementById(ERROR_ID).innerText = ''
     }
@@ -75,7 +72,23 @@ var TT_INPUT_DIALOG = (() => {
         modalFooter.style.backgroundColor='#333333';
 
         let cancelButton = newButton('Cancel', hideModal, 'red')
-        let okButton = newButton('Finish', hideModal, 'green')
+        let okButton = newButton('Finish', function () {
+            if (typeof formParams.isRequired) {
+                if (!formValue) {
+                    return setErrors(['Value cannot be empty'])
+                }
+            }
+
+            if (typeof formParams.validation === 'function') { 
+                var errors = formParams.validation(formValue);
+                if (errors && Array.isArray(errors)) {
+                    return setErrors(errors)
+                } else {
+                    return setErrors(['An error has occured'])
+                }
+            }
+            hideModal();
+        }, 'green')
         cancelButton.style.float = 'left';
         okButton.style.float = 'right';
 
@@ -162,6 +175,7 @@ var TT_INPUT_DIALOG = (() => {
 
     function setErrors(errors) {
         if (errors && Array.isArray(errors)) {
+            document.getElementById(INPUT_ID).style.border = '2px solid red'
             var errorDiv = document.getElementById(ERROR_ID);
             errorDiv.innerText = 'Errors: ' + errors.join(', ');
             errorDiv.style.display = 'inline';
@@ -248,6 +262,7 @@ var TT_INPUT_DIALOG = (() => {
     return {
         onNewValue,
         hideModal,
-        listSelectionInput
+        listSelectionInput,
+        insertToModal
     }
 })()
