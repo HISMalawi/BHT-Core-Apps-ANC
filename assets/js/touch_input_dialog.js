@@ -125,8 +125,8 @@ var TT_INPUT_DIALOG = (() => {
         modalFooter.style.paddingBottom = '14px';
         modalFooter.style.backgroundColor='#333333';
 
-        let cancelButton = newButton('Cancel', hideModal, {btnColor: 'red', height: '70px'})
-        let okButton = newButton('Finish', onFinish, {btnColor: 'green', height: '70px'})
+        let cancelButton = newButton('footer-cancel', 'Cancel', hideModal, {btnColor: 'red', height: '70px'})
+        let okButton = newButton('footer-finish','Finish', onFinish, {btnColor: 'green', height: '70px'})
         cancelButton.style.float = 'left';
         okButton.style.float = 'right';
 
@@ -174,9 +174,9 @@ var TT_INPUT_DIALOG = (() => {
         return errorSection
     }
 
-    function newButton(name, action, style={}) {
+    function newButton(id, name, action, style={}) {
         let btn = window.document.createElement('button')
-        btn.id = name;
+        btn.id = id;
         btn.innerHTML = `<span>${name}</span>`;
         btn.className = 'button navButton ' + style.btnColor
         btn.style.height = style.height || '40px';
@@ -242,7 +242,7 @@ var TT_INPUT_DIALOG = (() => {
         return container
     }
 
-    function updateModalWindow(innerContent, title, config) {
+    function updateModalWindow(title, innerContent, config) {
         var modalWindow = document.getElementById(WINDOW_ID);
         if (config.width) {
             modalWindow.style.width = config.width
@@ -251,7 +251,7 @@ var TT_INPUT_DIALOG = (() => {
             modalWindow.style.height = config.height
         }
         document.getElementById(TITLE_ID).innerText = title
-        documen.getElementById(DIALOG_CONTENT_ID).innerHTML = innerContent
+        document.getElementById(DIALOG_CONTENT_ID).innerHTML = innerContent
     }
 
     function createModalWindow(title, innerContent, windowConfig) {
@@ -314,12 +314,14 @@ var TT_INPUT_DIALOG = (() => {
         formValue = null;
         var windowConfg = config.window || {}
         var modalWindow = document.getElementById(DIALOG_ID);
+        
         if (!modalWindow) {
             modalWindow = createModalWindow(title, content, windowConfg);
             window.document.body.appendChild(modalWindow);
         } else {
             updateModalWindow(title, content, windowConfg)
         }
+        document.getElementById(INPUT_ID).value = null
         hideErrors()
         presentModal()
     }
@@ -394,6 +396,7 @@ var TT_INPUT_DIALOG = (() => {
                 var td = document.createElement('td')
                 if (typeof btnName === 'string' && btnName) {
                     td.appendChild(newButton(
+                        i + "-" + btnName,
                         btnName, "window.TT_INPUT_DIALOG.onKeybaordButton('" + btnName + "')", 
                         btnStyle)
                     )
@@ -498,6 +501,7 @@ var TT_INPUT_DIALOG = (() => {
     }
 
     return {
+        newButton,
         onNewValue,
         hideModal,
         insertToModal,
