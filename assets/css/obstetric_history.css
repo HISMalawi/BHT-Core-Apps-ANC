@@ -1,3 +1,52 @@
+.active-pregnancy-detail-fields {
+    display: inline;
+}
+.inactive-pregnancy-detail-fields {
+    display: none;
+}
+.pregancy-details-table {
+    width: 100%;
+}
+table.pregancy-details-table th {
+    display: table-cell;
+    width: 30%;
+    font-style: bold;
+    vertical-align: middle;
+    height: 63px;
+    font-size: 25px;
+    text-align: center;
+    border-radius: 5px;
+    border-width: 0.5px;
+    border-color: lightgray;
+    border-style: solid;
+    background: lightblue;
+}
+
+.table-head-section {
+    background: #ccc;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+}
+table.value-table {
+    width: 100%;
+}
+table.value-table td {
+    border-collapse: collapse;
+    vertical-align: middle;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid #c5c5c5;
+    padding: 9px;
+}
+
+.value-table-label {
+    vertical-align:top;
+    padding:10px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
 #table, #header {
     display: table;
     table-layout:fixed;

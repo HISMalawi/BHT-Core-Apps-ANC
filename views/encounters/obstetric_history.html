@@ -15,8 +15,9 @@
     <script type="text/javascript" src="/assets/js/moment.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/common.js"></script>
     <script type="text/javascript" src="/assets/js/httpUtils.js"></script>
-    <script type="text/javascript" src="/apps/ANC/assets/js/obstetric_history.js"></script>
     <script type="text/javascript" src="/apps/ANC/assets/js/alert_utils.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/touch_input_dialog.js"></script>
+    <script type="text/javascript" src="/apps/ANC/assets/js/obstetric_history.js"></script>
   </head>
 
   <body id="mateme">
@@ -157,7 +158,7 @@
             <input name="pregnancy details" type="text"
               id="input_page" helptext="Pregnancy details" 
               tt_onLoad="jQuery('#clearButton').css('display', 'none');parsedConceptName = ''; 
-              loadInputWindow(); showCategory2('Obstetric history');"
+              PregnancyDetailsPage.showPregnancyDetails(3, 1); showCategory2('Obstetric history');"
               tt_BeforeUnLoad="buildParams(); console.log(test_code().toString());"
               optional="true"
               condition="$('gravida').value > 1 && $('para').value !== 'Unknown'" />

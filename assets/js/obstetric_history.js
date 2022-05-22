@@ -1,3 +1,521 @@
+var GlobalPageData = {
+  // Track data here
+  pregDetailsPage: {
+    components: {},
+    methods: {}
+  },
+}
+/**
+ * Helper module to hack touchscreentoolkit
+ */
+var InputFrame = (function() {
+  function append(htmlElement) {
+    $("keyboard").style.display = "none";
+        
+    $("touchscreenInput" + tstCurrentPage).style.display = "none";
+          
+    $("inputFrame" + tstCurrentPage).style.height = 0.8 * screen.height + "px";
+    
+    $("inputFrame" + tstCurrentPage).style.overflowY = 'scroll'
+
+    $("inputFrame" + tstCurrentPage).style.background = "white";
+    
+    $("inputFrame" + tstCurrentPage).appendChild(htmlElement)
+  }
+  return {
+    append
+  }
+})()
+
+/**
+ * Generates pregnancy detail input table
+ */
+var PregnancyDetailTableComponent = (() => {
+  function buildParentTable() {
+    let table = document.createElement('table');
+    let tr = document.createElement('tr')
+    let pregnancyTH = document.createElement('th')
+    let detailsTH = document.createElement('th')
+    table.className = 'pregancy-details-table';
+    pregnancyTH.innerHTML = 'Pregnancy'
+    detailsTH.innerHTML = 'Details'
+    pregnancyTH.style.width = "80px"
+    detailsTH.style.width = "340px"
+    tr.appendChild(pregnancyTH)
+    tr.appendChild(detailsTH)
+    table.appendChild(tr)
+    return table
+  }
+  
+  function checkFirstFormSelectionItem() {
+    let items = document.getElementsByClassName('pregnancy-details-selection-li');
+    if (items) {
+      items[0].click()
+    }
+  }
+
+  function buildPregnancyFormSelector(tableContent) {
+    let ul = document.createElement('ul')
+    ul.style.listStyle = 'none'
+    for (let key in tableContent) {
+      let id = key.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '')
+      let li = document.createElement('li');
+      let chkImg = document.createElement("img");
+      let txtSpan = document.createElement('span');
+      li.style.margin = '8%';
+      li.className = 'pregnancy-details-selection-li';
+      txtSpan.innerHTML = key;
+      txtSpan.style.fontWeight = 'bold';
+      txtSpan.style.fontSize = '24px';
+      txtSpan.style.paddingLeft = '25px';
+      chkImg.id = 'img_' + id;
+      chkImg.className = 'details-selection'
+      chkImg.style.width = '35px'
+      chkImg.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
+      GlobalPageData.pregDetailsPage.methods['check_' + id] = function() {
+        for(var element of document.getElementsByClassName('details-selection')) {
+          if (element.src.match(/checked/i)) {
+            element.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg";
+          }
+        }
+        for(var element of document.getElementsByClassName('active-pregnancy-detail-fields')) { 
+          element.classList.remove('active-pregnancy-detail-fields')
+          element.classList.add('inactive-pregnancy-detail-fields');
+        }
+        chkImg.src = "/public/touchscreentoolkit/lib/images/checked.jpg";
+        document.getElementById(key).classList.add('active-pregnancy-detail-fields');
+        document.getElementById(key).classList.remove('inactive-pregnancy-detail-fields');
+      }
+      li.appendChild(chkImg)
+      li.appendChild(txtSpan)
+      li.setAttribute('onclick', 'GlobalPageData.pregDetailsPage.methods["check_' + id + '"]()')
+      ul.appendChild(li)
+    }
+    return ul
+  }
+
+  /**
+   * tableContent {
+   *  'Title of data' : [
+   *      {
+   *          'sectionName': 'string',
+   *          'fields': [
+   *              {
+   *                refID: 'string',
+   *                label: 'string,
+   *                value: 'string',
+   *                edit: 'function'
+   *              }
+   *           ]
+   *      }
+   *  ]
+   * }
+   * @param {*} parentTable
+   * @param {*} tableContent
+   */
+  function buildPregnancyDetailFields(tableContent) {
+    let container = document.createElement('div')
+    for(var headerName in tableContent) {
+      tableContent[headerName].forEach(function(content) {
+        let table = document.createElement('table')
+        table.id = headerName
+        table.classList.add('value-table')
+        table.classList.add('inactive-pregnancy-detail-fields')
+
+        if (typeof sectionName === 'string') {
+          let tableHeadSection = document.createElement('div')
+          tableHeadSection.className = 'table-head-section'
+          tableHeadSection.innerHTML = sectionName
+          container.appendChild(tableHeadSection)
+        }
+
+        content.fields.forEach(function(field) {
+          let fieldTr = document.createElement('tr');
+          let labelTD = document.createElement('td');
+          let valueTD = document.createElement('td');
+
+          if (typeof field.label === 'string') {
+            labelTD.innerHTML = field.label;
+            labelTD.style.color = 'brown';
+          }
+
+          if (typeof field.edit === 'function') {
+            GlobalPageData.pregDetailsPage.methods[field.refID] = function () {
+              field.edit(GlobalPageData.pregDetailsPage.components[field.refID],
+                Object.values(GlobalPageData.pregDetailsPage.components).filter(function(groupField) {
+                  return groupField.groupID === content.groupID
+                }));
+            };
+            var textInput = document.createElement('input')
+            textInput.readOnly = true
+            textInput.placeholder = 'Click to edit'
+            textInput.style.width = '100%';
+            textInput.style.fontSize = '1.4rem';
+            textInput.style.padding = '8px';
+            textInput.style.backgroundColor = '#F8F8F8';
+            textInput.setAttribute('onmousedown', 'GlobalPageData.pregDetailsPage.methods["' + field.refID + '"]()')
+            valueTD.className = "min-md-width";
+            valueTD.appendChild(textInput)
+          }
+
+          // Track html components in this object
+          GlobalPageData.pregDetailsPage.components[field.refID] = {
+            value: null,
+            refID: field.refID,
+            groupID: content.groupID,
+            labelElement: labelTD,
+            valueElement: textInput
+          }
+          fieldTr.appendChild(labelTD);
+          fieldTr.appendChild(valueTD);
+          table.appendChild(fieldTr);
+        });
+        container.appendChild(table);
+      });
+    }
+    return container
+  }
+
+  function createPregnancyDetailsInput(fieldItems) {
+    let parentTable = buildParentTable()
+    let pregnancyFormSelector = buildPregnancyFormSelector(fieldItems)
+    let pregnancyDetailFields = buildPregnancyDetailFields(fieldItems)
+    let tr = document.createElement('tr')
+    let tdSelector = document.createElement('td')
+    let tdForm = document.createElement('td')
+    tdSelector.className = 'value-table-label'
+    tdSelector.appendChild(pregnancyFormSelector)
+    tdForm.appendChild(pregnancyDetailFields)
+    tr.appendChild(tdSelector)
+    tr.appendChild(tdForm)
+    parentTable.append(tr)
+    return parentTable
+  }
+  return {
+    checkFirstFormSelectionItem,
+    createPregnancyDetailsInput
+  }
+})();
+
+/**
+ * Setups Pregnancy input page with field parameters
+ */
+var PregnancyDetailsPage = (() => {
+  function getNumberOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"], v = n % 100;
+    return (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  function updateValue(fieldData, val, computedValue) {
+    fieldData.value = val;
+    fieldData.computedValue = computedValue
+    fieldData.valueElement.value = val.label || val.value;
+    fieldData.labelElement.style.color = 'green';
+  }
+
+  function buildFields(gravida, para) {
+    let abortionCount = (gravida - para) - 1
+    let delieveredPregnancyCount = para
+    let abortionHash = {}
+    let delieveredPregnancyHash = {}
+
+    for (let i=0; i < abortionCount; ++i) {
+      let num = i + 1
+      let label = '<span style="color:red;">' + num + '<sup>' + getNumberOrdinal(num) + '</sup> Abortion</span>'
+      abortionHash[label] = [
+        {
+          groupID: 'abortion_fields_'+ num,
+          fields: [
+            {
+              refID: 'year_abortion_' + num,
+              label: 'Year of abortion',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_number_input({
+                  title: 'Year of abortion',
+                  isRequired: true,
+                  onfinish: function(val) {
+                    updateValue(field, val, {
+                      concept_id: 7996, 
+                      value_numeric: parseInt(val.value)
+                    })
+                  }
+                })
+              }
+            },
+            {
+              refID: 'place_of_abortion_' + num,
+              label: 'Place of abortion',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({
+                  title: 'Place of abortion',
+                  isRequired: true,
+                  onfinish: function(val) {
+                    updateValue(field, val, {
+                      concept_id: 2997, 
+                      value_text: val.label
+                    })
+                  },
+                  options: [
+                    { label: "Health facility" },
+                    { label: "In transit" },
+                    { label: "TBA" },
+                    { label: "Home" },
+                    { label: "Other"}
+                  ]
+                }) 
+              }
+            },
+            {
+              refID: 'type_of_abortion_' + num,
+              label: 'Type of abortion',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({ 
+                  title: 'Type of abortion',
+                  isRequired: true,
+                  onfinish: function(val) {
+                    updateValue(field, val, {
+                      concept_id: 8359, 
+                      value_coded: val.value
+                    })
+                  },
+                  options: [
+                    { label: "Complete abortion", value: 7372 }, 
+                    { label: "Incomplete abortion", value: 905 }
+                  ]
+                })
+              }
+            },
+            {
+              refID: 'procedure_done_' + num,
+              label: 'Procedure done',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({
+                  title: 'Procedure done',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 7439, 
+                      value_text: value.label
+                    })
+                  },
+                  options: [
+                    { label: "Manual Vacuum Aspiration (MVA)" },
+                    { label: "Evacuation" },
+                    { label: "None" }
+                  ]
+                })
+              }
+            },
+            {
+              refID: 'abortion_gestation_weeks_' + num,
+              label: 'Gestation weeks',
+              edit: function (field) {
+                TT_INPUT_DIALOG.tt_number_input({
+                  title: 'Gestation weeks',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value,{
+                      concept_id: 44,
+                      value_numeric: parseInt(value.label)
+                    })
+                  }
+                })
+              }
+            }
+          ]
+        }
+      ]
+    }
+    for (let i=0; i < delieveredPregnancyCount; ++i) {
+      let num = i + 1
+      let label = '<span>' + num + '<sup>' + getNumberOrdinal(num) + '</sup> Delievery</span>'
+      delieveredPregnancyHash[label] = [
+        {
+          sectionName: '<span>' + num + '<sup>' + getNumberOrdinal(num) + '</sup> Baby</span>',
+          groupID: 'delievery_fields_' + num,
+          fields: [
+            {
+              refID: 'year_of_birth_' + num,
+              label: 'Year of birth',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_number_input({
+                  title: 'Year of birth',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 7996,
+                      value_numeric: parseInt(value.label)
+                    })
+                  }
+                })
+              }
+            },
+            {
+              refID: 'place_of_birth_' + num,
+              label: 'Place of birth',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({
+                  title: 'Place of birth',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 2997, 
+                      value_text: value.label
+                    })
+                  },
+                  options: [
+                    { label: "Health facility" },
+                    { label: "In transit" },
+                    { label: "TBA" },
+                    { label: "Home" },
+                    { label: "Other"}
+                  ]
+                }) 
+              }
+            },
+            {
+              refID: 'gestation_weeks_' + num,
+              label: 'Gestation weeks',
+              edit: function (field) {
+                TT_INPUT_DIALOG.tt_number_input({
+                  title: 'Gestation weeks',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 44, 
+                      value_numeric: parseInt(value.label)
+                    })
+                  }
+                })
+              }
+            },
+            {
+              refID: 'method_of_delievery_' + num,
+              label: 'Method of delivery',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({
+                  title: 'Method of delivery',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 5630, 
+                      value_text: value.label
+                    })
+                  },
+                  options: [
+                    { label: "Spontaneous Vertex" }, 
+                    { label: "Caesarean Section" }, 
+                    { label: "Vacuum extraction delivery" }, 
+                    { label: "Breech" }, 
+                    { label: "Forceps"}, 
+                    { label: "Others" }
+                  ]
+                })
+              }
+            },
+            {
+              refID: 'condition_at_birth_' + num,
+              label: 'Condition at birth',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({
+                  title: 'Condition at birth',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 7998, 
+                      value_text: value.label
+                    })
+                  },
+                  options: [
+                    { label: "Alive" }, 
+                    { label: "Macerated Still Birth (MSB)" }, 
+                    { label: "Fresh Still Birth (FSB)" }
+                  ]
+                })
+              }
+            },
+            {
+              refID: 'birth_weight_' + num,
+              label: 'Birth weight',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_number_input({
+                  title: 'Birth weight',
+                  isRequired: true,
+                  onfinish: function(value) {
+                    updateValue(field, value, {
+                      concept_id: 5916, 
+                      value_text: value.label
+                    })
+                  }
+                })
+              }
+            },
+            {
+              refID: 'alive_now_' + num,
+              label: 'Alive now',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_select({
+                  title: 'Alive now',
+                  isRequired: true,
+                  onfinish: function(val) {
+                    updateValue(field, val, {
+                      concept_id: 2895, 
+                      value_coded: val.value
+                    })
+                  },
+                  options: [
+                    { label: "Yes", value: 1065 },
+                    { label: "No", value: 1066 }
+                  ]
+                })
+              }
+            },
+            {
+              refID: 'age_at_death_' + num,
+              label: 'Age at death',
+              edit: function(field) {
+                TT_INPUT_DIALOG.tt_time_estimate_input({
+                  title: 'Age at death',
+                  isRequired: true,
+                  validation: function(val) {
+                    if (!val.interval) {
+                      return ['Please select a time interval']
+                    }
+                    return null
+                  },
+                  onfinish: function(val) {
+                    var finalvalue = val.label + ' ' + val.interval
+                    updateValue(field, { label: finalvalue }, {
+                      concept_id: 7999, 
+                      value_text: finalvalue
+                    })
+                  }
+                })
+              }
+            }
+          ]
+        }
+      ]
+    }
+    return Object.assign(delieveredPregnancyHash, abortionHash)
+  }
+
+  function showPregnancyDetails(gravida, para) {
+    try {
+      var table = PregnancyDetailTableComponent.createPregnancyDetailsInput(
+        buildFields(gravida, para)
+      )
+      InputFrame.append(table)
+      PregnancyDetailTableComponent.checkFirstFormSelectionItem()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  return {
+    showPregnancyDetails
+  }
+})()
+
 var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
 
 var apiProtocol = sessionStorage.apiProtocol;
@@ -136,9 +654,8 @@ function fetchGravidaValue() {
 }
 
 function submitButton(){
-  
   var nextButton = document.getElementById('nextButton');
-  
+
   nextButton.setAttribute('onmousedown', 'nextRoute()');
 
 }
