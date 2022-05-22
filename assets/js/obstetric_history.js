@@ -106,6 +106,12 @@ var PregnancyDetailTableComponent = (() => {
           let fieldTr = document.createElement('tr');
           let labelTD = document.createElement('td');
           let valueTD = document.createElement('td');
+          let onEdit = function () {
+            field.edit(GlobalPageData.pregDetailsPage.components[field.refID],
+              Object.values(GlobalPageData.pregDetailsPage.components).filter(function(groupField) {
+                return groupField.groupID === content.groupID
+              }));
+          }
 
           if (typeof field.label === 'string') {
             labelTD.innerHTML = field.label;
@@ -113,12 +119,7 @@ var PregnancyDetailTableComponent = (() => {
           }
 
           if (typeof field.edit === 'function') {
-            GlobalPageData.pregDetailsPage.methods[field.refID] = function () {
-              field.edit(GlobalPageData.pregDetailsPage.components[field.refID],
-                Object.values(GlobalPageData.pregDetailsPage.components).filter(function(groupField) {
-                  return groupField.groupID === content.groupID
-                }));
-            };
+            GlobalPageData.pregDetailsPage.methods[field.refID] = onEdit;
             var textInput = document.createElement('input')
             textInput.readOnly = true
             textInput.placeholder = 'Click to edit'
@@ -127,7 +128,6 @@ var PregnancyDetailTableComponent = (() => {
             textInput.style.padding = '8px';
             textInput.style.backgroundColor = '#F8F8F8';
             textInput.setAttribute('onmousedown', 'GlobalPageData.pregDetailsPage.methods["' + field.refID + '"]()')
-            valueTD.className = "min-md-width";
             valueTD.appendChild(textInput)
           }
 
@@ -136,12 +136,18 @@ var PregnancyDetailTableComponent = (() => {
             value: null,
             refID: field.refID,
             groupID: content.groupID,
+            label: field.label,
             labelElement: labelTD,
-            valueElement: textInput
+            valueElement: textInput,
+            onEdit,
+            row: fieldTr
           }
           fieldTr.appendChild(labelTD);
           fieldTr.appendChild(valueTD);
           table.appendChild(fieldTr);
+          if (field.hidden) {
+            fieldTr.style.display = 'none'
+          }
         });
         container.appendChild(table);
       });
@@ -442,7 +448,7 @@ var PregnancyDetailsPage = (() => {
             {
               refID: 'alive_now_' + num,
               label: 'Alive now',
-              edit: function(field) {
+              edit: function(field, otherFields) {
                 TT_INPUT_DIALOG.tt_select({
                   title: 'Alive now',
                   isRequired: true,
@@ -450,6 +456,22 @@ var PregnancyDetailsPage = (() => {
                     updateValue(field, val, {
                       concept_id: 2895, 
                       value_coded: val.value
+                    })
+                    otherFields.forEach(function(f) {
+                      if (f.label ==="Age at death") {
+                        if (val.label === 'No') {
+                          f.dontValidate = false
+                          f.row.style.display = 'inline'
+                          f.onEdit()
+                        } else {
+                          f.dontValidate = true
+                          f.labelElement.style.color = 'brown';
+                          f.valueElement.value = '';
+                          f.row.style.display = 'none';
+                          GlobalPageData.pregDetailsPage.components[f.refID]['computedValue'] = null;
+                          GlobalPageData.pregDetailsPage.components[f.refID]['value'] = null;
+                        }
+                      }
                     })
                   },
                   options: [
@@ -462,6 +484,7 @@ var PregnancyDetailsPage = (() => {
             {
               refID: 'age_at_death_' + num,
               label: 'Age at death',
+              hidden: true,
               edit: function(field) {
                 TT_INPUT_DIALOG.tt_time_duration({
                   title: 'Age at death',
