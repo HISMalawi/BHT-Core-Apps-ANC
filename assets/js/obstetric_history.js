@@ -406,14 +406,29 @@ var PregnancyDetailsPage = (() => {
             {
               refID: 'condition_at_birth_' + num,
               label: 'Condition at birth',
-              edit: function(field) {
+              edit: function(field, otherFields) {
                 TT_INPUT_DIALOG.tt_select({
                   title: 'Condition at birth',
                   isRequired: true,
-                  onfinish: function(value) {
-                    updateValue(field, value, {
+                  onfinish: function(val) {
+                    updateValue(field, val, {
                       concept_id: 7998, 
-                      value_text: value.label
+                      value_text: val.label
+                    })
+                    otherFields.forEach(function(f) {
+                      if (f.label ==="Alive now" || f.label === 'Age at death') {
+                        if (val.label === 'Alive' && f.label === 'Alive now') {
+                          f.dontValidate = false
+                          f.row.style.display = 'inline'
+                        } else {
+                          f.dontValidate = true
+                          f.labelElement.style.color = 'brown';
+                          f.valueElement.value = '';
+                          f.row.style.display = 'none';
+                          GlobalPageData.pregDetailsPage.components[f.refID]['computedValue'] = null;
+                          GlobalPageData.pregDetailsPage.components[f.refID]['value'] = null;
+                        }
+                      }
                     })
                   },
                   options: [
@@ -448,6 +463,7 @@ var PregnancyDetailsPage = (() => {
             {
               refID: 'alive_now_' + num,
               label: 'Alive now',
+              hidden: true,
               edit: function(field, otherFields) {
                 TT_INPUT_DIALOG.tt_select({
                   title: 'Alive now',
