@@ -39,8 +39,8 @@ var PregnancyDetailTableComponent = (() => {
     table.className = 'pregancy-details-table';
     pregnancyTH.innerHTML = 'Pregnancy'
     detailsTH.innerHTML = 'Details'
-    pregnancyTH.style.width = "80px"
-    detailsTH.style.width = "340px"
+    pregnancyTH.style.width = "150px"
+    detailsTH.style.width = "250px"
     tr.appendChild(pregnancyTH)
     tr.appendChild(detailsTH)
     table.appendChild(tr)
@@ -54,44 +54,17 @@ var PregnancyDetailTableComponent = (() => {
     }
   }
 
-  function buildPregnancyFormSelector(tableContent) {
-    let ul = document.createElement('ul')
-    ul.style.listStyle = 'none'
-    for (let key in tableContent) {
-      let id = key.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '')
-      let li = document.createElement('li');
-      let chkImg = document.createElement("img");
-      let txtSpan = document.createElement('span');
-      li.style.margin = '8%';
-      li.className = 'pregnancy-details-selection-li';
-      txtSpan.innerHTML = key;
-      txtSpan.style.fontWeight = 'bold';
-      txtSpan.style.fontSize = '24px';
-      txtSpan.style.paddingLeft = '25px';
-      chkImg.id = 'img_' + id;
-      chkImg.className = 'details-selection'
-      chkImg.style.width = '35px'
-      chkImg.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
-      GlobalPageData.pregDetailsPage.methods['check_' + id] = function() {
-        for(var element of document.getElementsByClassName('details-selection')) {
-          if (element.src.match(/checked/i)) {
-            element.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg";
-          }
-        }
+  function buildPregnancyFormSelector(options) {
+    return TT_INPUT_DIALOG.buildRadioOptions(
+      options, 'pregnancy-details-selection-li', 
+      function(option){
         for(var element of document.getElementsByClassName('active-pregnancy-detail-fields')) { 
           element.classList.remove('active-pregnancy-detail-fields')
           element.classList.add('inactive-pregnancy-detail-fields');
         }
-        chkImg.src = "/public/touchscreentoolkit/lib/images/checked.jpg";
-        document.getElementById(key).classList.add('active-pregnancy-detail-fields');
-        document.getElementById(key).classList.remove('inactive-pregnancy-detail-fields');
-      }
-      li.appendChild(chkImg)
-      li.appendChild(txtSpan)
-      li.setAttribute('onclick', 'GlobalPageData.pregDetailsPage.methods["check_' + id + '"]()')
-      ul.appendChild(li)
-    }
-    return ul
+        document.getElementById(option).classList.add('active-pregnancy-detail-fields');
+        document.getElementById(option).classList.remove('inactive-pregnancy-detail-fields');
+      });
   }
 
   /**
@@ -177,19 +150,19 @@ var PregnancyDetailTableComponent = (() => {
   }
 
   function createPregnancyDetailsInput(fieldItems) {
-    let parentTable = buildParentTable()
-    let pregnancyFormSelector = buildPregnancyFormSelector(fieldItems)
-    let pregnancyDetailFields = buildPregnancyDetailFields(fieldItems)
-    let tr = document.createElement('tr')
-    let tdSelector = document.createElement('td')
-    let tdForm = document.createElement('td')
-    tdSelector.className = 'value-table-label'
-    tdSelector.appendChild(pregnancyFormSelector)
-    tdForm.appendChild(pregnancyDetailFields)
-    tr.appendChild(tdSelector)
-    tr.appendChild(tdForm)
-    parentTable.append(tr)
-    return parentTable
+    let parentTable = buildParentTable();
+    let pregnancyFormSelector = buildPregnancyFormSelector(Object.keys(fieldItems));
+    let pregnancyDetailFields = buildPregnancyDetailFields(fieldItems);
+    let tr = document.createElement('tr');
+    let tdSelector = document.createElement('td');
+    let tdForm = document.createElement('td');
+    tdSelector.className = 'value-table-label';
+    tdSelector.appendChild(pregnancyFormSelector);
+    tdForm.appendChild(pregnancyDetailFields);
+    tr.appendChild(tdSelector);
+    tr.appendChild(tdForm);
+    parentTable.append(tr);
+    return parentTable;
   }
   return {
     checkFirstFormSelectionItem,
@@ -206,10 +179,10 @@ var PregnancyDetailsPage = (() => {
     return (s[(v - 20) % 10] || s[v] || s[0]);
   }
 
-  function updateValue(fieldData, val, computedValue) {
+  function updateValue(fieldData, val, computedValue, showValue=null) {
     fieldData.value = val;
     fieldData.computedValue = computedValue
-    fieldData.valueElement.value = val.label || val.value;
+    fieldData.valueElement.value = showValue || val.label || val.value;
     fieldData.labelElement.style.color = 'green';
   }
 
@@ -236,7 +209,7 @@ var PregnancyDetailsPage = (() => {
                   onfinish: function(val) {
                     updateValue(field, val, {
                       concept_id: 7996, 
-                      value_numeric: parseInt(val.value)
+                      value_numeric: val.value
                     })
                   }
                 })
@@ -313,10 +286,16 @@ var PregnancyDetailsPage = (() => {
                 TT_INPUT_DIALOG.tt_number_input({
                   title: 'Gestation weeks',
                   isRequired: true,
+                  validation: function (val) {
+                    if (val.value < 0 || val.value > 28) {
+                      return ['Gestation weeks must be with range of 1 to 28 weeks']
+                    }
+                    return null
+                  },
                   onfinish: function(value) {
                     updateValue(field, value,{
                       concept_id: 44,
-                      value_numeric: parseInt(value.label)
+                      value_numeric: value.label
                     })
                   }
                 })
@@ -344,7 +323,7 @@ var PregnancyDetailsPage = (() => {
                   onfinish: function(value) {
                     updateValue(field, value, {
                       concept_id: 7996,
-                      value_numeric: parseInt(value.label)
+                      value_numeric: value.label
                     })
                   }
                 })
@@ -380,10 +359,15 @@ var PregnancyDetailsPage = (() => {
                 TT_INPUT_DIALOG.tt_number_input({
                   title: 'Gestation weeks',
                   isRequired: true,
+                  validation: function(val) {
+                    if (val.value < 5 || val.value > 42) {
+                      return ['Gestation weeks must be between 5 and 42 weeks']
+                    }
+                  },
                   onfinish: function(value) {
                     updateValue(field, value, {
                       concept_id: 44, 
-                      value_numeric: parseInt(value.label)
+                      value_numeric: value.label
                     })
                   }
                 })
@@ -441,6 +425,11 @@ var PregnancyDetailsPage = (() => {
                 TT_INPUT_DIALOG.tt_number_input({
                   title: 'Birth weight',
                   isRequired: true,
+                  validation: function (val) {
+                    if (val.value < 1 || val.value > 5) {
+                      return ['Birth weight must be between 1 and 5 kgs']
+                    }
+                  },
                   onfinish: function(value) {
                     updateValue(field, value, {
                       concept_id: 5916, 
@@ -474,21 +463,14 @@ var PregnancyDetailsPage = (() => {
               refID: 'age_at_death_' + num,
               label: 'Age at death',
               edit: function(field) {
-                TT_INPUT_DIALOG.tt_time_estimate_input({
+                TT_INPUT_DIALOG.tt_time_duration({
                   title: 'Age at death',
                   isRequired: true,
-                  validation: function(val) {
-                    if (!val.interval) {
-                      return ['Please select a time interval']
-                    }
-                    return null
-                  },
                   onfinish: function(val) {
-                    var finalvalue = val.label + ' ' + val.interval
-                    updateValue(field, { label: finalvalue }, {
-                      concept_id: 7999, 
-                      value_text: finalvalue
-                    })
+                    updateValue(field, val, {
+                      concept_id: 7999,
+                      value_text: val.value
+                    }, val.value)
                   }
                 })
               }

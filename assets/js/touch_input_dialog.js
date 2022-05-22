@@ -8,7 +8,11 @@
 //     onclose: 'callback function',
 //     oncancel: 'callback function'
 // }
+
+
 var TT_INPUT_DIALOG = (() => {
+    let methods = {};
+    let tmpFormValue = null;
     let formValue = null;
     let formParams = {};
     let TITLE_ID = 'tt_input_dialog_title';
@@ -188,58 +192,43 @@ var TT_INPUT_DIALOG = (() => {
     }
 
     /**
-     * Event handler for radion buttons
-     * @param {} options 
-     * @param {*} name 
-     * @param {*} onClick 
-     * @returns 
-     */
-    function onradioSelect(id, name) {
-        for(var element of document.getElementsByClassName(name)) {
-            if (element.src.match(/checked/i)) {
-              element.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
-            }
-        }
-        document.getElementById('chkImg_' + id).src = "/public/touchscreentoolkit/lib/images/checked.jpg"
-        let newValue = Object.assign(formValue || {
-            label: '', 
-            value: ''
-        }, {
-            interval: id
-        })
-        onNewValue(newValue)
-    }
-
-    /**
      * Generates a list of radio button selections
      * @param {*} options 
      */
-    function radioOptions(options, name) {
-        var container = document.createElement("div")
-        options.forEach(function(option) {
-            var chkImg = document.createElement("img")
-            var btnSection = document.createElement('div')
-            var txtSpan = document.createElement('span')
-            txtSpan.id = 'chkTxt_' + option
-            chkImg.id = 'chkImg_' + option
-            chkImg.className = name
+    function buildRadioOptions(options, groupID, onselect, width='100%') {
+        let ul = document.createElement('ul')
+        ul.style.listStyle = 'none'
+        ul.style.width=width
+        for (let key of options) {
+            let id = key.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+            let li = document.createElement('li');
+            let chkImg = document.createElement("img");
+            let txtSpan = document.createElement('span');
+            li.style.margin = '8%';
+            li.className = groupID;
+            txtSpan.innerHTML = key;
+            txtSpan.style.fontWeight = 'bold';
+            txtSpan.style.fontSize = '24px';
+            txtSpan.style.paddingLeft = '25px';
+            chkImg.id = 'img_' + id;
+            chkImg.className = groupID + 'touch-radio-selection'
             chkImg.style.width = '35px'
             chkImg.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg"
-            txtSpan.innerText = option
-            txtSpan.style.fontWeight = 'bold'
-            txtSpan.style.fontSize = '24px'
-            txtSpan.style.paddingLeft = '25px'
-            btnSection.style.marginLeft = '60px'
-            btnSection.setAttribute(
-                'onmousedown', 
-                'TT_INPUT_DIALOG.onradioSelect("' + option + '","' + name + '")'
-            )
-            btnSection.appendChild(chkImg)
-            btnSection.appendChild(txtSpan)
-            container.appendChild(btnSection)
-            container.appendChild(document.createElement('br'))
-        })
-        return container
+            TT_INPUT_DIALOG.methods['radio_select_' + id] = function () {
+                for(var element of document.getElementsByClassName(chkImg.className)) {
+                    if (element.src.match(/checked/i)) {
+                        element.src = "/public/touchscreentoolkit/lib/images/unchecked.jpg";
+                    }
+                }
+                document.getElementById(chkImg.id).src = "/public/touchscreentoolkit/lib/images/checked.jpg"
+                onselect(key, id, groupID)
+            }
+            li.appendChild(chkImg)
+            li.appendChild(txtSpan)
+            li.setAttribute('onclick', 'TT_INPUT_DIALOG.methods["radio_select_' + id + '"]()')
+            ul.appendChild(li)
+        }
+        return ul
     }
 
     function updateModalWindow(title, innerContent, config) {
@@ -311,8 +300,9 @@ var TT_INPUT_DIALOG = (() => {
      * @param {*} config 
      */
     function insertToModal(title, content, config) {
+        methods = {};
         formValue = null;
-        var windowConfg = config.window || {}
+        var windowConfg = config.window || {};
         var modalWindow = document.getElementById(DIALOG_ID);
         
         if (!modalWindow) {
@@ -342,20 +332,20 @@ var TT_INPUT_DIALOG = (() => {
             return ''
         } else if (newInput.match(/delete|del/i)) {
             // Override Unknown text with new input
-            if (output.match(/unknown/i) || output.match(/n\/a/i)) {
+            if (output.match(/unknown|unk/i) || output.match(/n\/a/i)) {
                 output = ''
             } else {
                 output = output.substring(0, output.length - 1)
             }
         } else if (newInput.match(/space/i)) {
             output = `${accumulator} `
-        } else if (newInput.match(/unknown/i)) {
+        } else if (newInput.match(/unknown|unk/i)) {
             output = 'Unknown'
         } else if (newInput.match(/n\/a/i)) {
             output = 'N/A'
         } else {
             // Override Unknown text with new input
-            if (output.match(/unknown/i) || output.match(/n\/a/i)) {
+            if (output.match(/unknown|unk/i) || output.match(/n\/a/i)) {
                 output = newInput
             } else {
                 output = `${accumulator}${newInput}`
@@ -365,26 +355,11 @@ var TT_INPUT_DIALOG = (() => {
     }
 
     /**
-     * This is triggered when the user presses a key on the keyboard
-     * @param {*} btn 
-     */
-    function onKeybaordButton(btn) {
-        if (typeof btn === 'string') {
-            var curValue = formValue || { label: '', value: '' }
-            var value = getKeyboardValue(btn, curValue.label)
-            onNewValue(Object.assign(formValue || {}, {
-                label: value || '', 
-                value: value || ''
-            }))
-        }
-    }
-
-    /**
      * Generate a keyboard from an array of strings representing rows and values
      * @param {*} layout 
      * @returns 
      */
-    function buildKeyboard(layout) {
+    function buildKeyboard(layout, onclick) {
         var keybaord = document.createElement('table')
         var btnStyle = {
             width: '110px',
@@ -395,11 +370,14 @@ var TT_INPUT_DIALOG = (() => {
             layout[i].forEach(function(btnName){
                 var td = document.createElement('td')
                 if (typeof btnName === 'string' && btnName) {
+                    TT_INPUT_DIALOG.methods['kb_btn_' + btnName] = function() { 
+                        onclick(btnName)
+                    }
                     td.appendChild(newButton(
                         i + "-" + btnName,
-                        btnName, "window.TT_INPUT_DIALOG.onKeybaordButton('" + btnName + "')", 
-                        btnStyle)
-                    )
+                        btnName, "TT_INPUT_DIALOG.methods['kb_btn_" + btnName + "']()", 
+                        btnStyle
+                    ))
                 }
                 tr.appendChild(td)
             })
@@ -412,22 +390,48 @@ var TT_INPUT_DIALOG = (() => {
      * Generate popup selector for time estimate
      * @param {*} params
     */
-    function tt_time_estimate_input(params) {
+    function tt_time_duration(params) {
         formParams = params
-        var div = document.createElement('div')
-        var keyboard = buildKeyboard([
+        tmpFormValue = { label: '', value: '', interval: '' }
+        let div = document.createElement('div')
+        let keyboard = buildKeyboard([
             ['1', '2', '3'],
             ['4', '5', '6'],
             ['7', '8', '9'],
             ['.', '0', 'Del']
-        ])
-        var intervalOptions = radioOptions([
+        ], 
+        function(key) {
+            var keyboardOuput = getKeyboardValue(key, tmpFormValue.label)
+            tmpFormValue.label = keyboardOuput;
+            if (tmpFormValue.label && tmpFormValue.interval) {
+                onNewValue({
+                    label: tmpFormValue.label, 
+                    value: tmpFormValue.label + " " + tmpFormValue.interval
+                })
+            } else {
+                onNewValue(null)
+            }
+            document.getElementById(INPUT_ID).value = tmpFormValue.label;
+        })
+        var intervalOptions = buildRadioOptions([
             "Hours",
             "Days",
             "Weeks",
             "Months",
             "years"
-        ], 'interval_selection')
+        ], 
+        'interval_selection',
+        function(option) {
+            tmpFormValue.interval = option
+            if (tmpFormValue.label && tmpFormValue.interval) {
+                onNewValue({
+                    label: tmpFormValue.label, 
+                    value: tmpFormValue.label + " " + tmpFormValue.interval
+                })
+            } else {
+                onNewValue(null)
+            }
+        }, '30%')
         keyboard.style.padding = '10px'
         keyboard.style.float = 'right'
         intervalOptions.style.float = 'left'
@@ -452,7 +456,16 @@ var TT_INPUT_DIALOG = (() => {
             ['4', '5', '6'],
             ['7', '8', '9'],
             ['.', '0', 'Del']
-        ])
+        ], 
+        function(key) {
+            let keyboardOuput = getKeyboardValue(key, formValue ? formValue.label : '')
+            if (keyboardOuput) {
+                onNewValue({label: keyboardOuput, value: parseInt(keyboardOuput)})
+            } else {
+                onNewValue(null)
+            }
+            
+        })
         keyboard.style.margin = '6% auto'
         insertToModal(params.title, keyboard.outerHTML, {
             window: {
@@ -501,14 +514,14 @@ var TT_INPUT_DIALOG = (() => {
     }
 
     return {
+        methods,
+        buildRadioOptions,
         newButton,
         onNewValue,
         hideModal,
         insertToModal,
-        onradioSelect,
-        onKeybaordButton,
         tt_select,
         tt_number_input,
-        tt_time_estimate_input
+        tt_time_duration
     }
 })()
