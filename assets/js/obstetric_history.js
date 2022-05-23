@@ -85,7 +85,7 @@ var PregnancyDetailTableComponent = (() => {
    * @param {*} tableContent
    */
   function buildPregnancyDetailFields(tableContent) {
-    let container = document.createElement('div')
+    let container = document.createElement('div');
     for(var headerName in tableContent) {
       let div = document.createElement('div')
       div.id = headerName
@@ -552,13 +552,16 @@ var PregnancyDetailsPage = (() => {
   }
 
   function isFormComplete() {
-    return Object.values(GlobalPageData.pregDetailsPage.components)
-      .every(function(v) { 
-        if (!v.dontValidate){
-          return v.value != null
+    let data = Object.values(GlobalPageData.pregDetailsPage.components)
+    if (data.length) {
+      return data.every(function(v) { 
+        if (v.dontValidate){
+          return true
         }
-        return true
+        return v.value != null
       })
+    }
+    return false
   }
 
   function getObservations() {
@@ -596,6 +599,15 @@ var PregnancyDetailsPage = (() => {
       let table = PregnancyDetailTableComponent.createPregnancyDetailsInput(fields);
       InputFrame.append(table);
       PregnancyDetailTableComponent.checkFirstFormSelectionItem();
+      let btn = document.getElementById('nextButton')
+      GlobalPageData.pregDetailsPage.methods.setPregnancyNextButtonAction = function() {
+        if (!isFormComplete()) { 
+          TT_ALERT.alertMessage('Please complete all fields marked in red')
+        } else {
+          gotoNextPage()
+        }
+      }
+      btn.setAttribute('onmousedown', 'GlobalPageData.pregDetailsPage.methods.setPregnancyNextButtonAction()')
     } catch (e) {
       console.error(e);
     }
@@ -766,7 +778,7 @@ function nextRoute(){
 
     submitObstetricEncounter();
 
-  }else{
+  } else {
 
     gotoNextPage();
 
