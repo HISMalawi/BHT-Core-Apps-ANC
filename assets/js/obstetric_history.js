@@ -855,85 +855,86 @@ function postObstetricObs(encounter){
       };
       
   try{
-    
+    if ($('gravida').value > 1 && $('para').value !== 'Unknown') {
+      obs.observations = obs.observations.concat(PregnancyDetailsPage.getObservations())
+    }
     if ($('para').value !== ""){
-      
       obs.observations.push(
-            {concept_id: 1053, value_numeric: parseInt($('para').value)}
-          );
+        {concept_id: 1053, value_numeric: parseInt($('para').value)}
+      );
 
-      for(key in data){
+      // for(key in data){
 
-        for(i in data[key]){
+      //   for(i in data[key]){
 
-          var year_of_birth = data[key][i]["Year of birth"];
+      //     var year_of_birth = data[key][i]["Year of birth"];
           
-          var place_of_birth = data[key][i]["Place of birth"];
+      //     var place_of_birth = data[key][i]["Place of birth"];
           
-          var gestation = data[key][i]["Gestation (weeks)"];
+      //     var gestation = data[key][i]["Gestation (weeks)"];
 
-          var mode_of_delivery = data[key][i]["Method of delivery"];
+      //     var mode_of_delivery = data[key][i]["Method of delivery"];
           
-          var condition_at_birth = data[key][i]["Condition at birth"];
+      //     var condition_at_birth = data[key][i]["Condition at birth"];
 
-          var birth_weight = data[key][i]["Birth weight"];
+      //     var birth_weight = data[key][i]["Birth weight"];
           
-          var alive_now = data[key][i]["Alive Now"];
+      //     var alive_now = data[key][i]["Alive Now"];
 
-          var age_at_death = data[key][i]["Age at Death"];
+      //     var age_at_death = data[key][i]["Age at Death"];
 
 
-          if (year_of_birth !== undefined && year_of_birth !== "?"){
+      //     if (year_of_birth !== undefined && year_of_birth !== "?"){
         
-            obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_birth)});
+      //       obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_birth)});
 
-          }
+      //     }
 
-          if (place_of_birth !== undefined && place_of_birth !== "?"){
+      //     if (place_of_birth !== undefined && place_of_birth !== "?"){
         
-            obs.observations.push({concept_id: 2997, value_text: place_of_birth});
+      //       obs.observations.push({concept_id: 2997, value_text: place_of_birth});
 
-          }
+      //     }
 
-          if (gestation !== undefined && gestation !== "?"){
+      //     if (gestation !== undefined && gestation !== "?"){
       
-            obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
+      //       obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
 
-          }
+      //     }
 
-          if (mode_of_delivery !== undefined && mode_of_delivery !== "?"){
+      //     if (mode_of_delivery !== undefined && mode_of_delivery !== "?"){
 
-            obs.observations.push({concept_id: 5630, value_text: mode_of_delivery});
+      //       obs.observations.push({concept_id: 5630, value_text: mode_of_delivery});
 
-          }
+      //     }
 
-          if (condition_at_birth !== undefined && condition_at_birth !== "?") {
+      //     if (condition_at_birth !== undefined && condition_at_birth !== "?") {
         
-            obs.observations.push({concept_id: 7998, value_text: condition_at_birth});
+      //       obs.observations.push({concept_id: 7998, value_text: condition_at_birth});
 
-          }
+      //     }
 
-          if (birth_weight !== undefined && birth_weight !== "?"){
+      //     if (birth_weight !== undefined && birth_weight !== "?"){
         
-            obs.observations.push({concept_id: 5916, value_text: birth_weight});
+      //       obs.observations.push({concept_id: 5916, value_text: birth_weight});
 
-          }
+      //     }
 
-          if (alive_now !== undefined && alive_now !== "?"){
+      //     if (alive_now !== undefined && alive_now !== "?"){
         
-            obs.observations.push({concept_id: 2895, value_coded: concepts_hash[alive_now]});
+      //       obs.observations.push({concept_id: 2895, value_coded: concepts_hash[alive_now]});
 
-          }
+      //     }
 
-          if (age_at_death !== undefined && age_at_death !== "?"){
+      //     if (age_at_death !== undefined && age_at_death !== "?"){
         
-            obs.observations.push({concept_id: 7999, value_text: age_at_death});
+      //       obs.observations.push({concept_id: 7999, value_text: age_at_death});
 
-          }
+      //     }
 
-        }
+      //   }
 
-      }
+      // }
         
     }
         
@@ -943,59 +944,59 @@ function postObstetricObs(encounter){
             {concept_id: 7942, value_numeric: parseInt($('abortions').value)}
           );
 
-      for (key in $$){
+      // for (key in $$){
 
-        //for(k in $$[key]){
+      //   //for(k in $$[key]){
 
-          var gestation = $$[key]["Gestation (weeks)"];
+      //     var gestation = $$[key]["Gestation (weeks)"];
 
-          var place_of_abortion = $$[key]["Place of abortion"];
+      //     var place_of_abortion = $$[key]["Place of abortion"];
 
-          var procedure_done = $$[key]["Procedure done"];
+      //     var procedure_done = $$[key]["Procedure done"];
 
-          var type_of_abortion = $$[key]["Type of abortion"];
+      //     var type_of_abortion = $$[key]["Type of abortion"];
 
-          var year_of_abortion = $$[key]["Year of abortion"];
+      //     var year_of_abortion = $$[key]["Year of abortion"];
 
 
-          if (year_of_abortion !== undefined && year_of_abortion !== "?"){
+      //     if (year_of_abortion !== undefined && year_of_abortion !== "?"){
             
-            obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_abortion)});
+      //       obs.observations.push({concept_id: 7996, value_numeric: parseInt(year_of_abortion)});
 
-          }
+      //     }
           
-          if (gestation !== undefined && gestation !== "?"){
+      //     if (gestation !== undefined && gestation !== "?"){
             
-            obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
+      //       obs.observations.push({concept_id: 44, value_numeric: parseInt(gestation)});
           
-          }
+      //     }
 
 
-          if (type_of_abortion !== undefined && type_of_abortion !== "?"){
+      //     if (type_of_abortion !== undefined && type_of_abortion !== "?"){
             
-            obs.observations.push(
-                {concept_id: 8359, value_coded: parseInt(concepts_hash[type_of_abortion])}
-              );
+      //       obs.observations.push(
+      //           {concept_id: 8359, value_coded: parseInt(concepts_hash[type_of_abortion])}
+      //         );
 
-          }
+      //     }
 
-          if (procedure_done !== undefined && procedure_done !== "?"){
+      //     if (procedure_done !== undefined && procedure_done !== "?"){
             
-            obs.observations.push(
-                {concept_id: 7439, value_text: procedure_done}
-              );
+      //       obs.observations.push(
+      //           {concept_id: 7439, value_text: procedure_done}
+      //         );
 
-          }
+      //     }
 
-          if (place_of_abortion !== undefined && place_of_abortion !== "?"){
+      //     if (place_of_abortion !== undefined && place_of_abortion !== "?"){
             
-            obs.observations.push({concept_id: 2997, value_text: place_of_abortion});
+      //       obs.observations.push({concept_id: 2997, value_text: place_of_abortion});
 
-          }
+      //     }
 
-        //}
+      //   //}
 
-      }
+      // }
         
     }
     
