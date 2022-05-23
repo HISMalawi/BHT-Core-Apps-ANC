@@ -38,6 +38,8 @@ var TT_INPUT_DIALOG = (() => {
             var errorDiv = document.getElementById(ERROR_ID);
             errorDiv.innerText = 'Errors: ' + errors.join(', ');
             errorDiv.style.display = 'inline';
+            errorDiv.style.fontSize = '1.2rem';
+            errorDiv.style.fontWeight = 'bold';
         } else {
             throw 'Invalid errors parameter' + errors + ' is not an array';
         }
