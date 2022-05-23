@@ -521,9 +521,28 @@ var PregnancyDetailsPage = (() => {
     return Object.assign(delieveredPregnancyHash, abortionHash)
   }
 
+  function isFormComplete() {
+    return Object.values(GlobalPageData.pregDetailsPage.components)
+      .every(function(v) { 
+        if (!v.dontValidate){
+          return v.value != null
+        }
+        return true
+      })
+  }
+
+  function getObservations() {
+    return Object.values(GlobalPageData.pregDetailsPage.components)
+      .filter(function(data) {
+        return 'computedValue' in data
+      }).map(function(data) { 
+        return data.computedValue 
+      })
+  }
+
   function showPregnancyDetails(gravida, para) {
     try {
-      var table = PregnancyDetailTableComponent.createPregnancyDetailsInput(
+      let table = PregnancyDetailTableComponent.createPregnancyDetailsInput(
         buildFields(gravida, para)
       )
       InputFrame.append(table)
@@ -532,8 +551,11 @@ var PregnancyDetailsPage = (() => {
       console.error(e)
     }
   }
+
   return {
-    showPregnancyDetails
+    showPregnancyDetails,
+    getObservations,
+    isFormComplete
   }
 })()
 
