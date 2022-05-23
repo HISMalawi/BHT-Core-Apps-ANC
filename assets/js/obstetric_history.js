@@ -400,7 +400,7 @@ var PregnancyDetailsPage = (() => {
                 if (f.label ==="Alive now" || f.label === 'Age at death') {
                   if (val.label === 'Alive' && f.label === 'Alive now') {
                     f.dontValidate = false
-                    f.row.style.display = 'inline'
+                    f.row.style.display = ''
                   } else {
                     f.dontValidate = true
                     f.labelElement.style.color = 'brown';
@@ -458,7 +458,7 @@ var PregnancyDetailsPage = (() => {
                 if (f.label ==="Age at death") {
                   if (val.label === 'No') {
                     f.dontValidate = false
-                    f.row.style.display = 'inline'
+                    f.row.style.display = ''
                     f.onEdit()
                   } else {
                     f.dontValidate = true
