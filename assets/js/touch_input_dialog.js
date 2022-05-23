@@ -449,23 +449,33 @@ var TT_INPUT_DIALOG = (() => {
      * Show popup for entering numbers only
      * @param {*} params
      */
-    function tt_number_input(params) {
+    function tt_number_input(params, config={}) {
         formParams = params
-        var keyboard = buildKeyboard([
+        let layout = [
             ['1', '2', '3'],
             ['4', '5', '6'],
             ['7', '8', '9'],
             ['.', '0', 'Del']
-        ], 
-        function(key) {
-            let keyboardOuput = getKeyboardValue(key, formValue ? formValue.label : '')
-            if (keyboardOuput) {
-                onNewValue({label: keyboardOuput, value: parseInt(keyboardOuput)})
-            } else {
-                onNewValue(null)
+        ].map(function(row) {
+            if (typeof config.keyReplacements === 'object') {
+                return row.map(function(key){
+                    if (config.keyReplacements[key]) {
+                        return config.keyReplacements[key]
+                    } else {
+                        return key
+                    }
+                })
             }
-            
+            return row
         })
+        var keyboard = buildKeyboard(layout, function(key) {
+            let keyboardOuput = getKeyboardValue(key, formValue ? formValue.label : '');
+            if (keyboardOuput) {
+                onNewValue({label: keyboardOuput, value: parseInt(keyboardOuput)});
+            } else {
+                onNewValue(null);
+            }
+        });
         keyboard.style.margin = '6% auto'
         insertToModal(params.title, keyboard.outerHTML, {
             window: {
