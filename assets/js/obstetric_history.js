@@ -1,6 +1,7 @@
 var GlobalPageData = {
   // Track data here
   pregDetailsPage: {
+    activeFields: [],
     components: {},
     methods: {}
   },
@@ -87,14 +88,17 @@ var PregnancyDetailTableComponent = (() => {
   function buildPregnancyDetailFields(tableContent) {
     let container = document.createElement('div');
     for(var headerName in tableContent) {
-      let div = document.createElement('div')
-      div.id = headerName
+      let div = document.createElement('div');
+      div.id = headerName;
+      // Hide me until someone or something else removes this class from me
       div.classList.add('inactive-pregnancy-detail-fields')
+
       tableContent[headerName].forEach(function(content) {
         let tableHeadSection = document.createElement('div')
         let table = document.createElement('table')
         table.classList.add('value-table')
 
+        // Nice title header for a form
         if (typeof content.sectionName === 'string') {
           tableHeadSection.className = 'table-head-section';
           tableHeadSection.innerHTML = content.sectionName;
@@ -105,6 +109,7 @@ var PregnancyDetailTableComponent = (() => {
           let fieldTr = document.createElement('tr');
           let labelTD = document.createElement('td');
           let valueTD = document.createElement('td');
+          let textInput = document.createElement('input');
           let onEdit = function () {
             field.edit(GlobalPageData.pregDetailsPage.components[field.refID],
               Object.values(GlobalPageData.pregDetailsPage.components).filter(function(groupField) {
@@ -114,14 +119,11 @@ var PregnancyDetailTableComponent = (() => {
 
           if (typeof field.label === 'string') {
             labelTD.innerHTML = field.label;
-            labelTD.style.color = 'brown';
           }
 
           if (typeof field.edit === 'function') {
-            GlobalPageData.pregDetailsPage.methods[field.refID] = onEdit;
-            var textInput = document.createElement('input');
             textInput.readOnly = true;
-            textInput.placeholder = 'Click to edit';
+            textInput.placeholder = 'Edit ' + field.label;
             textInput.style.fontSize = '1.4rem';
             textInput.style.padding = '8px';
             textInput.style.backgroundColor = '#F8F8F8';
@@ -129,29 +131,56 @@ var PregnancyDetailTableComponent = (() => {
             valueTD.appendChild(textInput)
           }
 
-          // Track html components in this object
+          let value = null;
+          // get refID data history and preload everything below
+          let fieldData = GlobalPageData.pregDetailsPage.components[field.refID];
+          let fieldIsHidden = false;
+          let computedValues = null;
+          if (fieldData) {
+            /**
+             * Prepopulate data if available
+             */
+            if(fieldData.value != null) {
+              value = fieldData.value;
+              textInput.value = fieldData.value.label || fieldData.value.value;
+            }
+            computedValues = fieldData.computedValue;
+            fieldIsHidden = fieldData.hidden || false; 
+          } else {
+            fieldIsHidden = field.hidden || false;
+          }
           GlobalPageData.pregDetailsPage.components[field.refID] = {
-            value: null,
+            value: value,
             refID: field.refID,
             groupID: content.groupID,
+            hidden: fieldIsHidden,
             label: field.label,
             labelElement: labelTD,
             valueElement: textInput,
+            computedValue: computedValues,
             onEdit,
             row: fieldTr
           }
+          // Track all refIDs which are active/are shown to the screen. 
+          // These IDs are being tracked so that we can cleanup unused components later
+          // or can aid in filtering data for active components only
+          GlobalPageData.pregDetailsPage.activeFields.push(field.refID);
+          GlobalPageData.pregDetailsPage.methods[field.refID] = onEdit;
+          // Hide me if hidden
+          fieldTr.style.display = fieldIsHidden ? 'none' : '';
+
+          // Show my label color depending if i have data or not
+          labelTD.style.color = textInput.value ? 'green' : 'brown';
+
           fieldTr.appendChild(labelTD);
           fieldTr.appendChild(valueTD);
           table.appendChild(fieldTr);
-          if (field.hidden) {
-            fieldTr.style.display = 'none'
-          }
-          div.appendChild(table)
+          div.appendChild(table);
         });
         container.appendChild(div);
       });
     }
-    return container
+    return container;
   }
 
   function createPregnancyDetailsInput(fieldItems) {
@@ -186,7 +215,7 @@ var PregnancyDetailsPage = (() => {
 
   function updateValue(fieldData, val, computedValue, showValue=null) {
     fieldData.value = val;
-    fieldData.computedValue = computedValue
+    fieldData.computedValue = computedValue;
     fieldData.valueElement.value = showValue || val.label || val.value;
     fieldData.labelElement.style.color = 'green';
   }
@@ -399,15 +428,15 @@ var PregnancyDetailsPage = (() => {
               otherFields.forEach(function(f) {
                 if (f.label ==="Alive now" || f.label === 'Age at death') {
                   if (val.label === 'Alive' && f.label === 'Alive now') {
-                    f.dontValidate = false
-                    f.row.style.display = ''
+                    f.row.style.display = '';
+                    GlobalPageData.pregDetailsPage.components[f.refID]['hidden'] = false;
                   } else {
-                    f.dontValidate = true
-                    f.labelElement.style.color = 'brown';
                     f.valueElement.value = '';
                     f.row.style.display = 'none';
-                    GlobalPageData.pregDetailsPage.components[f.refID]['computedValue'] = null;
+                    f.labelElement.style.color = 'brown';
                     GlobalPageData.pregDetailsPage.components[f.refID]['value'] = null;
+                    GlobalPageData.pregDetailsPage.components[f.refID]['hidden'] = true;
+                    GlobalPageData.pregDetailsPage.components[f.refID]['computedValue'] = null;
                   }
                 }
               })
@@ -457,16 +486,16 @@ var PregnancyDetailsPage = (() => {
               otherFields.forEach(function(f) {
                 if (f.label ==="Age at death") {
                   if (val.label === 'No') {
-                    f.dontValidate = false
                     f.row.style.display = ''
                     f.onEdit()
+                    GlobalPageData.pregDetailsPage.components[f.refID]['hidden'] = false;
                   } else {
-                    f.dontValidate = true
                     f.labelElement.style.color = 'brown';
                     f.valueElement.value = '';
                     f.row.style.display = 'none';
-                    GlobalPageData.pregDetailsPage.components[f.refID]['computedValue'] = null;
                     GlobalPageData.pregDetailsPage.components[f.refID]['value'] = null;
+                    GlobalPageData.pregDetailsPage.components[f.refID]['hidden'] = true;
+                    GlobalPageData.pregDetailsPage.components[f.refID]['computedValue'] = null;
                   }
                 }
               })
@@ -551,31 +580,30 @@ var PregnancyDetailsPage = (() => {
     return abortionHash;
   }
 
-  function isFormComplete() {
-    let data = Object.values(GlobalPageData.pregDetailsPage.components)
-    if (data.length) {
-      return data.every(function(v) { 
-        if (v.dontValidate){
-          return true
-        }
-        return v.value != null
-      })
-    }
-    return false
+  function activeFields() {
+    return GlobalPageData.pregDetailsPage['activeFields'];
   }
 
+  function isFormComplete() {
+    return activeFields().every(function(refID) { 
+      const data = GlobalPageData.pregDetailsPage.components[refID]
+      return data.hidden ? true : data.value != null
+    });
+  }
+
+  /**
+   * Generate observations from computedValues generated by fields
+   * @returns 
+   */
   function getObservations() {
-    try {
-      return Object.values(GlobalPageData.pregDetailsPage.components)
-        .filter(function(data) {
-          return 'computedValue' in data  && data.computedValue != null
-        }).map(function(data) { 
-          return data.computedValue 
-        })
-    } catch (e) {
-      console.warn(e)
-      return []
+    let obs = [];
+    for (let refID of activeFields()) {
+      let data = GlobalPageData.pregDetailsPage.components[refID];
+      if (data.computedValue) {
+        obs.push(data.computedValue);
+      }
     }
+    return obs;
   }
 
   /**
@@ -593,6 +621,8 @@ var PregnancyDetailsPage = (() => {
    */
   function showPregnancyDetails(gravida, para, delieveriesData) {
     try {
+      // Reset tracked field names
+      GlobalPageData.pregDetailsPage.activeFields = [];
       let delieveries = generateDelieveryFields(delieveriesData);
       let abortions = generateAbortionFields(gravida, para);
       let fields = Object.assign({}, delieveries, abortions);
