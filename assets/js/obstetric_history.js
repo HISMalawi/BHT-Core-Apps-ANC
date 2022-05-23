@@ -4,8 +4,122 @@ var GlobalPageData = {
     activeFields: [],
     components: {},
     methods: {}
-  },
+  }
 }
+
+var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
+
+var apiProtocol = sessionStorage.apiProtocol;
+
+var apiURL = sessionStorage.apiURL;
+
+var apiPort = sessionStorage.apiPort;
+
+var patientID = sessionStorage.patientID;
+
+var patientDOB = sessionStorage.patientDOB;
+
+var patientAge = sessionStorage.patientAge;
+
+var programID = sessionStorage.programID;
+
+var sessionDate = sessionStorage.sessionDate;
+
+var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
+
+var $$ = {};
+      
+var data = {};
+      
+var counts = {};
+      
+var deliveries = 0;
+      
+var max_delivered = 1;
+      
+var parity;
+      
+var parsedConceptName;
+      
+var x = [];
+      
+var observations = [];
+
+var prev_complications = {};
+
+concepts_hash = {
+    'Yes': 1065,
+    'No': 1066,
+    'pre_eclampsia': 7941,
+    'hemorrhage': 7977,
+    'eclampsia': 7156,
+    'ever_had_episiotomy' : 8758,
+    'PPH' : 230,
+    'APH' : 228,
+    'Complete abortion' : 7372,
+    'Incomplete abortion' : 905
+  }
+  
+var last_visit = "";
+
+var birth_date = new Date(patientDOB);
+
+var current_date =  new Date(sessionDate);
+
+var this_year = current_date.getFullYear();
+      
+var birth_year = birth_date.getFullYear();
+
+var mother_age = parseInt(patientAge) - 10;
+
+// Minimum birth year of a child = mother birth year plus 13 more years.
+
+var min_birth_year = (parseInt(birth_year) + 13).toString(); 
+
+// Max birth year of a child = previous year.
+      
+var max_birth_year = birth_year;
+
+// Absolute max for birth of a child = this year.
+      
+var abs_max_birth_year = this_year;
+      
+var current_popup = "Enter Value";
+
+var hash = {
+    "TBA" : "T.B.A",
+    "Spontaneous vaginal delivery" : "S.V.D",
+    "Caesarean Section" : "C.S",
+    "Vacuum Extraction Delivery" : "V.E.D",
+    "Big Baby (Above 4kg)" : "> 4kg",
+    "Small Baby (Less than 2.5kg)" : "< 2.5kg"
+  }
+  
+var fields = ["Year of birth", "Place of birth",
+      "Gestation (weeks)", "Method of delivery",
+      "Condition at birth", "Birth weight",
+      "Alive Now", "Age at Death"];
+
+var abortionHash = {
+      "Incomplete abortion" : "Incomplete",
+      "Complete abortion" : "Complete",
+      "Manual Vacuum Aspiration (MVA)" : "M.V.A"
+    }
+    
+var abortionFields = ["Year of abortion", "Place of abortion",
+      "Type of abortion", "Procedure done", "Gestation (weeks)"];
+
+var $$ = {};
+      
+var data = {};
+      
+var counts = {};
+
+var gravida_value = "";
+
+var defaultNextAction = ''
+var lastGravida = 0
+
 /**
  * Helper module to hack touchscreentoolkit
  */
@@ -229,9 +343,14 @@ var PregnancyDetailsPage = (() => {
           TT_INPUT_DIALOG.tt_number_input({
             title: 'Year of abortion',
             isRequired: true,
+            validation: function (val) {
+              if (val.value > abs_max_birth_year || val.value < min_birth_year) {
+                return ['Year of abortion must be between ' + min_birth_year + ' and ' + abs_max_birth_year];
+              }
+            },
             onfinish: function(val) {
               updateValue(field, val, {
-                concept_id: 7996, 
+                concept_id: 7996,
                 value_numeric: val.value
               })
             }
@@ -336,6 +455,11 @@ var PregnancyDetailsPage = (() => {
           TT_INPUT_DIALOG.tt_number_input({
             title: 'Year of birth',
             isRequired: true,
+            validation: function (val) {
+              if (val.value > abs_max_birth_year || val.value < min_birth_year) {
+                return ['Year of birth must be between ' + min_birth_year + ' and ' + abs_max_birth_year];
+              }
+            },
             onfinish: function(val) {
               updateValue(field, val, {
                 concept_id: 7996,
@@ -674,118 +798,6 @@ var PregnancyDetailsPage = (() => {
   }
 })()
 
-var tstCurrentDate = moment(tstCurrentDate).format("YYYY-MM-DD");
-
-var apiProtocol = sessionStorage.apiProtocol;
-
-var apiURL = sessionStorage.apiURL;
-
-var apiPort = sessionStorage.apiPort;
-
-var patientID = sessionStorage.patientID;
-
-var patientDOB = sessionStorage.patientDOB;
-
-var patientAge = sessionStorage.patientAge;
-
-var programID = sessionStorage.programID;
-
-var sessionDate = sessionStorage.sessionDate;
-
-var tt_cancel_destination = "/views/patient_dashboard.html?patient_id=" + patientID;
-
-var $$ = {};
-      
-var data = {};
-      
-var counts = {};
-      
-var deliveries = 0;
-      
-var max_delivered = 1;
-      
-var parity;
-      
-var parsedConceptName;
-      
-var x = [];
-      
-var observations = [];
-
-var prev_complications = {};
-
-concepts_hash = {
-    'Yes': 1065,
-    'No': 1066,
-    'pre_eclampsia': 7941,
-    'hemorrhage': 7977,
-    'eclampsia': 7156,
-    'ever_had_episiotomy' : 8758,
-    'PPH' : 230,
-    'APH' : 228,
-    'Complete abortion' : 7372,
-    'Incomplete abortion' : 905
-  }
-  
-var last_visit = "";
-
-var birth_date = new Date(patientDOB);
-
-var current_date =  new Date(sessionDate);
-
-var this_year = current_date.getFullYear();
-      
-var birth_year = birth_date.getFullYear();
-
-var mother_age = parseInt(patientAge) - 10;
-
-// Minimum birth year of a child = mother birth year plus 13 more years.
-
-var min_birth_year = (parseInt(birth_year) + 13).toString(); 
-
-// Max birth year of a child = previous year.
-      
-var max_birth_year = birth_year;
-
-// Absolute max for birth of a child = this year.
-      
-var abs_max_birth_year = this_year;
-      
-var current_popup = "Enter Value";
-
-var hash = {
-    "TBA" : "T.B.A",
-    "Spontaneous vaginal delivery" : "S.V.D",
-    "Caesarean Section" : "C.S",
-    "Vacuum Extraction Delivery" : "V.E.D",
-    "Big Baby (Above 4kg)" : "> 4kg",
-    "Small Baby (Less than 2.5kg)" : "< 2.5kg"
-  }
-  
-var fields = ["Year of birth", "Place of birth",
-      "Gestation (weeks)", "Method of delivery",
-      "Condition at birth", "Birth weight",
-      "Alive Now", "Age at Death"];
-
-var abortionHash = {
-      "Incomplete abortion" : "Incomplete",
-      "Complete abortion" : "Complete",
-      "Manual Vacuum Aspiration (MVA)" : "M.V.A"
-    }
-    
-var abortionFields = ["Year of abortion", "Place of abortion",
-      "Type of abortion", "Procedure done", "Gestation (weeks)"];
-
-var $$ = {};
-      
-var data = {};
-      
-var counts = {};
-
-var gravida_value = "";
-
-var defaultNextAction = ''
-var lastGravida = 0
 
 function fetchGravidaValue() {
   GET({
