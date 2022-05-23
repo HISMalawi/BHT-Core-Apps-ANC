@@ -298,10 +298,10 @@ var PregnancyDetailsPage = (() => {
                     }
                     return null
                   },
-                  onfinish: function(value) {
-                    updateValue(field, value,{
+                  onfinish: function(val) {
+                    updateValue(field, val,{
                       concept_id: 44,
-                      value_numeric: value.label
+                      value_numeric: val.value
                     })
                   }
                 })
@@ -326,10 +326,10 @@ var PregnancyDetailsPage = (() => {
                 TT_INPUT_DIALOG.tt_number_input({
                   title: 'Year of birth',
                   isRequired: true,
-                  onfinish: function(value) {
-                    updateValue(field, value, {
+                  onfinish: function(val) {
+                    updateValue(field, val, {
                       concept_id: 7996,
-                      value_numeric: value.label
+                      value_numeric: val.value
                     })
                   }
                 })
@@ -370,10 +370,10 @@ var PregnancyDetailsPage = (() => {
                       return ['Gestation weeks must be between 5 and 42 weeks']
                     }
                   },
-                  onfinish: function(value) {
-                    updateValue(field, value, {
+                  onfinish: function(val) {
+                    updateValue(field, val, {
                       concept_id: 44, 
-                      value_numeric: value.label
+                      value_numeric: val.value
                     })
                   }
                 })
@@ -532,12 +532,17 @@ var PregnancyDetailsPage = (() => {
   }
 
   function getObservations() {
-    return Object.values(GlobalPageData.pregDetailsPage.components)
-      .filter(function(data) {
-        return 'computedValue' in data
-      }).map(function(data) { 
-        return data.computedValue 
-      })
+    try {
+      return Object.values(GlobalPageData.pregDetailsPage.components)
+        .filter(function(data) {
+          return 'computedValue' in data  && data.computedValue != null
+        }).map(function(data) { 
+          return data.computedValue 
+        })
+    } catch (e) {
+      console.warn(e)
+      return []
+    }
   }
 
   function showPregnancyDetails(gravida, para) {
