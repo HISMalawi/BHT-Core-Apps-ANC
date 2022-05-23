@@ -457,16 +457,40 @@ var PregnancyDetailsPage = (() => {
             title: 'Birth weight',
             isRequired: true,
             validation: function (val) {
-              if (val.value < 1 || val.value > 5) {
+              if (!val.label.match(/unk/i) && (val.value < 1 || val.value > 5)) {
                 return ['Birth weight must be between 1 and 5 kgs']
               }
             },
             onfinish: function(value) {
-              updateValue(field, value, {
-                concept_id: 5916, 
-                value_text: value.label
-              })
+              let onValue = function(val) {
+                updateValue(field, val, {
+                  concept_id: 5916, 
+                  value_text: val.label
+                });
+              }
+              // Estimate baby weight if unknown
+              if(value.label.match(/unknown/i)) {
+                return TT_INPUT_DIALOG.tt_select({
+                  title: 'Birth weight estimate',
+                  isRequired: true,
+                  options: [
+                    { label: "Normal" },
+                    { label: "Big baby" },
+                    { label: "Small baby" }
+                  ],
+                  onfinish: function(val) {
+                    onValue(val)
+                  }
+                });
+              } else {
+                onValue(value)
+              }
             }
+          },
+          { 
+            keyReplacements: {
+              '0': 'Unk'
+            } 
           })
         }
       },
