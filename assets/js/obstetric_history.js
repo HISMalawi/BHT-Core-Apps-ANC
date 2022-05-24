@@ -122,7 +122,7 @@ var InputFrame = (function() {
 /**
  * Generates pregnancy detail input table
  */
-var PregnancyDetailTableComponent = (() => {
+var PregnancyDetailTableComponent = (function(){
   function buildParentTable() {
     let table = document.createElement('table');
     let tr = document.createElement('tr')
@@ -148,7 +148,7 @@ var PregnancyDetailTableComponent = (() => {
     return TT_INPUT_DIALOG.buildRadioOptions(
       options, 'pregnancy-details-selection-li', 
       function(option){
-        for(var element of document.getElementsByClassName('active-pregnancy-detail-fields')) { 
+        for(let element of document.getElementsByClassName('active-pregnancy-detail-fields')) { 
           element.classList.remove('active-pregnancy-detail-fields')
           element.classList.add('inactive-pregnancy-detail-fields');
         }
@@ -178,7 +178,7 @@ var PregnancyDetailTableComponent = (() => {
    */
   function buildPregnancyDetailFields(tableContent) {
     let container = document.createElement('div');
-    for(var headerName in tableContent) {
+    for(let headerName in tableContent) {
       let div = document.createElement('div');
       div.id = headerName;
       // Hide me until someone or something else removes this class from me
@@ -298,7 +298,7 @@ var PregnancyDetailTableComponent = (() => {
 /**
  * Setups Pregnancy input page with field parameters
  */
-var PregnancyDetailsPage = (() => {
+var PregnancyDetailsPage = (function() {
   function getNumberOrdinal(n) {
     const s = ["th", "st", "nd", "rd"], v = n % 100;
     return (s[(v - 20) % 10] || s[v] || s[0]);
