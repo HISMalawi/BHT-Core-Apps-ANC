@@ -196,6 +196,36 @@
                         showBtn(d.patient_id)
                     ]) 
                 }
+            },
+            'NO_HIV_STATUS' : {
+                reportTitle: 'NO HIV STATUS',
+                dataUrl: "anc_data_cleaning_tools",
+                dataParams: {
+                    program_id: 12,
+                    start_date: startDate,
+                    end_date: endDate,
+                    date: sessionStorage.sessionDate,
+                    report_name: 'NO HIV STATUS'
+                },
+                dataTableOptions: {
+                    tableID: 'data-table'
+                },
+                columns: [
+                    "#",
+                    "National ID",
+                    "Given name",
+                    "Family name",
+                    "Action"
+                ],
+                dataParser: function (data) {
+                    return data.map((d, i) => [
+                        i+1, 
+                        d.identifier,
+                        d.given_name,
+                        d.family_name,
+                        showBtn(d.patient_id)
+                    ]) 
+                }
             }
         }
         DataCleaningTemplate.generateTable('report-body', CLEANING_TOOLS[tool])
